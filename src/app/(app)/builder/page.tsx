@@ -19,8 +19,9 @@ const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opci
 function ProductCard({ product }: { product: Produto }) {
   const { addProduct } = useOffer();
 
-  // Robust price checking
+  // Since the DB is fixed, we can reliably use product.precoMensal
   const price = product.precoMensal;
+  const isPriceValid = typeof price === 'number' && price > 0;
 
   const imageMap: { [key: string]: string } = {
     'Movel': 'movel',
@@ -33,9 +34,9 @@ function ProductCard({ product }: { product: Produto }) {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader>
+      <CardHeader className="p-4">
         {placeholder && (
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md mb-4">
+          <div className="relative aspect-video w-full overflow-hidden rounded-md mb-4">
              <Image 
                 src={placeholder.imageUrl}
                 alt={product.nome}
@@ -45,25 +46,35 @@ function ProductCard({ product }: { product: Produto }) {
              />
           </div>
         )}
-        <CardTitle className="text-lg">{product.nome}</CardTitle>
+        <CardTitle className="text-lg leading-tight">{product.nome}</CardTitle>
         <CardDescription>{product.tipo}</CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow space-y-2">
-        <p className="text-2xl font-bold">
-          {typeof price === 'number' ? (
-             price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-          ) : (
-            <span className="text-base text-muted-foreground">Preço indisponível</span>
-          )}
-          {typeof price === 'number' && <span className="text-sm font-normal text-muted-foreground">/mês</span>}
-        </p>
-        <ul className="text-sm text-muted-foreground list-disc pl-5">
-            {product.beneficios?.slice(0, 2).map((b, i) => <li key={i}>{b}</li>)}
-            {(product.beneficios?.length || 0) > 2 && <li>e mais...</li>}
-        </ul>
+      <CardContent className="p-4 flex-grow space-y-3">
+        <div>
+          <p className="text-sm text-muted-foreground">Preço mensal</p>
+          <p className="text-2xl font-bold">
+            {isPriceValid ? (
+              <>
+                {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              </>
+            ) : (
+              <span className="text-base text-muted-foreground">Preço indisponível</span>
+            )}
+          </p>
+        </div>
+        
+        {product.beneficios?.length > 0 && (
+          <div>
+            <p className="text-sm font-medium">Benefícios:</p>
+            <ul className="text-sm text-muted-foreground list-disc pl-5 mt-1 space-y-1">
+                {product.beneficios.slice(0, 3).map((b, i) => <li key={i}>{b}</li>)}
+                {product.beneficios.length > 3 && <li className="font-medium">e mais...</li>}
+            </ul>
+          </div>
+        )}
       </CardContent>
-      <CardFooter>
-        <Button className="w-full" onClick={() => addProduct({ ...product, precoMensal: price || 0 })} disabled={typeof price !== 'number'}>
+      <CardFooter className="p-4 mt-auto">
+        <Button className="w-full" onClick={() => addProduct(product)} disabled={!isPriceValid}>
           <PlusCircle className="mr-2 h-4 w-4" /> Adicionar à Oferta
         </Button>
       </CardFooter>
@@ -191,5 +202,3 @@ export default function MontadorPortfolioPage() {
     </div>
   );
 }
-
-    
