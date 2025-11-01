@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from 'react';
@@ -20,13 +21,6 @@ function ProductCard({ product }: { product: Produto }) {
 
   // Robust price checking
   const price = product.precoMensal;
-
-  // If there's no valid price, don't render the card.
-  if (typeof price !== 'number') {
-    // This was the error. Now it won't hide the whole card.
-    // Instead we could show a placeholder or just not show the price.
-    // For now, let's just proceed and let the JSX handle it.
-  }
 
   const imageMap: { [key: string]: string } = {
     'Movel': 'movel',
@@ -187,7 +181,7 @@ export default function MontadorPortfolioPage() {
             </div>
           )}
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {!isLoading && filteredProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -197,3 +191,5 @@ export default function MontadorPortfolioPage() {
     </div>
   );
 }
+
+    
