@@ -117,7 +117,7 @@ export default function MontadorPortfolioPage() {
     setSelectedType('Todos'); // Reset filter when city changes
   }
 
-  const isLoading = isLoadingRegioes || isLoadingProducts;
+  const isLoading = isLoadingRegioes || (selectedCity && isLoadingProducts);
 
   return (
     <div className="p-4 space-y-4">
