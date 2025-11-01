@@ -22,8 +22,7 @@ type Gastos = {
 };
 
 export default function ComparadorOfertaPage() {
-  const { products, clearOffer, removeProduct } = useOffer();
-  const [gastos, setGastos] = useState<Gastos>({ tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0 });
+  const { products, clearOffer, removeProduct, gastos, setGastos } = useOffer();
   const { user } = useAuth();
   const { firestore } = useFirebase();
   const [isSaving, setIsSaving] = useState(false);
@@ -44,11 +43,6 @@ export default function ComparadorOfertaPage() {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   };
 
-  const clearAll = () => {
-    clearOffer();
-    setGastos({ tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0 });
-  };
-
   const handleSaveOffer = async (status: 'Aceitou' | 'Recusou') => {
     if (!user || !firestore) return;
     setIsSaving(true);
@@ -64,7 +58,7 @@ export default function ComparadorOfertaPage() {
       };
       const collectionPath = `users/${user.uid}/ofertas_salvas`;
       await addDoc(collection(firestore, collectionPath), offerData);
-      clearAll();
+      clearOffer(); // This now clears products and gastos from context
     } catch (error) {
       console.error("Erro ao salvar oferta:", error);
     } finally {

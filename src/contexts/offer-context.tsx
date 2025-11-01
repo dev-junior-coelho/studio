@@ -4,17 +4,30 @@ import React, { createContext, useContext, useState, ReactNode, useCallback } fr
 import type { Produto } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
+type Gastos = {
+  tv: number;
+  internet: number;
+  fixo: number;
+  movel: number;
+  outros: number;
+};
+
+const initialGastos: Gastos = { tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0 };
+
 interface OfferContextType {
   products: Produto[];
   addProduct: (product: Produto) => void;
   removeProduct: (productId: string) => void;
   clearOffer: () => void;
+  gastos: Gastos;
+  setGastos: React.Dispatch<React.SetStateAction<Gastos>>;
 }
 
 const OfferContext = createContext<OfferContextType | undefined>(undefined);
 
 export function OfferProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Produto[]>([]);
+  const [gastos, setGastos] = useState<Gastos>(initialGastos);
   const { toast } = useToast();
 
   const addProduct = useCallback((product: Produto) => {
@@ -41,13 +54,14 @@ export function OfferProvider({ children }: { children: ReactNode }) {
 
   const clearOffer = useCallback(() => {
     setProducts([]);
+    setGastos(initialGastos);
     toast({
         title: "Oferta Limpa",
         description: "A oferta foi reiniciada.",
       });
   }, [toast]);
 
-  const value = { products, addProduct, removeProduct, clearOffer };
+  const value = { products, addProduct, removeProduct, clearOffer, gastos, setGastos };
 
   return (
     <OfferContext.Provider value={value}>
