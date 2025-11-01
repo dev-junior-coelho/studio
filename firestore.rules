@@ -7,6 +7,7 @@
  * Data Structure:
  * - /produtos/{produtoId}: Public read access, no write access.
  * - /procedimentos/{procedimentoId}: Public read access, no write access.
+ * - /regioes/{regiaoId}: Authenticated read access, no write access.
  * - /usuarios/{usuarioId}: User profile information; only the authenticated user can read/write their own profile.
  * - /users/{userId}/ofertas_salvas/{ofertaSalvaId}: Saved offers for a specific user; only the owner can create, read, update, or delete.
  *
@@ -42,6 +43,18 @@ service cloud.firestore {
      */
     match /procedimentos/{procedimentoId} {
       allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows authenticated users to read region information. No write access.
+     * @path /regioes/{regiaoId}
+     * @allow get, list: Authenticated users can read region data.
+     * @deny create, update, delete: No user can modify region data.
+     * @principle Grants read access to essential app data for authenticated users.
+     */
+    match /regioes/{regiaoId} {
+      allow get, list: if isSignedIn();
       allow create, update, delete: if false;
     }
 
