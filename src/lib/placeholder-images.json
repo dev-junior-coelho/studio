@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "movel",
+      "description": "Mobile phone services",
+      "imageUrl": "https://images.unsplash.com/photo-1589492477829-5e65395b66cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb2JpbGUlMjBwaG9uZXxlbnwwfHx8fDE3NjIwMTE5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mobile phone"
+    },
+    {
+      "id": "banda-larga",
+      "description": "Broadband internet services",
+      "imageUrl": "https://images.unsplash.com/photo-1554098415-4052459dc340?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d2lmaSUyMHJvdXRlcnxlbnwwfHx8fDE3NjE5MjM0ODF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wifi router"
+    },
+    {
+      "id": "tv",
+      "description": "TV services",
+      "imageUrl": "https://images.unsplash.com/photo-1759691555010-7f3f8674d2f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx0ZWxldmlzaW9uJTIwbGl2aW5nfGVufDB8fHx8MTc2MjAxMTk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "television living"
+    },
+    {
+      "id": "fixo",
+      "description": "Landline phone services",
+      "imageUrl": "https://images.unsplash.com/photo-1716703435698-031227389c1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvZmZpY2UlMjB0ZWxlcGhvbmV8ZW58MHx8fHwxNzYyMDExOTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "office telephone"
+    }
+  ]
 }
