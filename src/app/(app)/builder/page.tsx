@@ -45,12 +45,15 @@ function ProductCard({ product }: { product: Produto }) {
       </CardHeader>
       <CardContent className="flex-grow space-y-2">
         <p className="text-2xl font-bold">
-          {product.precoMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          {typeof product.precoMensal === 'number' 
+              ? product.precoMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+              : 'Preço sob consulta'
+          }
           <span className="text-sm font-normal text-muted-foreground">/mês</span>
         </p>
         <ul className="text-sm text-muted-foreground list-disc pl-5">
-            {product.beneficios.slice(0, 2).map((b, i) => <li key={i}>{b}</li>)}
-            {product.beneficios.length > 2 && <li>e mais...</li>}
+            {product.beneficios?.slice(0, 2).map((b, i) => <li key={i}>{b}</li>)}
+            {(product.beneficios?.length || 0) > 2 && <li>e mais...</li>}
         </ul>
       </CardContent>
       <CardFooter>
