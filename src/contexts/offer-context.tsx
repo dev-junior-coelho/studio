@@ -33,17 +33,21 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const addProduct = useCallback((product: Produto) => {
     setProducts((prevProducts) => {
       if (prevProducts.find((p) => p.id === product.id)) {
-        toast({
-          title: "Produto já adicionado",
-          description: `${product.nome} já está na oferta.`,
-          variant: 'destructive',
-        });
+        setTimeout(() => {
+          toast({
+            title: "Produto já adicionado",
+            description: `${product.nome} já está na oferta.`,
+            variant: 'destructive',
+          });
+        }, 0);
         return prevProducts;
       }
-      toast({
-        title: "Produto Adicionado!",
-        description: `${product.nome} foi adicionado à oferta.`,
-      });
+      setTimeout(() => {
+        toast({
+          title: "Produto Adicionado!",
+          description: `${product.nome} foi adicionado à oferta.`,
+        });
+      }, 0);
       return [...prevProducts, product];
     });
   }, [toast]);
@@ -55,10 +59,12 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const clearOffer = useCallback(() => {
     setProducts([]);
     setGastos(initialGastos);
-    toast({
-        title: "Oferta Limpa",
-        description: "A oferta foi reiniciada.",
-      });
+    setTimeout(() => {
+      toast({
+          title: "Oferta Limpa",
+          description: "A oferta foi reiniciada.",
+        });
+    }, 0);
   }, [toast]);
 
   const value = { products, addProduct, removeProduct, clearOffer, gastos, setGastos };
