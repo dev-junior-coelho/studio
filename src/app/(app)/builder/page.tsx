@@ -10,7 +10,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useCollection } from '@/firebase/firestore/use-collection';
 import { collection, query, where, CollectionReference } from 'firebase/firestore';
-import { useFirebase } from '@/firebase/provider';
+import { useFirebase, useMemoFirebase } from '@/firebase/provider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
@@ -69,7 +69,7 @@ export default function MontadorPortfolioPage() {
   const { firestore } = useFirebase();
 
   // 1. Fetch all regions
-  const regioesRef = useMemo(() => firestore ? collection(firestore, 'regioes') : null, [firestore]);
+  const regioesRef = useMemoFirebase(() => firestore ? collection(firestore, 'regioes') : null, [firestore]);
   const { data: regioes, isLoading: isLoadingRegioes } = useCollection<Regiao>(regioesRef);
 
   // 2. Create a flat, sorted list of all cities with their region ID
@@ -87,7 +87,7 @@ export default function MontadorPortfolioPage() {
   }, [selectedCity, allCities]);
 
   // 4. Fetch products based on the selected region ID and national products
-  const productsQuery = useMemo(() => {
+  const productsQuery = useMemoFirebase(() => {
     if (!firestore || !selectedRegiaoId) return null;
     return query(
       collection(firestore, 'produtos') as CollectionReference<Produto>,
