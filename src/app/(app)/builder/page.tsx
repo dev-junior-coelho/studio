@@ -15,13 +15,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
 
-function ProductCard({ product }: { product: Produto & { preco_mensal?: number } }) {
+function ProductCard({ product }: { product: Produto }) {
   const { addProduct } = useOffer();
 
-  // Garante que o preço seja pego de qualquer uma das variações de nome
-  const price = product.precoMensal ?? (product as any).preco_mensal;
-  
-  // Se não houver preço, não renderiza o card
+  // Robust price checking
+  const price = product.precoMensal;
+
+  // If there's no valid price, don't render the card.
   if (typeof price !== 'number') {
     return null;
   }
