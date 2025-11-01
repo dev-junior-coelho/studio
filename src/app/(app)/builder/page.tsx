@@ -23,7 +23,9 @@ function ProductCard({ product }: { product: Produto }) {
 
   // If there's no valid price, don't render the card.
   if (typeof price !== 'number') {
-    return null;
+    // This was the error. Now it won't hide the whole card.
+    // Instead we could show a placeholder or just not show the price.
+    // For now, let's just proceed and let the JSX handle it.
   }
 
   const imageMap: { [key: string]: string } = {
@@ -54,8 +56,12 @@ function ProductCard({ product }: { product: Produto }) {
       </CardHeader>
       <CardContent className="flex-grow space-y-2">
         <p className="text-2xl font-bold">
-          {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-          <span className="text-sm font-normal text-muted-foreground">/mês</span>
+          {typeof price === 'number' ? (
+             price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+          ) : (
+            <span className="text-base text-muted-foreground">Preço indisponível</span>
+          )}
+          {typeof price === 'number' && <span className="text-sm font-normal text-muted-foreground">/mês</span>}
         </p>
         <ul className="text-sm text-muted-foreground list-disc pl-5">
             {product.beneficios?.slice(0, 2).map((b, i) => <li key={i}>{b}</li>)}
@@ -63,7 +69,7 @@ function ProductCard({ product }: { product: Produto }) {
         </ul>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" onClick={() => addProduct({ ...product, precoMensal: price })}>
+        <Button className="w-full" onClick={() => addProduct({ ...product, precoMensal: price || 0 })} disabled={typeof price !== 'number'}>
           <PlusCircle className="mr-2 h-4 w-4" /> Adicionar à Oferta
         </Button>
       </CardFooter>
