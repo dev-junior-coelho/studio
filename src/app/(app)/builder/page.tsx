@@ -46,7 +46,7 @@ function ProductCard({ product }: { product: Produto }) {
              />
           </div>
         )}
-        <CardTitle className="text-lg leading-tight">{product.nome}</CardTitle>
+        <CardTitle className="text-base font-bold leading-snug">{product.nome}</CardTitle>
         <CardDescription>{product.tipo}</CardDescription>
       </CardHeader>
       <CardContent className="p-4 flex-grow space-y-3">
@@ -201,4 +201,5 @@ export default function MontadorPortfolioPage() {
       )}
     </div>
   );
-}
+
+    
