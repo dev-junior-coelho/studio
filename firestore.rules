@@ -7,13 +7,13 @@
  * Data Structure:
  * - /produtos/{produtoId}: Public read access, no write access.
  * - /procedimentos/{procedimentoId}: Public read access, no write access.
- * - /regioes/{regiaoId}: Authenticated read access, no write access.
+ * - /regioes/{regiaoId}: Public read access, no write access.
  * - /usuarios/{usuarioId}: User profile information; only the authenticated user can read/write their own profile.
  * - /users/{userId}/ofertas_salvas/{ofertaSalvaId}: Saved offers for a specific user; only the owner can create, read, update, or delete.
  *
  * Key Security Decisions:
  * - Listing of users is disallowed.
- * - Public read access granted to products and procedures as these are assumed to be public resources.
+ * - Public read access granted to products, procedures, and regions as these are assumed to be public resources.
  *
  * Denormalization for Authorization:
  * - The `OfertaSalva` documents are located under `/users/{userId}` and contain the `usuarioId` field. This setup avoids the need for `get()` calls in security rules to check user roles or permissions, enabling atomic operations and simplifying security logic.
@@ -47,14 +47,14 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows authenticated users to read region information. No write access.
+     * @description Allows public read access to region information. No write access.
      * @path /regioes/{regiaoId}
-     * @allow get, list: Authenticated users can read region data.
+     * @allow get, list: Any user can read region data.
      * @deny create, update, delete: No user can modify region data.
-     * @principle Grants read access to essential app data for authenticated users.
+     * @principle Grants read access to essential app data for all users.
      */
     match /regioes/{regiaoId} {
-      allow get, list: if isSignedIn();
+      allow get, list: if true;
       allow create, update, delete: if false;
     }
 
