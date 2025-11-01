@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useMemo } from 'react';
 import { useOffer } from '@/contexts/offer-context';
@@ -7,8 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Trash2, TrendingDown, TrendingUp, X } from 'lucide-react';
+import { TrendingDown, TrendingUp, X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useAuth } from '@/contexts/auth-context';
+import { useFirebase } from '@/firebase/provider';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 type Gastos = {
   tv: number;
@@ -21,6 +24,9 @@ type Gastos = {
 export default function ComparadorOfertaPage() {
   const { products, clearOffer, removeProduct } = useOffer();
   const [gastos, setGastos] = useState<Gastos>({ tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0 });
+  const { user } = useAuth();
+  const { firestore } = useFirebase();
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,14 +49,33 @@ export default function ComparadorOfertaPage() {
     setGastos({ tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0 });
   };
 
+  const handleSaveOffer = async (status: 'Aceitou' | 'Recusou') => {
+    if (!user || !firestore) return;
+    setIsSaving(true);
+    try {
+      const offerData = {
+        usuarioId: user.uid,
+        produtoIds: products.map(p => p.id),
+        produtos: products, // Saving full product info for easier display later
+        status,
+        timestamp: serverTimestamp(),
+        totalOferta: novoTotalClaro,
+        economia: economiaMensal,
+      };
+      const collectionPath = `users/${user.uid}/ofertas_salvas`;
+      await addDoc(collection(firestore, collectionPath), offerData);
+      clearAll();
+    } catch (error) {
+      console.error("Erro ao salvar oferta:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="p-4 space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Comparador de Ofertas</h1>
-        <Button variant="ghost" size="sm" onClick={clearAll} aria-label="Limpar Oferta">
-          <Trash2 className="h-4 w-4 mr-2" />
-          Limpar
-        </Button>
       </div>
 
       <Card>
@@ -115,41 +140,60 @@ export default function ComparadorOfertaPage() {
         </CardFooter>
       </Card>
 
-      <Card className={economiaMensal >= 0 ? "border-green-500" : "border-red-500"}>
-        <CardHeader>
-          <CardTitle>Argumento de Venda</CardTitle>
-        </CardHeader>
-        <CardContent className="text-center space-y-4">
-          {economiaMensal >= 0 ? (
-            <div className="space-y-2">
-              <TrendingDown className="h-12 w-12 text-green-500 mx-auto" />
-              <p className="text-lg font-semibold text-green-600">Economia Mensal: {formatCurrency(economiaMensal)}</p>
-              <p className="text-xl font-bold text-green-700">Economia Anual: {formatCurrency(economiaMensal * 12)}</p>
-            </div>
-          ) : (
-             <div className="space-y-2">
-              <TrendingUp className="h-12 w-12 text-red-500 mx-auto" />
-              <p className="text-lg font-semibold text-red-600">Aumento Mensal: {formatCurrency(Math.abs(economiaMensal))}</p>
-              <p className="text-muted-foreground">"Por apenas {formatCurrency(Math.abs(economiaMensal))} a mais, o cliente leva todos estes benefícios:"</p>
-            </div>
-          )}
-          {(allBeneficios.length > 0 || allFidelidade.length > 0) && <Separator />}
-          {allBeneficios.length > 0 && (
-             <div>
-                <h4 className="font-bold mb-2">Benefícios Inclusos:</h4>
-                <div className="flex flex-wrap gap-2 justify-center">
-                    {allBeneficios.map((b, i) => <div key={i} className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">{b}</div>)}
-                </div>
-            </div>
-          )}
-          {allFidelidade.length > 0 && (
-            <div>
-                <h4 className="font-bold mb-2 mt-4">Fidelidade:</h4>
-                <p className="text-sm">{allFidelidade.join(', ')}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {products.length > 0 && (
+        <Card className={economiaMensal >= 0 ? "border-green-500" : "border-red-500"}>
+          <CardHeader>
+            <CardTitle>Argumento de Venda</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            {economiaMensal >= 0 ? (
+              <div className="space-y-2">
+                <TrendingDown className="h-12 w-12 text-green-500 mx-auto" />
+                <p className="text-lg font-semibold text-green-600">Economia Mensal: {formatCurrency(economiaMensal)}</p>
+                <p className="text-xl font-bold text-green-700">Economia Anual: {formatCurrency(economiaMensal * 12)}</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <TrendingUp className="h-12 w-12 text-red-500 mx-auto" />
+                <p className="text-lg font-semibold text-red-600">Aumento Mensal: {formatCurrency(Math.abs(economiaMensal))}</p>
+                <p className="text-muted-foreground">"Por apenas {formatCurrency(Math.abs(economiaMensal))} a mais, o cliente leva todos estes benefícios:"</p>
+              </div>
+            )}
+            {(allBeneficios.length > 0 || allFidelidade.length > 0) && <Separator />}
+            {allBeneficios.length > 0 && (
+              <div>
+                  <h4 className="font-bold mb-2">Benefícios Inclusos:</h4>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                      {allBeneficios.map((b, i) => <div key={i} className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">{b}</div>)}
+                  </div>
+              </div>
+            )}
+            {allFidelidade.length > 0 && (
+              <div>
+                  <h4 className="font-bold mb-2 mt-4">Fidelidade:</h4>
+                  <p className="text-sm">{allFidelidade.join(', ')}</p>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter className="flex-col sm:flex-row gap-2">
+            <Button 
+              variant="destructive" 
+              className="w-full" 
+              onClick={() => handleSaveOffer('Recusou')}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Salvando...' : 'Cliente Recusou'}
+            </Button>
+            <Button 
+              className="w-full bg-green-600 hover:bg-green-700 text-white" 
+              onClick={() => handleSaveOffer('Aceitou')}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Salvando...' : 'Cliente Aceitou'}
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   );
 }
