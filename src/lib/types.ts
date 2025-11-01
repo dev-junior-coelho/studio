@@ -1,4 +1,4 @@
-export type ProductType = "Móvel" | "Banda Larga" | "TV" | "Fixo";
+export type ProductType = "Movel" | "Banda Larga" | "TV" | "Fixo" | "Opcional";
 
 export interface Produto {
   id: string;
@@ -8,6 +8,7 @@ export interface Produto {
   beneficios: string[];
   fidelidade: string;
   observacoes?: string;
+  regiaoId?: string; // Adicionado para filtro
 }
 
 export type ProcedureCategory = "Financeiro" | "Técnico" | "Cadastro";
@@ -26,4 +27,10 @@ export interface Usuario {
   uid: string;
   email: string;
   role: UserRole;
+}
+
+export interface Regiao {
+    id: string;
+    nome: string;
+    cidades: string[];
 }
