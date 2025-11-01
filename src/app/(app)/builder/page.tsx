@@ -15,8 +15,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
 
-function ProductCard({ product }: { product: Produto }) {
+function ProductCard({ product }: { product: Produto & { preco_mensal?: number } }) {
   const { addProduct } = useOffer();
+
+  // Garante que o preço seja pego de qualquer uma das variações de nome
+  const price = product.precoMensal ?? (product as any).preco_mensal;
+  
+  // Se não houver preço, não renderiza o card
+  if (typeof price !== 'number') {
+    return null;
+  }
+
   const imageMap: { [key: string]: string } = {
     'Movel': 'movel',
     'Banda Larga': 'banda-larga',
@@ -45,10 +54,7 @@ function ProductCard({ product }: { product: Produto }) {
       </CardHeader>
       <CardContent className="flex-grow space-y-2">
         <p className="text-2xl font-bold">
-          {typeof product.precoMensal === 'number' 
-              ? product.precoMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-              : 'Preço sob consulta'
-          }
+          {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
           <span className="text-sm font-normal text-muted-foreground">/mês</span>
         </p>
         <ul className="text-sm text-muted-foreground list-disc pl-5">
@@ -57,7 +63,7 @@ function ProductCard({ product }: { product: Produto }) {
         </ul>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" onClick={() => addProduct(product)}>
+        <Button className="w-full" onClick={() => addProduct({ ...product, precoMensal: price })}>
           <PlusCircle className="mr-2 h-4 w-4" /> Adicionar à Oferta
         </Button>
       </CardFooter>
@@ -102,8 +108,10 @@ export default function MontadorPortfolioPage() {
 
   const filteredProducts = useMemo(() => {
     if (!productsData) return [];
-    if (selectedType === 'Todos') return productsData;
-    return productsData.filter(p => p.tipo === selectedType);
+    // Filtra produtos que não têm preço definido
+    const withPrice = productsData.filter(p => typeof (p.precoMensal ?? (p as any).preco_mensal) === 'number');
+    if (selectedType === 'Todos') return withPrice;
+    return withPrice.filter(p => p.tipo === selectedType);
   }, [productsData, selectedType]);
 
   const handleCityChange = (city: string) => {
