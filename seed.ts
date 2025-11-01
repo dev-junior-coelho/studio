@@ -116,7 +116,7 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional",
     tipo: "Movel",
-    nome: "Claro Pós 60GB (Multi)",
+    nome: "Claro Pós 25GB (Multi)",
     precoMensal: 59.90,
     beneficios: ["25GB (plano) + 25GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "0 dependentes", "ChatGPT Plus (4 Meses)"],
     observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
@@ -124,7 +124,7 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional",
     tipo: "Movel",
-    nome: "Claro Pós 110GB (Multi)",
+    nome: "Claro Pós 50GB (Multi)",
     precoMensal: 119.90,
     beneficios: ["50GB (plano) + 50GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "0 dependentes", "Passaporte Américas", "ChatGPT Plus (4 Meses)"],
     observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
@@ -132,7 +132,7 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional",
     tipo: "Movel",
-    nome: "Claro Pós 210GB (Multi)",
+    nome: "Claro Pós 100GB (Multi)",
     precoMensal: 169.90,
     beneficios: ["100GB (plano) + 100GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "1 dependente grátis", "ChatGPT Plus (4 Meses)"],
     observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
@@ -140,7 +140,7 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional",
     tipo: "Movel",
-    nome: "Claro Pós 310GB (Multi)",
+    nome: "Claro Pós 150GB (Multi)",
     precoMensal: 219.90,
     beneficios: ["150GB (plano) + 150GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "2 dependentes grátis", "Passaporte Américas", "ChatGPT Plus (4 Meses)"],
     observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
@@ -148,7 +148,7 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional",
     tipo: "Movel",
-    nome: "Claro Pós 610GB (Multi)",
+    nome: "Claro Pós 300GB (Multi)",
     precoMensal: 319.90,
     beneficios: ["300GB (plano) + 300GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "3 dependentes grátis", "Passaporte Mundo", "ChatGPT Plus (4 Meses)"],
     observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
@@ -158,7 +158,7 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional",
     tipo: "Movel",
-    nome: "Claro Controle 30GB (Multi)",
+    nome: "Claro Controle 20GB (Multi)",
     precoMensal: 44.90,
     beneficios: ["20GB (plano) + 5GB (redes) + 5GB (bônus)", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
     observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
@@ -166,7 +166,7 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional",
     tipo: "Movel",
-    nome: "Claro Controle 35GB (Multi)",
+    nome: "Claro Controle 25GB (Multi)",
     precoMensal: 69.90,
     beneficios: ["25GB (plano) + 5GB (redes) + 5GB (bônus)", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
     observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
@@ -174,7 +174,7 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional",
     tipo: "Movel",
-    nome: "Claro Controle 35GB Gamer (Multi)",
+    nome: "Claro Controle 25GB Gamer (Multi)",
     precoMensal: 99.90,
     beneficios: ["25GB (plano) + 5GB (redes) + 5GB (bônus)", "Geforce NOW", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
     observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
