@@ -45,7 +45,7 @@ function ProductCard({ product }: { product: Produto }) {
       </CardHeader>
       <CardContent className="flex-grow space-y-2">
         <p className="text-2xl font-bold">
-          {product.preco_mensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          {product.precoMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
           <span className="text-sm font-normal text-muted-foreground">/mês</span>
         </p>
         <ul className="text-sm text-muted-foreground list-disc pl-5">

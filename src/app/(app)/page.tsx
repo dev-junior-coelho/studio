@@ -33,7 +33,7 @@ export default function ComparadorOfertaPage() {
   };
   
   const totalGastoAtual = useMemo(() => Object.values(gastos).reduce((acc, val) => acc + val, 0), [gastos]);
-  const novoTotalClaro = useMemo(() => products.reduce((acc, p) => acc + p.preco_mensal, 0), [products]);
+  const novoTotalClaro = useMemo(() => products.reduce((acc, p) => acc + p.precoMensal, 0), [products]);
   const economiaMensal = useMemo(() => totalGastoAtual - novoTotalClaro, [totalGastoAtual, novoTotalClaro]);
 
   const allBeneficios = useMemo(() => products.flatMap(p => p.beneficios), [products]);
@@ -115,7 +115,7 @@ export default function ComparadorOfertaPage() {
                   <li key={product.id} className="flex justify-between items-center text-sm">
                     <span>{product.nome}</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">{formatCurrency(product.preco_mensal)}</span>
+                      <span className="font-semibold">{formatCurrency(product.precoMensal)}</span>
                       <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeProduct(product.id)}>
                         <X className="h-4 w-4" />
                       </Button>

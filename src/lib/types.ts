@@ -4,7 +4,7 @@ export interface Produto {
   id: string;
   nome: string;
   tipo: ProductType;
-  preco_mensal: number;
+  precoMensal: number;
   beneficios: string[];
   fidelidade: string;
   observacoes?: string;

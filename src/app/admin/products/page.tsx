@@ -49,7 +49,7 @@ import Link from "next/link";
 const productTypes: ProductType[] = ["Móvel", "Banda Larga", "TV", "Fixo"];
 
 function ProductForm({ product, onSave, onDone }: { product?: Produto, onSave: (product: Produto) => void, onDone: () => void }) {
-  const [formData, setFormData] = useState<Produto>(product || { id: '', nome: '', tipo: 'Móvel', preco_mensal: 0, beneficios: [], fidelidade: '' });
+  const [formData, setFormData] = useState<Produto>(product || { id: '', nome: '', tipo: 'Móvel', precoMensal: 0, beneficios: [], fidelidade: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -81,8 +81,8 @@ function ProductForm({ product, onSave, onDone }: { product?: Produto, onSave: (
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="preco_mensal">Preço Mensal</Label>
-          <Input id="preco_mensal" name="preco_mensal" type="number" value={formData.preco_mensal} onChange={handleChange} required />
+          <Label htmlFor="precoMensal">Preço Mensal</Label>
+          <Input id="precoMensal" name="precoMensal" type="number" value={formData.precoMensal} onChange={handleChange} required />
         </div>
       </div>
       <div className="space-y-2">
@@ -167,7 +167,7 @@ export default function AdminProductsPage() {
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.nome}</TableCell>
                 <TableCell>{product.tipo}</TableCell>
-                <TableCell>{product.preco_mensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
+                <TableCell>{product.precoMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <Button variant="outline" size="icon" onClick={() => { setEditingProduct(product); setFormOpen(true);}}>
                     <Edit className="h-4 w-4" />
