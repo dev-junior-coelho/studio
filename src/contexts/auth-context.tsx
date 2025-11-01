@@ -1,9 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import type { Usuario as AppUsuario } from '@/lib/types'; // Renomeando para evitar conflito
+import { getDoc, doc, setDoc } from 'firebase/firestore';
+import type { Usuario as AppUsuario } from '@/lib/types';
 import { useRouter, usePathname } from 'next/navigation';
-import { FirebaseClientProvider, useUser as useFirebaseUser } from '@/firebase'; // Importando o provider e o hook de user do firebase
+import { useUser as useFirebaseUser, useFirebase } from '@/firebase';
+import { signInAnonymously } from 'firebase/auth';
 
 interface AuthContextType {
   user: AppUsuario | null;
@@ -14,40 +16,47 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock user data para simular perfis locais
-const mockUsers: { [key in 'agente' | 'supervisor']: AppUsuario } = {
-  agente: { uid: 'agente-123', email: 'agente@claro.com.br', role: 'agente' },
-  supervisor: { uid: 'supervisor-456', email: 'supervisor@claro.com.br', role: 'supervisor' },
-};
-
 function AuthProviderContent({ children }: { children: ReactNode }) {
   const { user: firebaseUser, isUserLoading: firebaseLoading } = useFirebaseUser();
+  const { auth, firestore } = useFirebase();
   const [appUser, setAppUser] = useState<AppUsuario | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    // Sincroniza o usuário local com o estado do Firebase Auth ou localStorage
-    if (!firebaseLoading) {
-      const storedUserRole = localStorage.getItem('userRole') as 'agente' | 'supervisor' | null;
-      if (firebaseUser) {
-        // Se há um usuário firebase, tentamos mapear para um usuário da aplicação
-        const role = localStorage.getItem('userRole') as 'agente' | 'supervisor' || 'agente';
-         setAppUser({
-           uid: firebaseUser.uid,
-           email: firebaseUser.email || 'desconhecido',
-           role: role
-         });
-      } else if (storedUserRole && mockUsers[storedUserRole]) {
-        // Fallback para o mock se não houver usuário firebase (cenário de simulação)
-        setAppUser(mockUsers[storedUserRole]);
-      } else {
-        setAppUser(null);
+    const syncUser = async () => {
+      if (!firebaseLoading) {
+        if (firebaseUser && firestore) {
+          const userDocRef = doc(firestore, "usuarios", firebaseUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists()) {
+            setAppUser(userDoc.data() as AppUsuario);
+          } else {
+            // User is authenticated in Firebase Auth, but no user document in Firestore.
+            // This can happen during first login. Let's rely on localStorage for role.
+             const storedRole = localStorage.getItem('userRole') as 'agente' | 'supervisor';
+             if (storedRole) {
+                const newUser: AppUsuario = {
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email || `${storedRole}@claro.com.br`,
+                    role: storedRole,
+                };
+                await setDoc(userDocRef, newUser);
+                setAppUser(newUser);
+             } else {
+                setAppUser(null); // No role info, treat as logged out
+             }
+          }
+        } else {
+          setAppUser(null);
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    }
-  }, [firebaseUser, firebaseLoading]);
+    };
+
+    syncUser();
+  }, [firebaseUser, firebaseLoading, firestore]);
 
   useEffect(() => {
     if (loading) return;
@@ -67,23 +76,43 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     }
   }, [appUser, loading, pathname, router]);
 
-  const login = (role: 'agente' | 'supervisor') => {
+  const login = async (role: 'agente' | 'supervisor') => {
+    if (!auth || !firestore) return;
     setLoading(true);
-    const userToLogin = mockUsers[role];
-    setAppUser(userToLogin);
     localStorage.setItem('userRole', role);
-    if (role === 'supervisor') {
-      router.push('/admin');
-    } else {
-      router.push('/');
+
+    try {
+        const userCredential = await signInAnonymously(auth);
+        const user = userCredential.user;
+        const userDocRef = doc(firestore, "usuarios", user.uid);
+
+        const newUser: AppUsuario = {
+            uid: user.uid,
+            email: user.email || `${role}@claro.com.br`,
+            role: role,
+        };
+
+        await setDoc(userDocRef, newUser);
+        setAppUser(newUser);
+        
+        if (role === 'supervisor') {
+            router.push('/admin');
+        } else {
+            router.push('/');
+        }
+    } catch (error) {
+        console.error("Login failed:", error);
+        localStorage.removeItem('userRole');
+    } finally {
+        setLoading(false);
     }
-    setLoading(false);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (!auth) return;
+    await auth.signOut();
     setAppUser(null);
     localStorage.removeItem('userRole');
-    // Aqui também deveria ter a lógica de logout do Firebase
     router.push('/login');
   };
 
@@ -96,13 +125,9 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
   );
 }
 
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  return (
-    <FirebaseClientProvider>
-      <AuthProviderContent>{children}</AuthProviderContent>
-    </FirebaseClientProvider>
-  )
+  // FirebaseClientProvider is already in the root layout, no need to wrap again.
+  return <AuthProviderContent>{children}</AuthProviderContent>;
 }
 
 export function useAuth() {
