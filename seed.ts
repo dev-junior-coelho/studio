@@ -114,7 +114,8 @@ const produtosParaCadastrar = [
     nome: "Claro Pós 60GB (Multi)",
     precoMensal: 59.90,
     beneficios: ["25GB (plano) + 25GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "0 dependentes", "ChatGPT Plus (4 Meses)"],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
   {
     regiaoId: "nacional",
@@ -122,7 +123,8 @@ const produtosParaCadastrar = [
     nome: "Claro Pós 110GB (Multi)",
     precoMensal: 119.90,
     beneficios: ["50GB (plano) + 50GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "0 dependentes", "Passaporte Américas", "ChatGPT Plus (4 Meses)"],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
   {
     regiaoId: "nacional",
@@ -130,7 +132,8 @@ const produtosParaCadastrar = [
     nome: "Claro Pós 210GB (Multi)",
     precoMensal: 169.90,
     beneficios: ["100GB (plano) + 100GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "1 dependente grátis", "ChatGPT Plus (4 Meses)"],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
   {
     regiaoId: "nacional",
@@ -138,7 +141,8 @@ const produtosParaCadastrar = [
     nome: "Claro Pós 310GB (Multi)",
     precoMensal: 219.90,
     beneficios: ["150GB (plano) + 150GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "2 dependentes grátis", "Passaporte Américas", "ChatGPT Plus (4 Meses)"],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
   {
     regiaoId: "nacional",
@@ -146,7 +150,8 @@ const produtosParaCadastrar = [
     nome: "Claro Pós 610GB (Multi)",
     precoMensal: 319.90,
     beneficios: ["300GB (plano) + 300GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "3 dependentes grátis", "Passaporte Mundo", "ChatGPT Plus (4 Meses)"],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
 
   // --- PRODUTOS MÓVEIS (CONTROLE - MULTI) ---
@@ -156,7 +161,8 @@ const produtosParaCadastrar = [
     nome: "Claro Controle 30GB (Multi)",
     precoMensal: 44.90,
     beneficios: ["20GB (plano) + 5GB (redes) + 5GB (bônus)", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
   {
     regiaoId: "nacional",
@@ -164,7 +170,8 @@ const produtosParaCadastrar = [
     nome: "Claro Controle 35GB (Multi)",
     precoMensal: 69.90,
     beneficios: ["25GB (plano) + 5GB (redes) + 5GB (bônus)", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
   {
     regiaoId: "nacional",
@@ -172,7 +179,8 @@ const produtosParaCadastrar = [
     nome: "Claro Controle 35GB Gamer (Multi)",
     precoMensal: 99.90,
     beneficios: ["25GB (plano) + 5GB (redes) + 5GB (bônus)", "Geforce NOW", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
 
   // --- PRODUTOS BANDA LARGA (Separados por Região) ---
@@ -180,58 +188,52 @@ const produtosParaCadastrar = [
   {
     regiaoId: "padrao",
     tipo: "Banda Larga",
-    nome: "BL 350 Mega",
-    precoMensal: 79.90, // Preço COM TV OU MÓVEL
-    precoMensal_single: 99.90, // Preço COM FONE OU APP
-    beneficios: ["Globoplay"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
-    regiaoId: "padrao",
-    tipo: "Banda Larga",
-    nome: "BL 600 Mega",
+    nome: "BL 350 Mega (Padrão)",
     precoMensal: 99.90,
-    precoMensal_single: 119.90,
     beneficios: ["Globoplay"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Preço COM FONE OU APP. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
     regiaoId: "padrao",
     tipo: "Banda Larga",
-    nome: "BL 750 Mega",
-    precoMensal: 129.90,
-    precoMensal_single: 149.90,
+    nome: "BL 600 Mega (Padrão)",
+    precoMensal: 119.90,
     beneficios: ["Globoplay"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Preço COM FONE OU APP. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+  },
+  {
+    regiaoId: "padrao",
+    tipo: "Banda Larga",
+    nome: "BL 750 Mega (Padrão)",
+    precoMensal: 149.90,
+    beneficios: ["Globoplay"],
+    observacoes: "Preço COM FONE OU APP. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   
   // ESPECIAL (p. 19)
   {
     regiaoId: "especial",
     tipo: "Banda Larga",
-    nome: "BL 350 Mega",
-    precoMensal: 79.90,
-    precoMensal_single: 99.90,
-    beneficios: ["Globoplay"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
-    regiaoId: "especial",
-    tipo: "Banda Larga",
-    nome: "BL 600 Mega",
+    nome: "BL 350 Mega (Especial)",
     precoMensal: 99.90,
-    precoMensal_single: 119.90,
     beneficios: ["Globoplay"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Preço COM FONE OU APP. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
     regiaoId: "especial",
     tipo: "Banda Larga",
-    nome: "BL 750 Mega",
-    precoMensal: 129.90,
-    precoMensal_single: 149.90,
+    nome: "BL 600 Mega (Especial)",
+    precoMensal: 119.90,
     beneficios: ["Globoplay"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Preço COM FONE OU APP. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+  },
+  {
+    regiaoId: "especial",
+    tipo: "Banda Larga",
+    nome: "BL 750 Mega (Especial)",
+    precoMensal: 149.90,
+    beneficios: ["Globoplay"],
+    observacoes: "Preço COM FONE OU APP. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // ESPECIAL COM PROMO 6M (p. 20)
@@ -239,39 +241,33 @@ const produtosParaCadastrar = [
     regiaoId: "especial-promo-6m",
     tipo: "Banda Larga",
     nome: "BL 600 Mega (Promo 6M)",
-    precoMensal: 49.90,
-    precoMensal_single: 119.90, // Promoção parece ser só para combo
+    precoMensal: 119.90,
     beneficios: ["Globoplay"],
-    observacoes: "Preço COM MÓVEL por 6 meses, após R$ 79,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Preço COM MÓVEL por 6 meses é R$ 49,90, após R$ 79,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
-  
-  // ... (Repetir para TODAS as regiões. Vou focar na MED-02 que é a sua) ...
   
   // MERCADOS EM DESENVOLVIMENTO 02 (p. 28) - (Sua Região, Feira de Santana)
   {
     regiaoId: "med-02",
     tipo: "Banda Larga",
-    nome: "BL 350 Mega",
-    precoMensal: 74.90,
-    precoMensal_single: 84.90,
+    nome: "BL 350 Mega (MED-02)",
+    precoMensal: 84.90,
     beneficios: ["Globoplay"],
     observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
     regiaoId: "med-02",
     tipo: "Banda Larga",
-    nome: "BL 600 Mega (Promo 6M)",
-    precoMensal: 54.90,
-    precoMensal_single: 64.90,
+    nome: "BL 600 Mega (Promo 6M | MED-02)",
+    precoMensal: 64.90,
     beneficios: ["Globoplay"],
-    observacoes: "Preço por 6 meses, após R$ 84,90 (combo) ou R$ 104,90 (single). Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Preço por 6 meses, após R$ 104,90 (single). Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
     regiaoId: "med-02",
     tipo: "Banda Larga",
-    nome: "BL 750 Mega",
+    nome: "BL 750 Mega (MED-02)",
     precoMensal: 134.90,
-    precoMensal_single: 134.90, // Preço parece ser o mesmo
     beneficios: ["Globoplay"],
     observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
@@ -284,7 +280,8 @@ const produtosParaCadastrar = [
     nome: "Claro TV+ Box Cabo (Combo BL+Móvel)",
     precoMensal: 124.90,
     beneficios: ["Netflix (Anúncios)", "HBO Max (Anúncios)", "Apple TV+", "Globoplay Premium", "Disney+ (Anúncios)", "Amazon Prime"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
   {
     regiaoId: "padrao", // Cidades com CABO/FIBRA
@@ -292,7 +289,8 @@ const produtosParaCadastrar = [
     nome: "Claro TV+ Soundbox Cabo (Combo BL+Móvel)",
     precoMensal: 154.90,
     beneficios: ["Netflix (Anúncios)", "HBO Max (Anúncios)", "Apple TV+", "Globoplay Premium", "Disney+ (Anúncios)", "Amazon Prime"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
   {
     regiaoId: "padrao", // Cidades com CABO/FIBRA
@@ -300,7 +298,8 @@ const produtosParaCadastrar = [
     nome: "Claro TV+ Box (Streaming) (Combo BL+Móvel)",
     precoMensal: 124.90,
     beneficios: ["Netflix (Anúncios)", "HBO Max (Anúncios)", "Apple TV+", "Globoplay Premium", "Disney+ (Anúncios)", "Amazon Prime"],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital.",
+    fidelidade: "12 meses"
   },
 
   // --- PRODUTOS OPCIONAIS (UPSELL - PDF 2, p. 47) ---
@@ -310,7 +309,8 @@ const produtosParaCadastrar = [
     nome: "Netflix Padrão (Avulso)",
     precoMensal: 44.90,
     beneficios: ["Netflix sem anúncios, 2 telas"],
-    observacoes: ""
+    observacoes: "",
+    fidelidade: "Sem fidelidade"
   },
   {
     regiaoId: "nacional",
@@ -318,7 +318,8 @@ const produtosParaCadastrar = [
     nome: "Netflix Premium (Avulso)",
     precoMensal: 59.90,
     beneficios: ["Netflix sem anúncios, 4 telas, 4K"],
-    observacoes: ""
+    observacoes: "",
+    fidelidade: "Sem fidelidade"
   },
   {
     regiaoId: "nacional",
@@ -326,7 +327,8 @@ const produtosParaCadastrar = [
     nome: "Max Mensal (Avulso)",
     precoMensal: 39.90,
     beneficios: ["Acesso ao catálogo HBO Max sem anúncios"],
-    observacoes: ""
+    observacoes: "",
+    fidelidade: "Sem fidelidade"
   },
   {
     regiaoId: "nacional",
@@ -334,7 +336,8 @@ const produtosParaCadastrar = [
     nome: "Disney+ Padrão Mensal (Avulso)",
     precoMensal: 46.90,
     beneficios: ["Acesso ao catálogo Disney+"],
-    observacoes: ""
+    observacoes: "",
+    fidelidade: "Sem fidelidade"
   },
   {
     regiaoId: "nacional",
@@ -342,7 +345,8 @@ const produtosParaCadastrar = [
     nome: "Premiere Futebol Mensal (Avulso)",
     precoMensal: 59.90,
     beneficios: ["Acesso aos jogos do Premiere"],
-    observacoes: ""
+    observacoes: "",
+    fidelidade: "Sem fidelidade"
   },
   {
     regiaoId: "nacional",
@@ -350,7 +354,8 @@ const produtosParaCadastrar = [
     nome: "Combate HD Mensal (Avulso)",
     precoMensal: 34.90,
     beneficios: ["Acesso ao canal Combate"],
-    observacoes: ""
+    observacoes: "",
+    fidelidade: "Sem fidelidade"
   },
   {
     regiaoId: "nacional",
@@ -358,7 +363,8 @@ const produtosParaCadastrar = [
     nome: "Extensor Wi-Fi Mesh (Comodato)",
     precoMensal: 30.00,
     beneficios: ["Kit com 2 extensores para melhorar o sinal"],
-    observacoes: "Fidelidade de 12 meses."
+    observacoes: "Fidelidade de 12 meses.",
+    fidelidade: "12 meses"
   },
 ];
 
@@ -397,7 +403,9 @@ async function seedDatabase() {
     produtosParaCadastrar.forEach((produto) => {
       // Cria uma referência de documento automática (ID aleatório)
       const produtoRef = doc(collection(db, 'produtos'));
-      produtosBatch.set(produtoRef, produto);
+      // Remove a propriedade `id` antes de salvar, se ela existir.
+      const { id, ...dataToSave } = produto as any;
+      produtosBatch.set(produtoRef, dataToSave);
     });
 
     await produtosBatch.commit();
@@ -412,5 +420,3 @@ async function seedDatabase() {
 
 // Roda a função
 seedDatabase();
-
-    
