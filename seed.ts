@@ -1,10 +1,10 @@
 
 // seed.ts
 // Script para popular (semear) o banco de dados do Firestore com os produtos da Claro.
-// Rode este script APENAS UMA VEZ.
+// Rode este script para garantir que os dados mais recentes estejam no banco de dados.
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, writeBatch, doc } from 'firebase/firestore';
+import { getFirestore, writeBatch, doc, collection, getDocs, deleteDoc } from 'firebase/firestore';
 
 // =============================================================================
 // 1. CONFIGURE O SEU FIREBASE AQUI
@@ -112,6 +112,7 @@ const regioesParaCadastrar = [
 const produtosParaCadastrar = [
   // --- PRODUTOS MÓVEIS (PÓS - MULTI) ---
   {
+    id: "pos-25gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Pós 25GB (Multi)",
@@ -121,6 +122,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "pos-50gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Pós 50GB (Multi)",
@@ -130,6 +132,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "pos-100gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Pós 100GB (Multi)",
@@ -139,6 +142,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "pos-150gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Pós 150GB (Multi)",
@@ -148,6 +152,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "pos-300gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Pós 300GB (Multi)",
@@ -159,6 +164,7 @@ const produtosParaCadastrar = [
 
   // --- PRODUTOS MÓVEIS (CONTROLE - MULTI) ---
   {
+    id: "controle-20gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Controle 20GB (Multi)",
@@ -168,6 +174,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "controle-25gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Controle 25GB (Multi)",
@@ -177,6 +184,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "controle-25gb-gamer",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Controle 25GB Gamer (Multi)",
@@ -189,6 +197,7 @@ const produtosParaCadastrar = [
   // --- PRODUTOS BANDA LARGA (Separados por Região) ---
   // PADRÃO (p. 18)
   {
+    id: "bl-padrao-350",
     regiaoId: "padrao",
     tipo: "Banda Larga",
     nome: "BL 350 Mega",
@@ -198,6 +207,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "bl-padrao-600",
     regiaoId: "padrao",
     tipo: "Banda Larga",
     nome: "BL 600 Mega",
@@ -207,6 +217,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "bl-padrao-750",
     regiaoId: "padrao",
     tipo: "Banda Larga",
     nome: "BL 750 Mega",
@@ -218,6 +229,7 @@ const produtosParaCadastrar = [
   
   // ESPECIAL (p. 19)
   {
+    id: "bl-especial-350",
     regiaoId: "especial",
     tipo: "Banda Larga",
     nome: "BL 350 Mega",
@@ -227,6 +239,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "bl-especial-600",
     regiaoId: "especial",
     tipo: "Banda Larga",
     nome: "BL 600 Mega",
@@ -236,6 +249,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "bl-especial-750",
     regiaoId: "especial",
     tipo: "Banda Larga",
     nome: "BL 750 Mega",
@@ -247,6 +261,7 @@ const produtosParaCadastrar = [
 
   // ESPECIAL COM PROMO 6M (p. 20)
   {
+    id: "bl-especial-promo-6m-600",
     regiaoId: "especial-promo-6m",
     tipo: "Banda Larga",
     nome: "BL 600 Mega (Promo 6M)",
@@ -258,6 +273,7 @@ const produtosParaCadastrar = [
   
   // MERCADOS EM DESENVOLVIMENTO 02 (p. 28)
   {
+    id: "bl-med02-350",
     regiaoId: "med-02",
     tipo: "Banda Larga",
     nome: "BL 350 Mega",
@@ -267,6 +283,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "bl-med02-600",
     regiaoId: "med-02",
     tipo: "Banda Larga",
     nome: "BL 600 Mega (Promo 6M)",
@@ -276,6 +293,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "bl-med02-750",
     regiaoId: "med-02",
     tipo: "Banda Larga",
     nome: "BL 750 Mega",
@@ -287,6 +305,7 @@ const produtosParaCadastrar = [
 
   // --- PRODUTOS DE TV (Extraído do PDF 1, p. 3 e 12) ---
   {
+    id: "tv-box",
     regiaoId: "nacional", 
     tipo: "TV",
     nome: "Claro TV+ Box (Streaming)",
@@ -296,6 +315,7 @@ const produtosParaCadastrar = [
     fidelidade: "12 meses"
   },
   {
+    id: "tv-soundbox",
     regiaoId: "nacional", 
     tipo: "TV",
     nome: "Claro TV+ Soundbox Cabo",
@@ -307,6 +327,7 @@ const produtosParaCadastrar = [
 
   // --- PRODUTOS OPCIONAIS (UPSELL - PDF 2, p. 47) ---
   {
+    id: "op-netflix-padrao",
     regiaoId: "nacional",
     tipo: "Opcional",
     nome: "Netflix Padrão (Avulso)",
@@ -316,6 +337,7 @@ const produtosParaCadastrar = [
     fidelidade: "Sem fidelidade"
   },
   {
+    id: "op-netflix-premium",
     regiaoId: "nacional",
     tipo: "Opcional",
     nome: "Netflix Premium (Avulso)",
@@ -325,6 +347,7 @@ const produtosParaCadastrar = [
     fidelidade: "Sem fidelidade"
   },
   {
+    id: "op-max",
     regiaoId: "nacional",
     tipo: "Opcional",
     nome: "Max Mensal (Avulso)",
@@ -334,6 +357,7 @@ const produtosParaCadastrar = [
     fidelidade: "Sem fidelidade"
   },
   {
+    id: "op-disney-plus",
     regiaoId: "nacional",
     tipo: "Opcional",
     nome: "Disney+ Padrão Mensal (Avulso)",
@@ -343,6 +367,7 @@ const produtosParaCadastrar = [
     fidelidade: "Sem fidelidade"
   },
   {
+    id: "op-premiere",
     regiaoId: "nacional",
     tipo: "Opcional",
     nome: "Premiere Futebol Mensal (Avulso)",
@@ -352,6 +377,7 @@ const produtosParaCadastrar = [
     fidelidade: "Sem fidelidade"
   },
   {
+    id: "op-combate",
     regiaoId: "nacional",
     tipo: "Opcional",
     nome: "Combate HD Mensal (Avulso)",
@@ -361,12 +387,14 @@ const produtosParaCadastrar = [
     fidelidade: "Sem fidelidade"
   },
   {
+    id: "op-extensor-mesh",
     regiaoId: "nacional",
     tipo: "Opcional",
     nome: "Extensor Wi-Fi Mesh (Comodato)",
     precoMensal: 30.00,
     beneficios: ["Kit com 2 extensores para melhorar o sinal"],
-    observacoes: "Fidelidade de 12 meses."
+    observacoes: "Fidelidade de 12 meses.",
+    fidelidade: "12 meses"
   },
 ];
 
@@ -379,15 +407,32 @@ const produtosParaCadastrar = [
  * Função principal para semear o banco de dados.
  */
 async function seedDatabase() {
-  console.log('Iniciando o script de semeadura (V3 - FINAL)...');
+  console.log('Iniciando o script de semeadura (V4 - Sobrescrita)...');
 
   try {
-    // --- UPLOAD DAS REGIÕES ---
+    const produtosCollectionRef = collection(db, 'produtos');
+    const regioesCollectionRef = collection(db, 'regioes');
+    
+    // Opcional: Limpar coleções antes de popular para remover itens antigos.
+    console.log('Limpando coleções existentes para garantir consistência...');
+    const produtosSnapshot = await getDocs(produtosCollectionRef);
+    const deleteProdutosBatch = writeBatch(db);
+    produtosSnapshot.docs.forEach(doc => deleteProdutosBatch.delete(doc.ref));
+    await deleteProdutosBatch.commit();
+    console.log('✅ Coleção "produtos" limpa.');
+
+    const regioesSnapshot = await getDocs(regioesCollectionRef);
+    const deleteRegioesBatch = writeBatch(db);
+    regioesSnapshot.docs.forEach(doc => deleteRegioesBatch.delete(doc.ref));
+    await deleteRegioesBatch.commit();
+    console.log('✅ Coleção "regioes" limpa.');
+    
+    // --- UPLOAD DAS REGIÕES com ID fixo ---
     console.log(`Iniciando upload de ${regioesParaCadastrar.length} regiões...`);
     const regioesBatch = writeBatch(db);
     
     regioesParaCadastrar.forEach((regiao) => {
-      const regiaoRef = doc(db, 'regioes', regiao.id);
+      const regiaoRef = doc(db, 'regioes', regiao.id); // Usa o ID definido
       regioesBatch.set(regiaoRef, {
         nome: regiao.nome,
         cidades: regiao.cidades
@@ -397,21 +442,25 @@ async function seedDatabase() {
     await regioesBatch.commit();
     console.log('✅ Regiões cadastradas com sucesso!');
 
-    // --- UPLOAD DOS PRODUTOS ---
+    // --- UPLOAD DOS PRODUTOS com ID fixo ---
     console.log(`Iniciando upload de ${produtosParaCadastrar.length} produtos...`);
     const produtosBatch = writeBatch(db);
 
     produtosParaCadastrar.forEach((produto) => {
-      // Adiciona um ID de fidelidade ausente para consistência
+      // Garante que a fidelidade exista
       if (!produto.fidelidade) {
+        // @ts-ignore
         produto.fidelidade = 'Não informado';
       }
-      const produtoRef = doc(collection(db, 'produtos'));
-      produtosBatch.set(produtoRef, produto);
+      // @ts-ignore
+      const produtoRef = doc(db, 'produtos', produto.id); // Usa o ID definido no objeto
+      // @ts-ignore
+      const { id, ...data } = produto; // Remove o ID do corpo do documento
+      produtosBatch.set(produtoRef, data);
     });
 
     await produtosBatch.commit();
-    console.log('✅ Produtos cadastrados com sucesso!');
+    console.log('✅ Produtos cadastrados/atualizados com sucesso!');
     
     console.log('🚀 Semeadura do banco de dados concluída!');
 
