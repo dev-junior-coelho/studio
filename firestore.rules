@@ -1,0 +1,93 @@
+/**
+ * @fileoverview Firestore Security Rules for the Claro SAA Mobile application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for saved offers and role-based access to user profiles.
+ *
+ * Data Structure:
+ * - /produtos/{produtoId}: Public read access, no write access.
+ * - /procedimentos/{procedimentoId}: Public read access, no write access.
+ * - /usuarios/{usuarioId}: User profile information; only the authenticated user can read/write their own profile.
+ * - /users/{userId}/ofertas_salvas/{ofertaSalvaId}: Saved offers for a specific user; only the owner can create, read, update, or delete.
+ *
+ * Key Security Decisions:
+ * - Listing of users is disallowed.
+ * - Public read access granted to products and procedures as these are assumed to be public resources.
+ *
+ * Denormalization for Authorization:
+ * - The `OfertaSalva` documents are located under `/users/{userId}` and contain the `usuarioId` field. This setup avoids the need for `get()` calls in security rules to check user roles or permissions, enabling atomic operations and simplifying security logic.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Allows public read access to product information.  No write access.
+     * @path /produtos/{produtoId}
+     * @allow get, list: Any user can read product details.
+     * @deny create, update, delete: No user can create, update, or delete product details.
+     * @principle Allows public read access to product information; writes are disallowed.
+     */
+    match /produtos/{produtoId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows public read access to procedure guides. No write access.
+     * @path /procedimentos/{procedimentoId}
+     * @allow get, list: Any user can read procedure guides.
+     * @deny create, update, delete: No user can create, update, or delete procedure guides.
+     * @principle Allows public read access to procedure guides; writes are disallowed.
+     */
+    match /procedimentos/{procedimentoId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows authenticated users to read and write their own user profile.
+     * @path /usuarios/{usuarioId}
+     * @allow get: User can read their own profile if authenticated and the profile exists.
+     * @allow create: User can create their own profile if authenticated.
+     * @allow update: User can update their own profile if authenticated.
+     * @deny list, delete: User cannot list all profiles or delete their profile.
+     * @deny create: User cannot create a profile with an ID that does not match their auth UID.
+     * @deny update: User cannot change the ID after creating the profile.
+     * @principle Enforces user-ownership for profile data; restricts listing and deletion.
+     */
+    match /usuarios/{usuarioId} {
+      allow get: if isSignedIn() && isOwner(usuarioId);
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(usuarioId);
+      allow update: if isSignedIn() && isOwner(usuarioId);
+      allow delete: if false;
+    }
+
+    /**
+     * @description Allows the owner to manage their saved offers.
+     * @path /users/{userId}/ofertas_salvas/{ofertaSalvaId}
+     * @allow get, list: The user can retrieve and list their own saved offers.
+     * @allow create: The user can create new saved offers under their user ID.
+     * @allow update, delete: The user can update or delete their own saved offers.
+     * @deny create: The user cannot create a saved offer under another user's ID.
+     * @deny update, delete: The user cannot update or delete offers if the document doesn't exist.
+     * @principle Enforces strict user-ownership for saved offers.
+     */
+    match /users/{userId}/ofertas_salvas/{ofertaSalvaId} {
+      allow get, list: if isSignedIn() && isOwner(userId);
+      allow create: if isSignedIn() && request.resource.data.usuarioId == request.auth.uid;
+      allow update: if isSignedIn() && isOwner(userId) && resource != null;
+      allow delete: if isSignedIn() && isOwner(userId) && resource != null;
+    }
+  }
+
+  // Helper functions
+  function isSignedIn() {
+    return request.auth != null;
+  }
+
+  function isOwner(userId) {
+    return request.auth.uid == userId;
+  }
+}

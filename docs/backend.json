@@ -1,0 +1,234 @@
+{
+  "entities": {
+    "Produto": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Produto",
+      "type": "object",
+      "description": "Represents a product offered by Claro, such as mobile plans, broadband, TV, or fixed line services.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Product entity."
+        },
+        "nome": {
+          "type": "string",
+          "description": "The name of the product (e.g., 'Claro Pós 50GB')."
+        },
+        "tipo": {
+          "type": "string",
+          "description": "The type of product (e.g., 'Móvel', 'Banda Larga', 'TV', 'Fixo')."
+        },
+        "precoMensal": {
+          "type": "number",
+          "description": "The monthly price of the product."
+        },
+        "beneficios": {
+          "type": "array",
+          "description": "An array of benefits included with the product (e.g., ['WhatsApp ilimitado', 'Globoplay']).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fidelidade": {
+          "type": "string",
+          "description": "The contract length/loyalty period associated with the product (e.g., '12 meses')."
+        },
+        "observacoes": {
+          "type": "string",
+          "description": "Additional notes or observations about the product."
+        }
+      },
+      "required": [
+        "id",
+        "nome",
+        "tipo",
+        "precoMensal",
+        "beneficios",
+        "fidelidade",
+        "observacoes"
+      ]
+    },
+    "Procedimento": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Procedimento",
+      "type": "object",
+      "description": "Represents a step-by-step procedure or guide for call center agents.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Procedimento entity."
+        },
+        "titulo": {
+          "type": "string",
+          "description": "The title of the procedure (e.g., 'Como contestar fatura')."
+        },
+        "categoria": {
+          "type": "string",
+          "description": "The category of the procedure (e.g., 'Financeiro', 'Técnico', 'Cadastro')."
+        },
+        "tags": {
+          "type": "array",
+          "description": "An array of tags associated with the procedure (e.g., ['fatura', 'cobrança', 'erro']).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conteudo": {
+          "type": "string",
+          "description": "The detailed content or steps of the procedure."
+        }
+      },
+      "required": [
+        "id",
+        "titulo",
+        "categoria",
+        "tags",
+        "conteudo"
+      ]
+    },
+    "Usuario": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Usuario",
+      "type": "object",
+      "description": "Represents a user of the application, storing their role and authentication information.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Usuario entity. This is the Firebase Auth UID."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user.",
+          "format": "email"
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user ('agente' or 'supervisor')."
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "role"
+      ]
+    },
+    "OfertaSalva": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OfertaSalva",
+      "type": "object",
+      "description": "Represents a saved offer, including the products, user information, status, and timestamp.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the OfertaSalva entity."
+        },
+        "usuarioId": {
+          "type": "string",
+          "description": "Reference to Usuario. The ID of the user who created the offer. (Relationship: Usuario 1:N OfertaSalva)"
+        },
+        "produtoIds": {
+          "type": "array",
+          "description": "References to Produtos. The IDs of the products included in the offer. (Relationship: Produto N:N OfertaSalva)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the offer ('Aceitou' or 'Recusou')."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The timestamp of when the offer was saved.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "usuarioId",
+        "produtoIds",
+        "status",
+        "timestamp"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/produtos/{produtoId}",
+        "definition": {
+          "entityName": "Produto",
+          "schema": {
+            "$ref": "#/backend/entities/Produto"
+          },
+          "description": "Stores product information, including name, type, price, benefits, loyalty period, and observations.",
+          "params": [
+            {
+              "name": "produtoId",
+              "description": "Unique identifier for the product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/procedimentos/{procedimentoId}",
+        "definition": {
+          "entityName": "Procedimento",
+          "schema": {
+            "$ref": "#/backend/entities/Procedimento"
+          },
+          "description": "Stores step-by-step procedures or guides for call center agents, categorized by title, category, tags, and content.",
+          "params": [
+            {
+              "name": "procedimentoId",
+              "description": "Unique identifier for the procedure."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/usuarios/{usuarioId}",
+        "definition": {
+          "entityName": "Usuario",
+          "schema": {
+            "$ref": "#/backend/entities/Usuario"
+          },
+          "description": "Stores user information, including email and role (agente or supervisor). Used for role-based access control.",
+          "params": [
+            {
+              "name": "usuarioId",
+              "description": "Unique identifier for the user. This is the Firebase Auth UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/ofertas_salvas/{ofertaSalvaId}",
+        "definition": {
+          "entityName": "OfertaSalva",
+          "schema": {
+            "$ref": "#/backend/entities/OfertaSalva"
+          },
+          "description": "Stores saved offers, including product IDs, user information, status, and timestamp.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The ID of the user who saved the offer."
+            },
+            {
+              "name": "ofertaSalvaId",
+              "description": "Unique identifier for the saved offer."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support the Claro SAA Mobile application, focusing on a secure, scalable, and easily debuggable data architecture. The structure is built around the principles of Authorization Independence, Clarity of Intent, DBAC (Database-Based Access Control), QAPs (Queries are not Filters), and Invariants.\n\n**Authorization Independence:**\nTo ensure authorization independence, the `OfertaSalva` collection includes the `usuarioId`. This design avoids the need for `get()` calls in security rules to check user roles or permissions from other collections, enabling atomic operations and simplifying security logic.\n\n**Structural Segregation:**\nThe structure segregates user-specific data (`ofertas_salvas`) under the `/users/{userId}` path, providing a clear and secure way to manage user-owned data. The roles are stored in `/usuarios` collection, with user ID as document ID, instead of custom claims.\n\n**Access Modeling:**\nThe structure uses path-based ownership for user-specific data, such as `ofertas_salvas`, located under `/users/{userId}/ofertas_salvas/{ofertaSalvaId}`. This pattern simplifies security rules, making them more readable and maintainable. The structure also implements DBAC via the `/usuarios` collection, where user roles are explicitly stored. The existence of a document in the `usuarios` collection proves the user's `role`.\n\n**QAPs (Queries are not Filters):**\nBecause the authorization data is stored directly in the user document, and ownership is path-based, list operations can be secured without the need for filtering data based on user roles. Security rules can directly enforce that only the owner can access their own `ofertas_salvas`. Specifically:\n\n*   `usuarios`: Only accessible to authenticated users, ensuring roles can be read. No listing is needed.\n*   `ofertas_salvas`: Uses path-based ownership. Listing is only allowed within the scope of `/users/{userId}/ofertas_salvas`.  Rules ensure the `request.auth.uid` matches the `{userId}` path parameter.\n\nThis structure effectively addresses the core design principles, providing a clear, secure, and scalable foundation for the Claro SAA Mobile application."
+  }
+}
