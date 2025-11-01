@@ -108,10 +108,8 @@ export default function MontadorPortfolioPage() {
 
   const filteredProducts = useMemo(() => {
     if (!productsData) return [];
-    // Filtra produtos que não têm preço definido
-    const withPrice = productsData.filter(p => typeof (p.precoMensal ?? (p as any).preco_mensal) === 'number');
-    if (selectedType === 'Todos') return withPrice;
-    return withPrice.filter(p => p.tipo === selectedType);
+    if (selectedType === 'Todos') return productsData;
+    return productsData.filter(p => p.tipo === selectedType);
   }, [productsData, selectedType]);
 
   const handleCityChange = (city: string) => {
