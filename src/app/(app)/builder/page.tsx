@@ -6,13 +6,17 @@ import { useOffer } from '@/contexts/offer-context';
 import type { ProductType, Produto, Regiao } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Loader2, XCircle } from 'lucide-react';
+import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useCollection } from '@/firebase/firestore/use-collection';
 import { collection, query, where, CollectionReference } from 'firebase/firestore';
 import { useFirebase, useMemoFirebase } from '@/firebase/provider';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
 
 const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
 const typeDisplayNames: Record<ProductType, string> = {
@@ -90,6 +94,7 @@ function ProductCard({ product }: { product: Produto }) {
 
 export default function MontadorPortfolioPage() {
   const [selectedType, setSelectedType] = useState<ProductType | 'Todos'>('Todos');
+  const [isComboboxOpen, setComboboxOpen] = useState(false);
   const { selectedCity, setSelectedCity, clearOffer } = useOffer();
   
   const { firestore } = useFirebase();
@@ -102,14 +107,14 @@ export default function MontadorPortfolioPage() {
   const allCities = useMemo(() => {
     if (!regioes) return [];
     return regioes
-      .flatMap(regiao => regiao.cidades.map(cidade => ({ name: cidade, regiaoId: regiao.id })))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .flatMap(regiao => regiao.cidades.map(cidade => ({ value: cidade.toLowerCase(), label: cidade, regiaoId: regiao.id })))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [regioes]);
 
   // 3. Find the selected region ID based on the selected city
   const selectedRegiaoId = useMemo(() => {
     if (!selectedCity || !allCities) return null;
-    return allCities.find(c => c.name === selectedCity)?.regiaoId ?? null;
+    return allCities.find(c => c.label === selectedCity)?.regiaoId ?? null;
   }, [selectedCity, allCities]);
 
   // 4. Fetch products based on the selected region ID and national products
@@ -140,8 +145,8 @@ export default function MontadorPortfolioPage() {
 
   }, [productsData, selectedType]);
 
-  const handleCityChange = (city: string) => {
-    setSelectedCity(city);
+  const handleCityChange = (cityLabel: string) => {
+    setSelectedCity(cityLabel);
     setSelectedType('Todos'); // Reset filter when city changes
   }
   
@@ -163,18 +168,50 @@ export default function MontadorPortfolioPage() {
             <span>Carregando cidades...</span>
           </div>
         ) : (
-          <Select onValueChange={handleCityChange} value={selectedCity ?? ""}>
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione uma cidade para ver os produtos" />
-            </SelectTrigger>
-            <SelectContent>
-              {allCities.map(city => (
-                <SelectItem key={city.name} value={city.name}>
-                  {city.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={isComboboxOpen} onOpenChange={setComboboxOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={isComboboxOpen}
+                className="w-full justify-between"
+              >
+                {selectedCity || "Selecione uma cidade..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+              <Command>
+                <CommandInput placeholder="Buscar cidade..." />
+                <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
+                <CommandGroup>
+                  <ScrollArea className="h-72">
+                    {allCities.map((city) => (
+                      <CommandItem
+                        key={city.value}
+                        value={city.value}
+                        onSelect={(currentValue) => {
+                          const selected = allCities.find(c => c.value === currentValue);
+                          if (selected) {
+                            handleCityChange(selected.label);
+                          }
+                          setComboboxOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedCity === city.label ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {city.label}
+                      </CommandItem>
+                    ))}
+                  </ScrollArea>
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
         )}
       </div>
 
