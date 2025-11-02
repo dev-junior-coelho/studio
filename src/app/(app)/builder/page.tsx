@@ -104,17 +104,22 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
   const placeholder = PlaceHolderImages.find(p => p.id === imageMap[product.tipo]);
 
   const getUpsellProduct = (mainProduct: Produto): Produto | undefined => {
-    if (mainProduct.tipo !== 'TV') return undefined;
-
-    let targetPontoAdicionalName: string | undefined;
-    if (mainProduct.nome.includes('Soundbox')) {
-      targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Soundbox';
-    } else if (mainProduct.nome.includes('Box Cabo')) {
-      targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Box Cabo';
-    } else if (mainProduct.nome.includes('Box (Streaming)')) {
-      targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Box (Streaming)';
+    if (mainProduct.tipo !== 'TV' || mainProduct.nome.toLowerCase().includes('app') || mainProduct.nome.toLowerCase().includes('streamings')) {
+        return undefined;
     }
 
+    let targetPontoAdicionalName: string | undefined;
+
+    const lowerCaseName = mainProduct.nome.toLowerCase();
+
+    if (lowerCaseName.includes('soundbox')) {
+        targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Soundbox';
+    } else if (lowerCaseName.includes('box')) {
+        targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Box';
+    } else if (lowerCaseName.includes('hd')) {
+        targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ HD';
+    }
+    
     if (!targetPontoAdicionalName) return undefined;
     
     return allProducts.find(p => p.tipo === 'Opcional' && p.nome.startsWith(targetPontoAdicionalName));
@@ -133,6 +138,9 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
   const handleConfirmUpsell = (quantity: number) => {
     if(upsellProduct){
         addProductWithExtras(product, upsellProduct, quantity);
+    } else {
+        // Fallback for TVs without a specific upsell, just add the main product
+        addProduct(product);
     }
   };
 
@@ -217,7 +225,7 @@ export default function MontadorPortfolioPage() {
     const allCitiesMap = new Map<string, { value: string; label: string; regiaoId: string }>();
 
     regioes.forEach(regiao => {
-        regiao.cidades.forEach(cidade => {
+        (regiao.cidades || []).forEach(cidade => {
             const lowerCaseCidade = cidade.toLowerCase();
             if (!allCitiesMap.has(lowerCaseCidade)) {
                 allCitiesMap.set(lowerCaseCidade, { value: lowerCaseCidade, label: cidade, regiaoId: regiao.id });
@@ -384,6 +392,4 @@ export default function MontadorPortfolioPage() {
     </div>
   );
 }
-    
-
     
