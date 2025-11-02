@@ -619,7 +619,7 @@ const produtosParaCadastrar = [
 function createProductId(produto: any): string {
     const name = produto.nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
     const type = produto.tipo.toLowerCase().replace(/\s/g, '');
-    const region = produto.regiaoId;
+    const region = produto.regiaoId || 'nacional';
     const price = produto.precoMensal || '0';
     return `${region}-${type}-${name}-${price}`;
 }
@@ -631,36 +631,21 @@ async function seedDatabase() {
   console.log('Iniciando o script de semeadura (V9.0 - 100% GRANULAR)...');
 
   try {
-    // --- LIMPEZA DE PRODUTOS ANTIGOS ---
-    console.log('Limpando a coleção de produtos existente...');
-    const produtosCollection = collection(db, 'produtos');
-    const produtosSnapshot = await getDocs(produtosCollection);
-    if (produtosSnapshot.size > 0) {
-      const deleteBatch = writeBatch(db);
-      produtosSnapshot.docs.forEach((doc) => {
-        deleteBatch.delete(doc.ref);
-      });
-      await deleteBatch.commit();
-      console.log(`✅ ${produtosSnapshot.size} produtos antigos foram removidos.`);
-    } else {
-        console.log('✅ Coleção de produtos já estava limpa.');
+    // --- LIMPEZA DE COLEÇÕES ANTIGAS ---
+    console.log('Limpando coleções existentes...');
+    const collectionsToClear = ['produtos', 'regioes'];
+    for (const col of collectionsToClear) {
+        const collectionRef = collection(db, col);
+        const snapshot = await getDocs(collectionRef);
+        if (snapshot.size > 0) {
+            const deleteBatch = writeBatch(db);
+            snapshot.docs.forEach((doc) => deleteBatch.delete(doc.ref));
+            await deleteBatch.commit();
+            console.log(`✅ ${snapshot.size} documentos antigos removidos de "${col}".`);
+        } else {
+            console.log(`✅ Coleção "${col}" já estava limpa.`);
+        }
     }
-    
-    // --- LIMPEZA DE REGIÕES ANTIGAS ---
-    console.log('Limpando a coleção de regiões existente...');
-    const regioesCollection = collection(db, 'regioes');
-    const regioesSnapshot = await getDocs(regioesCollection);
-    if (regioesSnapshot.size > 0) {
-        const deleteRegioesBatch = writeBatch(db);
-        regioesSnapshot.docs.forEach((doc) => {
-            deleteRegioesBatch.delete(doc.ref);
-        });
-        await deleteRegioesBatch.commit();
-        console.log(`✅ ${regioesSnapshot.size} regiões antigas foram removidas.`);
-    } else {
-        console.log('✅ Coleção de regiões já estava limpa.');
-    }
-
 
     // --- UPLOAD DAS REGIÕES ---
     console.log(`Iniciando upload de ${regioesParaCadastrar.length} regiões...`);
@@ -679,7 +664,6 @@ async function seedDatabase() {
 
     // --- UPLOAD DOS PRODUTOS ---
     console.log(`Iniciando upload de ${produtosParaCadastrar.length} produtos...`);
-    // O Firestore limita as operações de batch a 500.
     const CHUNK_SIZE = 499;
     const productChunks = [];
     for (let i = 0; i < produtosParaCadastrar.length; i += CHUNK_SIZE) {
@@ -695,9 +679,9 @@ async function seedDatabase() {
             const produtoId = createProductId(produtoData);
             const dataToSet = {
                 ...produtoData,
-                id: produtoId, // Garante que o ID está no documento
+                id: produtoId,
                 precoMensal: produtoData.precoMensal ?? 0,
-                precoAnual: (produtoData as any).precoAnual || null, // Garante que o campo exista
+                precoAnual: (produtoData as any).precoAnual || null,
                 fidelidade: (produtoData as any).fidelidade || 'Não informado',
                 observacoes: (produtoData as any).observacoes || ''
             };
@@ -719,9 +703,5 @@ async function seedDatabase() {
 
 // Roda a função
 seedDatabase();
-    
-
-
-  
 
     
