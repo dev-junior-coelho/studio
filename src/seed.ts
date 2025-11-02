@@ -562,6 +562,7 @@ const produtosParaCadastrar = [
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Box (Aquisição)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], fidelidade: 'Não informado', observacoes: "Valor de aluguel mensal." },
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ HD (Aquisição)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Decodificador HD adicional"], fidelidade: 'Não informado', observacoes: "Valor de aluguel mensal." },
 
+
   // --- 7. OPCIONAIS (CONECTIVIDADE E GAMING - p.46) ---
   { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], fidelidade: 'Não informado', observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Geek", precoMensal: 9.90, precoAnual: 118.80, beneficios: ["Suporte técnico especializado para dispositivos"], fidelidade: '12 meses', observacoes: "Fidelidade 12 meses. Multa R$ 59,40 proporcional." },
@@ -643,7 +644,7 @@ const produtosParaCadastrar = [
 // 4. O SCRIPT DE UPLOAD (NÃO MEXA AQUI)
 // =============================================================================
 
-function createProductId(produto: Omit<(typeof produtosParaCadastrar)[0], 'id'>): string {
+function createProductId(produto: any): string {
     const name = produto.nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
     const type = produto.tipo.toLowerCase().replace(/\s/g, '');
     const region = produto.regiaoId;
@@ -661,12 +662,31 @@ async function seedDatabase() {
     console.log('Limpando a coleção de produtos existente...');
     const produtosCollection = collection(db, 'produtos');
     const produtosSnapshot = await getDocs(produtosCollection);
-    const deleteBatch = writeBatch(db);
-    produtosSnapshot.docs.forEach((doc) => {
-      deleteBatch.delete(doc.ref);
-    });
-    await deleteBatch.commit();
-    console.log(`✅ ${produtosSnapshot.size} produtos antigos foram removidos.`);
+    if (produtosSnapshot.size > 0) {
+      const deleteBatch = writeBatch(db);
+      produtosSnapshot.docs.forEach((doc) => {
+        deleteBatch.delete(doc.ref);
+      });
+      await deleteBatch.commit();
+      console.log(`✅ ${produtosSnapshot.size} produtos antigos foram removidos.`);
+    } else {
+        console.log('✅ Coleção de produtos já estava limpa.');
+    }
+    
+    // --- LIMPEZA DE REGIÕES ANTIGAS ---
+    console.log('Limpando a coleção de regiões existente...');
+    const regioesCollection = collection(db, 'regioes');
+    const regioesSnapshot = await getDocs(regioesCollection);
+    if (regioesSnapshot.size > 0) {
+        const deleteRegioesBatch = writeBatch(db);
+        regioesSnapshot.docs.forEach((doc) => {
+            deleteRegioesBatch.delete(doc.ref);
+        });
+        await deleteRegioesBatch.commit();
+        console.log(`✅ ${regioesSnapshot.size} regiões antigas foram removidas.`);
+    } else {
+        console.log('✅ Coleção de regiões já estava limpa.');
+    }
 
 
     // --- UPLOAD DAS REGIÕES ---
@@ -699,7 +719,7 @@ async function seedDatabase() {
         const chunk = productChunks[i];
         
         chunk.forEach((produtoData) => {
-            const produtoId = createProductId(produtoData as any);
+            const produtoId = createProductId(produtoData);
             const dataToSet = {
                 ...produtoData,
                 id: produtoId, // Garante que o ID está no documento
