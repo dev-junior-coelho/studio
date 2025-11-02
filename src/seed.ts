@@ -505,17 +505,17 @@ const produtosParaCadastrar = [
   },
   // NOVOS PLANOS HD (RENTABILIZAÇÃO)
   {
-    regiaoId: "nacional", tipo: "TV", nome: "Claro TV+ HD (Upgrade INICIAL HD RET)", precoMensal: 69.90, precoAnual: null,
+    regiaoId: "nacional", tipo: "TV", nome: "Claro TV+ HD (Upgrade INICIAL HD)", precoMensal: 69.90, precoAnual: null,
     beneficios: ["Pacote Inicial HD (Canais Abertos/Cortesia)", "Globoplay Canais Incluso"],
     observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m. Procedimento: INICIAL HD RET ANUNCIO FID"
   },
   {
-    regiaoId: "nacional", tipo: "TV", nome: "Claro TV+ HD (Upgrade INICIAL TELECINE RET)", precoMensal: 79.90, precoAnual: null,
+    regiaoId: "nacional", tipo: "TV", nome: "Claro TV+ HD (Upgrade INICIAL TELECINE)", precoMensal: 79.90, precoAnual: null,
     beneficios: ["Pacote Inicial HD", "Acesso aos canais Telecine", "Globoplay Canais Incluso"],
     observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m. Procedimento: INICIAL HD RET ANUNCIO TELECINE FID"
   },
 
-  // --- 5. Fixo FIXO (PDF 2, p.81) ---
+  // --- 5. Fixo (PDF 2, p.81) ---
   {
     regiaoId: "nacional", tipo: "Fixo", nome: "Fixo Ilimitado Mundo Total (Combo 3P)", precoMensal: 35.00, precoAnual: null,
     beneficios: [
@@ -555,12 +555,12 @@ const produtosParaCadastrar = [
   },
 
   // --- 6. PONTOS ADICIONAIS ---
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox (Aquisição)", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox (Upgrade)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box (Aquisição)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box (Upgrade)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (Aquisição)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Decodificador HD adicional"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (RET)", precoMensal: 10.00, precoAnual: null, beneficios: ["Aluguel de 1 equipamento HD adicional para planos de Rentabilização (RET)."], observacoes: "Valor de aluguel mensal para planos INICIAL HD RET." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Soundbox (Aquisição)", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Soundbox (Upgrade)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Box (Aquisição)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Box (Upgrade)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ HD (Aquisição)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Decodificador HD adicional"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ HD (RET)", precoMensal: 10.00, precoAnual: null, beneficios: ["Aluguel de 1 equipamento HD adicional para planos de Rentabilização (RET)."], observacoes: "Valor de aluguel mensal para planos INICIAL HD RET." },
 
   // --- 7. OPCIONAIS (CONECTIVIDADE E GAMING - p.46) ---
   { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
@@ -700,15 +700,16 @@ async function seedDatabase() {
         
         chunk.forEach((produtoData) => {
             const produtoId = createProductId(produtoData as any);
+            const produtoRef = doc(db, 'produtos', produtoId);
             const dataToSet = {
                 ...produtoData,
                 id: produtoId, // Garante que o ID está no documento
+                precoMensal: produtoData.precoMensal ?? 0,
                 precoAnual: (produtoData as any).precoAnual || null, // Garante que o campo exista
                 fidelidade: (produtoData as any).fidelidade || 'Não informado',
                 observacoes: (produtoData as any).observacoes || ''
             };
-            batch.set(produtoRef, doc(db, 'produtos', produtoId));
-            batch.set(doc(db, 'produtos', produtoId), dataToSet);
+            batch.set(produtoRef, dataToSet);
         });
         
         await batch.commit();
@@ -725,4 +726,7 @@ async function seedDatabase() {
 
 // Roda a função
 seedDatabase();
+    
+
+
     
