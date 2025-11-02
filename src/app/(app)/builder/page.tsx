@@ -109,25 +109,25 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
     }
 
     const lowerCaseName = mainProduct.nome.toLowerCase();
-    const isUpgrade = lowerCaseName.includes('upgrade');
     
-    // Exact match for Soundbox first
+    // Rule for "RET" plans -> R$ 10,00
+    if (lowerCaseName.includes(' ret')) {
+        return allProducts.find(p => p.nome === 'Ponto Adicional - Claro TV+ HD (RET)');
+    }
+    
+    // Rule for Soundbox -> R$ 69,90
     if (lowerCaseName.includes('soundbox')) {
-        const searchString = isUpgrade ? 'Ponto Adicional - Soundbox (Upgrade)' : 'Ponto Adicional - Claro TV+ Soundbox';
-        return allProducts.find(p => p.nome.startsWith(searchString));
+        return allProducts.find(p => p.nome === 'Ponto Adicional - Claro TV+ Soundbox');
     }
     
-    // Then check for Box Cabo or Box Streaming
-    if (lowerCaseName.includes('box cabo') || lowerCaseName.includes('box (streaming)')) {
-        const searchString = isUpgrade ? 'Ponto Adicional - Box' : 'Ponto Adicional - Claro TV+ Box';
-        // Ensure it's not a soundbox
-        return allProducts.find(p => p.nome.startsWith(searchString) && !p.nome.includes('Soundbox'));
+    // Rule for other Boxes (Streaming/Cabo) -> R$ 39,90
+    if (lowerCaseName.includes('box')) {
+        return allProducts.find(p => p.nome === 'Ponto Adicional - Claro TV+ Box');
     }
     
-    // Then check for HD
+    // Rule for HD decoders -> R$ 39,90
     if (lowerCaseName.includes('hd')) {
-        const searchString = isUpgrade ? 'Ponto Adicional - HD' : 'Ponto Adicional - Claro TV+ HD';
-        return allProducts.find(p => p.nome.startsWith(searchString));
+        return allProducts.find(p => p.nome === 'Ponto Adicional - Claro TV+ HD');
     }
     
     return undefined;
@@ -398,6 +398,4 @@ export default function MontadorPortfolioPage() {
     </div>
   );
 }
-    
-
     
