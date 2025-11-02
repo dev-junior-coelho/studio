@@ -46,10 +46,10 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 
-const productTypes: ProductType[] = ["Móvel", "Banda Larga", "TV", "Fixo"];
+const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
 
 function ProductForm({ product, onSave, onDone }: { product?: Produto, onSave: (product: Produto) => void, onDone: () => void }) {
-  const [formData, setFormData] = useState<Produto>(product || { id: '', nome: '', tipo: 'Móvel', precoMensal: 0, beneficios: [], fidelidade: '' });
+  const [formData, setFormData] = useState<Produto>(product || { id: '', nome: '', tipo: 'Movel', precoMensal: 0, beneficios: [], fidelidade: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -200,3 +200,5 @@ export default function AdminProductsPage() {
     </div>
   );
 }
+
+    

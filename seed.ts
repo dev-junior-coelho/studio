@@ -113,168 +113,78 @@ const regioesParaCadastrar = [
 const produtosParaCadastrar = [
   // --- 1. PRODUTOS MÓVEIS (PÓS - MULTI) ---
   {
-    regiaoId: "nacional",
-    tipo: "Movel",
-    nome: "Claro Pós 300GB (Multi)",
-    precoMensal: 319.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 610 GB",
-      "Detalhe da Franquia: 300 GB (uso livre) + 300 GB (Redes Sociais)",
-      "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Passaporte: Passaporte Mundo (uso do plano em 80 países)",
-      "Dependentes: 3 dependentes grátis (sem custo adicional)",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
-      "Benefício Multi: 4 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
-    regiaoId: "nacional",
-    tipo: "Movel",
-    nome: "Claro Pós 150GB (Multi)",
-    precoMensal: 219.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 310 GB",
-      "Detalhe da Franquia: 150 GB (uso livre) + 150 GB (Redes Sociais)",
-      "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Passaporte: Passaporte Américas (uso do plano nas Américas)",
-      "Dependentes: 2 dependentes grátis (sem custo adicional)",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
-      "Benefício Multi: 4 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
-    regiaoId: "nacional",
-    tipo: "Movel",
-    nome: "Claro Pós 100GB (Multi)",
-    precoMensal: 169.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 210 GB",
-      "Detalhe da Franquia: 100 GB (uso livre) + 100 GB (Redes Sociais)",
-      "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Dependentes: 1 dependente grátis (sem custo adicional)",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
-      "Benefício Multi: 4 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
-    regiaoId: "nacional",
-    tipo: "Movel",
-    nome: "Claro Pós 60GB Gaming (Multi)",
-    precoMensal: 149.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 130 GB",
-      "Detalhe da Franquia: 60 GB (uso livre) + 60 GB (Redes Sociais)",
-      "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Streaming de Jogos: Geforce NOW incluso",
-      "Dependentes: 0 dependentes inclusos",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
-      "Benefício Multi: 4 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
-    regiaoId: "nacional",
-    tipo: "Movel",
-    nome: "Claro Pós 50GB (Multi)",
-    precoMensal: 119.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 110 GB",
-      "Detalhe da Franquia: 50 GB (uso livre) + 50 GB (Redes Sociais)",
-      "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Dependentes: 0 dependentes inclusos",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Padrão, Truecaller, Claro Banca Premium",
-      "Benefício Multi: 4 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
+    id: "movel-pos-25gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Pós 25GB (Multi)",
     precoMensal: 59.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 60 GB",
-      "Detalhe da Franquia: 25 GB (uso livre) + 25 GB (Redes Sociais)",
-      "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Dependentes: 0 dependentes inclusos",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "Benefício Multi: 4 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    beneficios: ["25GB (plano) + 25GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "0 dependentes", "ChatGPT Plus (4 Meses)"],
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+  },
+  {
+    id: "movel-pos-50gb",
+    regiaoId: "nacional",
+    tipo: "Movel",
+    nome: "Claro Pós 50GB (Multi)",
+    precoMensal: 119.90,
+    beneficios: ["50GB (plano) + 50GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "0 dependentes", "Passaporte Américas", "ChatGPT Plus (4 Meses)"],
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+  },
+  {
+    id: "movel-pos-100gb",
+    regiaoId: "nacional",
+    tipo: "Movel",
+    nome: "Claro Pós 100GB (Multi)",
+    precoMensal: 169.90,
+    beneficios: ["100GB (plano) + 100GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "1 dependente grátis", "ChatGPT Plus (4 Meses)"],
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+  },
+  {
+    id: "movel-pos-150gb",
+    regiaoId: "nacional",
+    tipo: "Movel",
+    nome: "Claro Pós 150GB (Multi)",
+    precoMensal: 219.90,
+    beneficios: ["150GB (plano) + 150GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "2 dependentes grátis", "Passaporte Américas", "ChatGPT Plus (4 Meses)"],
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
+  },
+  {
+    id: "movel-pos-300gb",
+    regiaoId: "nacional",
+    tipo: "Movel",
+    nome: "Claro Pós 300GB (Multi)",
+    precoMensal: 319.90,
+    beneficios: ["300GB (plano) + 300GB (redes) + 10GB (bônus)", "Apps (TikTok, Insta, etc.)", "3 dependentes grátis", "Passaporte Mundo", "ChatGPT Plus (4 Meses)"],
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital."
   },
 
   // --- 2. PRODUTOS MÓVEIS (CONTROLE - MULTI) ---
   {
-    regiaoId: "nacional",
-    tipo: "Movel",
-    nome: "Claro Controle 25GB Gamer (Multi)",
-    precoMensal: 99.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 35 GB",
-      "Detalhe da Franquia: 25 GB (uso livre) + 5 GB (Redes Sociais)",
-      "Bônus: 5 GB (bônus promocional por 12 meses)",
-      "Streaming de Jogos: Geforce NOW incluso",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
-      "Benefício Multi: 2 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
-    regiaoId: "nacional",
-    tipo: "Movel",
-    nome: "Claro Controle 25GB (Multi)",
-    precoMensal: 69.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 35 GB",
-      "Detalhe da Franquia: 25 GB (uso livre) + 5 GB (Redes Sociais)",
-      "Bônus: 5 GB (bônus promocional por 12 meses)",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
-      "Benefício Multi: 2 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
-  },
-  {
+    id: "movel-controle-20gb",
     regiaoId: "nacional",
     tipo: "Movel",
     nome: "Claro Controle 20GB (Multi)",
     precoMensal: 44.90,
-    precoAnual: null,
-    beneficios: [
-      "Franquia Total: 30 GB",
-      "Detalhe da Franquia: 20 GB (uso livre) + 5 GB (Redes Sociais)",
-      "Bônus: 5 GB (bônus promocional por 12 meses)",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Light, Claro Banca Padrão",
-      "Benefício Multi: 2 meses de ChatGPT Plus",
-      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-    ],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    beneficios: ["20GB (plano) + 5GB (redes) + 5GB (bônus)", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
+  },
+  {
+    id: "movel-controle-25gb",
+    regiaoId: "nacional",
+    tipo: "Movel",
+    nome: "Claro Controle 25GB (Multi)",
+    precoMensal: 69.90,
+    beneficios: ["25GB (plano) + 5GB (redes) + 5GB (bônus)", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
+  },
+  {
+    id: "movel-controle-25gb-gamer",
+    regiaoId: "nacional",
+    tipo: "Movel",
+    nome: "Claro Controle 25GB Gamer (Multi)",
+    precoMensal: 99.90,
+    beneficios: ["25GB (plano) + 5GB (redes) + 5GB (bônus)", "Geforce NOW", "Apps (TikTok, Insta, etc.)", "ChatGPT Plus (2 Meses)"],
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital."
   },
 
   // --- 3. PRODUTOS BANDA LARGA (POR REGIÃO) ---
@@ -284,137 +194,138 @@ const produtosParaCadastrar = [
   
   // Região: padrao
   {
-    regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 299.90, precoAnual: null,
+    id: "bl-padrao-1g", regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 299.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "Busuu (2 licenças)", "1 Ponto Ultra Gratuito", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: N/A. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
-    regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null,
+    id: "bl-padrao-750m", regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: R$ 149,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
-    regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null,
+    id: "bl-padrao-600m", regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: R$ 119,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
-    regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null,
+    id: "bl-padrao-350m", regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: R$ 99,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // Região: especial
   {
-    regiaoId: "especial", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null,
+    id: "bl-especial-1g", regiaoId: "especial", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "Busuu (2 licenças)", "1 Ponto Ultra Gratuito", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: N/A. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
-    regiaoId: "especial", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null,
+    id: "bl-especial-750m", regiaoId: "especial", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: R$ 149,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
-    regiaoId: "especial", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null,
+    id: "bl-especial-600m", regiaoId: "especial", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: R$ 119,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
-    regiaoId: "especial", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null,
+    id: "bl-especial-350m", regiaoId: "especial", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: R$ 99,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   
   // Região: especial-promo-6m
   {
-    regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 49.90, precoAnual: null,
+    id: "bl-especial-promo-6m-600m", regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 49.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL por 6 meses, após R$ 79,90. Preço avulso: R$ 119,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   
   // Região: especial-promo-3m
   {
-    regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 3M)", precoMensal: 59.90, precoAnual: null,
+    id: "bl-especial-promo-3m-600m", regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 3M)", precoMensal: 59.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL por 3 meses, após R$ 99,90. Preço avulso: R$ 119,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   
   // Região: especial-plus
   {
-    regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null,
+    id: "bl-especial-plus-600m", regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: R$ 119,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // Região: especial-plus-promo-6m
   {
-    regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 49.90, precoAnual: null,
+    id: "bl-especial-plus-promo-6m-600m", regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 49.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL por 6 meses, após R$ 79,90. Preço avulso: R$ 99,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // Região: especial-plus-promo-3-6m
   {
-    regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 3M/6M)", precoMensal: 49.90, precoAnual: null,
+    id: "bl-especial-plus-promo-3-6m-600m", regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 3M/6M)", precoMensal: 49.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL (R$ 49,90/6M, após R$ 79,90). Preço avulso: R$ 59,90/3M (após R$ 99,90). Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // Região: especial-plus-promo-3m
   {
-    regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 3M)", precoMensal: 59.90, precoAnual: null,
+    id: "bl-especial-plus-promo-3m-600m", regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 3M)", precoMensal: 59.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL por 3 meses, após R$ 99,90. Preço avulso: R$ 99,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   
   // Região: especial-plus-promo-3m-b
   {
-    regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 3M)", precoMensal: 59.90, precoAnual: null,
+    id: "bl-especial-plus-promo-3m-b-600m", regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 3M)", precoMensal: 59.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL por 3 meses, após R$ 99,90. Preço avulso: R$ 119,90 (com promo de 3M). Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // Região: med-01
   {
-    regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 64.90, precoAnual: null,
+    id: "bl-med-01-600m", regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 64.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL por 6 meses, após R$ 84,90. Preço avulso: R$ 74,90 (6M) -> R$ 104,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
-    regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 94.90, precoAnual: null,
+    id: "bl-med-01-350m", regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 94.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL. Preço avulso: R$ 94,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // Região: med-02 (Feira de Santana)
   {
-    regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 54.90, precoAnual: null,
+    id: "bl-med-02-600m", regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 54.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL por 6 meses, após R$ 84,90. Preço avulso: R$ 64,90 (6M) -> R$ 104,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   {
-    regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 74.90, precoAnual: null,
+    id: "bl-med-02-350m", regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 74.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM TV OU MÓVEL. Preço avulso: R$ 84,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // Região: med-redes-neutras-02
   {
-    regiaoId: "med-redes-neutras-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 54.90, precoAnual: null,
+    id: "bl-med-redes-neutras-02-600m", regiaoId: "med-redes-neutras-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 54.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL por 6 meses, após R$ 84,90. Preço avulso: R$ 64,90 (6M) -> R$ 104,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
   
   // Região: med-03
   {
-    regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 54.90, precoAnual: null,
+    id: "bl-med-03-600m", regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 600 Mega (Promo 6M)", precoMensal: 54.90, precoAnual: null,
     beneficios: ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "Minha Banca Residencial", "ChatGPT Plus (se Multi)"],
     observacoes: "Preço COM MÓVEL (valor único). Preço avulso: R$ 64,90 (6M) -> R$ 104,90. Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
   },
 
   // --- 4. PRODUTOS DE TV (HARDWARE) ---
   {
+    id: "tv-soundbox-combo-bl-movel",
     regiaoId: "padrao", // Cidades com CABO/FIBRA (PDF 1, p.3)
     tipo: "TV",
     nome: "Claro TV+ Soundbox (Combo BL+Móvel)",
@@ -436,6 +347,7 @@ const produtosParaCadastrar = [
     observacoes: "Preço COM BL E MÓVEL. Desconto de R$ 5,00 no DCC+Fatura Digital."
   },
   {
+    id: "tv-soundbox-combo-bl-ou-movel",
     regiaoId: "padrao", // Cidades com CABO/FIBRA (PDF 1, p.3)
     tipo: "TV",
     nome: "Claro TV+ Soundbox (Combo BL ou Móvel)",
@@ -456,6 +368,7 @@ const produtosParaCadastrar = [
     observacoes: "Preço COM BL OU MÓVEL. Desconto de R$ 5,00 no DCC+Fatura Digital."
   },
   {
+    id: "tv-box-cabo-combo-bl-movel",
     regiaoId: "padrao", // Cidades com CABO/FIBRA (PDF 1, p.3)
     tipo: "TV",
     nome: "Claro TV+ Box Cabo (Combo BL+Móvel)",
@@ -477,6 +390,7 @@ const produtosParaCadastrar = [
     observacoes: "Preço COM BL E MÓVEL. Desconto de R$ 5,00 no DCC+Fatura Digital."
   },
   {
+    id: "tv-box-cabo-combo-bl-ou-movel",
     regiaoId: "padrao", // Cidades com CABO/FIBRA (PDF 1, p.3)
     tipo: "TV",
     nome: "Claro TV+ Box Cabo (Combo BL ou Móvel)",
@@ -497,6 +411,7 @@ const produtosParaCadastrar = [
     observacoes: "Preço COM BL OU MÓVEL. Desconto de R$ 5,00 no DCC+Fatura Digital."
   },
   {
+    id: "tv-box-streaming-combo-movel",
     regiaoId: "nacional", // Cidades Não Cabeadas (PDF 2, p.68)
     tipo: "TV",
     nome: "Claro TV+ Box (Streaming) (Combo Móvel)",
@@ -517,6 +432,7 @@ const produtosParaCadastrar = [
     observacoes: "Preço COM MÓVEL. Desconto de R$ 5,00 no DCC+Fatura Digital."
   },
   {
+    id: "tv-box-streaming-single-fone",
     regiaoId: "nacional", // Cidades Não Cabeadas (PDF 2, p.68)
     tipo: "TV",
     nome: "Claro TV+ Box (Streaming) (Single/Fone)",
@@ -539,6 +455,7 @@ const produtosParaCadastrar = [
 
   // --- 5. PRODUTOS DE TV (APP) ---
   {
+    id: "tv-app-anual",
     regiaoId: "nacional",
     tipo: "TV",
     nome: "Claro TV+ App (Anual)",
@@ -558,6 +475,7 @@ const produtosParaCadastrar = [
     observacoes: "Pagamento anual (12x R$ 99,90). Não possui benefícios Multi."
   },
   {
+    id: "tv-app-mensal",
     regiaoId: "nacional",
     tipo: "TV",
     nome: "Claro TV+ App (Mensal)",
@@ -577,6 +495,7 @@ const produtosParaCadastrar = [
     observacoes: "Preço promocional R$ 65,40 por 2 meses. Não possui benefícios Multi."
   },
   {
+    id: "tv-streamings-anual",
     regiaoId: "nacional",
     tipo: "TV",
     nome: "Claro TV+ Streamings (Anual)",
@@ -598,8 +517,9 @@ const produtosParaCadastrar = [
 
   // --- 6. FONE FIXO ---
   {
+    id: "fixo-mundo-total-3p",
     regiaoId: "nacional",
-    tipo: "Fone",
+    tipo: "Fixo",
     nome: "Ilimitado Mundo Total (Combo 3P)",
     precoMensal: 35.00,
     precoAnual: null,
@@ -616,8 +536,9 @@ const produtosParaCadastrar = [
     observacoes: "Preço na combinação FONE+BL+TV ou FONE+BL+MOVEL."
   },
   {
+    id: "fixo-mundo-total-single-2p",
     regiaoId: "nacional",
-    tipo: "Fone",
+    tipo: "Fixo",
     nome: "Ilimitado Mundo Total (Single/Combo 2P)",
     precoMensal: 65.00,
     precoAnual: null,
@@ -629,8 +550,9 @@ const produtosParaCadastrar = [
     observacoes: "Preço Single ou em combos 2P (ex: Fone+TV)."
   },
   {
+    id: "fixo-brasil-total-4p",
     regiaoId: "nacional",
-    tipo: "Fone",
+    tipo: "Fixo",
     nome: "Ilimitado Brasil Total (Combo 4P)",
     precoMensal: 5.00,
     precoAnual: null,
@@ -640,8 +562,9 @@ const produtosParaCadastrar = [
     observacoes: "Preço na combinação FONE+BL+MOVEL+TV."
   },
   {
+    id: "fixo-brasil-total-single-2p-3p",
     regiaoId: "nacional",
-    tipo: "Fone",
+    tipo: "Fixo",
     nome: "Ilimitado Brasil Total (Single/Combo 2P/3P)",
     precoMensal: 35.00,
     precoAnual: null,
@@ -652,82 +575,82 @@ const produtosParaCadastrar = [
   },
 
   // --- 7. OPCIONAIS (CONECTIVIDADE E GAMING) ---
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Soundbox", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox adicional", "Requer ponto principal Soundbox"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Box Cabo", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box Cabo adicional", "Requer ponto principal Box Cabo"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Box (Streaming)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional", "Requer ponto principal Box (Streaming)"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Geek", precoMensal: 9.90, precoAnual: 118.80, beneficios: ["Suporte técnico especializado para dispositivos"], observacoes: "Fidelidade 12 meses. Multa R$ 59,40 proporcional." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Geforce NOW (Avulso)", precoMensal: 63.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos na nuvem"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Abya Go", precoMensal: 25.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "No Ping", precoMensal: 10.00, precoAnual: null, beneficios: ["Redutor de latência (ping) para jogos online"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro SmartHome (1 Câmera)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Monitoramento com 1 Câmera HD Wi-Fi (interna)", "Equipamento em comodato"], observacoes: "Fidelidade 12 meses. Multa R$ 500,00 proporcional." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Extensor Wi-Fi Mesh (Comodato)", precoMensal: 30.00, precoAnual: 360.00, beneficios: ["Kit com 2 extensores para melhorar o sinal Wi-Fi"], observacoes: "Fidelidade 12 meses. Multa R$ 300,00 por extensor." },
+  { id: "opcional-ponto-soundbox", regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Soundbox", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox adicional", "Requer ponto principal Soundbox"], observacoes: "Valor de aluguel mensal." },
+  { id: "opcional-ponto-box-cabo", regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Box Cabo", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box Cabo adicional", "Requer ponto principal Box Cabo"], observacoes: "Valor de aluguel mensal." },
+  { id: "opcional-ponto-box-streaming", regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Box (Streaming)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional", "Requer ponto principal Box (Streaming)"], observacoes: "Valor de aluguel mensal." },
+  { id: "opcional-ponto-ultra", regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
+  { id: "opcional-claro-geek", regiaoId: "nacional", tipo: "Opcional", nome: "Claro Geek", precoMensal: 9.90, precoAnual: 118.80, beneficios: ["Suporte técnico especializado para dispositivos"], observacoes: "Fidelidade 12 meses. Multa R$ 59,40 proporcional." },
+  { id: "opcional-geforce-now", regiaoId: "nacional", tipo: "Opcional", nome: "Geforce NOW (Avulso)", precoMensal: 63.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos na nuvem"], observacoes: "" },
+  { id: "opcional-abya-go", regiaoId: "nacional", tipo: "Opcional", nome: "Abya Go", precoMensal: 25.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos"], observacoes: "" },
+  { id: "opcional-no-ping", regiaoId: "nacional", tipo: "Opcional", nome: "No Ping", precoMensal: 10.00, precoAnual: null, beneficios: ["Redutor de latência (ping) para jogos online"], observacoes: "" },
+  { id: "opcional-smarthome-1-cam", regiaoId: "nacional", tipo: "Opcional", nome: "Claro SmartHome (1 Câmera)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Monitoramento com 1 Câmera HD Wi-Fi (interna)", "Equipamento em comodato"], observacoes: "Fidelidade 12 meses. Multa R$ 500,00 proporcional." },
+  { id: "opcional-extensor-mesh", regiaoId: "nacional", tipo: "Opcional", nome: "Extensor Wi-Fi Mesh (Comodato)", precoMensal: 30.00, precoAnual: 360.00, beneficios: ["Kit com 2 extensores para melhorar o sinal Wi-Fi"], observacoes: "Fidelidade 12 meses. Multa R$ 300,00 por extensor." },
 
   // --- 8. OPCIONAIS (A LA CARTE - STREAMING) ---
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Amazon Prime (Mensal)", precoMensal: 19.90, precoAnual: null, beneficios: ["Amazon Prime Video", "Amazon Music", "Prime Gaming", "Prime Reading", "Frete Grátis Amazon"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Apple TV+ (Mensal)", precoMensal: 21.90, precoAnual: null, beneficios: ["Catálogo Apple TV+", "5 acessos", "4K HDR", "Sem anúncios"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Crunchyroll Fan (Mensal)", precoMensal: 14.99, precoAnual: null, beneficios: ["Catálogo de animes Crunchyroll"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Padrão (Mensal)", precoMensal: 46.90, precoAnual: null, beneficios: ["Catálogo Disney+ Padrão com anúncios"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Premium (Mensal)", precoMensal: 66.90, precoAnual: null, beneficios: ["Catálogo Disney+ Premium sem anúncios"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Premium (Anual)", precoMensal: 46.91, precoAnual: 562.90, beneficios: ["Catálogo Disney+ Premium sem anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 562,90" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) com Anúncios (Mensal)", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo HBO Max com anúncios"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) com Anúncios (Anual)", precoMensal: 18.90, precoAnual: 226.80, beneficios: ["Catálogo HBO Max com anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 226,80" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) Sem Anúncios (Mensal)", precoMensal: 39.90, precoAnual: null, beneficios: ["Catálogo HBO Max sem anúncios"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) Sem Anúncios (Anual)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Catálogo HBO Max sem anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 358,80" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Paramount+ (Mensal)", precoMensal: 27.90, precoAnual: null, beneficios: ["Catálogo Paramount+"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Paramount+ (Anual)", precoMensal: 20.83, precoAnual: 249.90, beneficios: ["Catálogo Paramount+", "Pagamento anual em 12x"], observacoes: "Valor total R$ 249,90" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Premiere Futebol (Mensal)", precoMensal: 59.90, precoAnual: null, beneficios: ["Acesso aos canais Premiere"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Premiere Futebol (Anual)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Acesso aos canais Premiere", "Pagamento anual em 12x"], observacoes: "Valor total R$ 358,80" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Combo Telecine e Universal+ (Mensal)", precoMensal: 34.90, precoAnual: null, beneficios: ["Catálogo Telecine", "Catálogo Universal+"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Combo Telecine e Universal+ (Anual)", precoMensal: 24.90, precoAnual: 298.80, beneficios: ["Catálogo Telecine", "Catálogo Universal+", "Pagamento anual em 12x"], observacoes: "Valor total R$ 298,80" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Telecine (Mensal)", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo Telecine"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Telecine (Anual)", precoMensal: 19.90, precoAnual: 238.80, beneficios: ["Catálogo Telecine", "Pagamento anual em 12x"], observacoes: "Valor total R$ 238,80" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Netflix com Anúncios (Avulso)", precoMensal: 20.90, precoAnual: null, beneficios: ["Acesso ao Netflix com anúncios"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Netflix Padrão (Avulso)", precoMensal: 44.90, precoAnual: null, beneficios: ["Acesso ao Netflix Padrão", "2 telas simultâneas", "Sem anúncios"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Netflix Premium (Avulso)", precoMensal: 59.90, precoAnual: null, beneficios: ["Acesso ao Netflix Premium", "4 telas simultâneas", "Qualidade 4K HDR", "Sem anúncios"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Belas Artes", precoMensal: 12.90, precoAnual: null, beneficios: ["Catálogo Belas Artes"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Brasiliana", precoMensal: 9.90, precoAnual: null, beneficios: ["Catálogo Brasiliana"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Darkflix", precoMensal: 9.90, precoAnual: null, beneficios: ["Catálogo Darkflix (Foco em terror)"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Edye", precoMensal: 10.90, precoAnual: null, beneficios: ["Catálogo Edye (Infantil)"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Eduk", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Eduk (Cursos)"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Fi TV", precoMensal: 29.00, precoAnual: null, beneficios: ["Catálogo Fi TV"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Porta Curtas", precoMensal: 6.90, precoAnual: null, beneficios: ["Catálogo Porta Curtas"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Reaw Play", precoMensal: 19.90, precoAnual: null, beneficios: ["Catálogo Reaw Play"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Universal Plus", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo Universal+"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Box Brazil Play", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Box Brazil Play"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Cine Brasil", precoMensal: 6.90, precoAnual: null, beneficios: ["Catálogo Cine Brasil"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Cindie", precoMensal: 12.90, precoAnual: null, beneficios: ["Catálogo Cindie"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Looke", precoMensal: 16.90, precoAnual: null, beneficios: ["Catálogo Looke"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Looke Kids", precoMensal: 12.90, precoAnual: null, beneficios: ["Catálogo Looke Kids"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Lumine", precoMensal: 32.90, precoAnual: null, beneficios: ["Catálogo Lumine (Conteúdo Católico)"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Medialand Play", precoMensal: 7.90, precoAnual: null, beneficios: ["Catálogo Medialand Play"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Mundus Play", precoMensal: 18.90, precoAnual: null, beneficios: ["Catálogo Mundus Play"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Sportynet+", precoMensal: 29.90, precoAnual: null, beneficios: ["Copa Nordeste", "Brasileirão Série C"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Combate HD (Avulso)", precoMensal: 34.90, precoAnual: null, beneficios: ["Acesso ao canal Combate"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "UFC Fight Pass", precoMensal: 29.90, precoAnual: null, beneficios: ["Acesso ao UFC Fight Pass"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Canal Dog TV", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal com programação para cães"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Música Ilimitado (Avulso)", precoMensal: 12.90, precoAnual: null, beneficios: ["Acesso ao Claro Música"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Curta On", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Curta On"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Mezzo Live HD", precoMensal: 16.00, precoAnual: null, beneficios: ["Canal de música clássica e jazz"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "SIC Internacional", precoMensal: 6.90, precoAnual: null, beneficios: ["Canal de variedades de Portugal"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Stingray Classica", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Stingray Classica"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Stingray Karaoke", precoMensal: 9.90, precoAnual: null, beneficios: ["Catálogo Stingray Karaoke"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Adrenalina Pura", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Adrenalina Pura (Filmes de Ação)"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Shows", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Claro Shows"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Only TV", precoMensal: 29.90, precoAnual: null, beneficios: ["Conteúdo Árabe"], observacoes: "" },
+  { id: "opcional-amazon-prime-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Amazon Prime (Mensal)", precoMensal: 19.90, precoAnual: null, beneficios: ["Amazon Prime Video", "Amazon Music", "Prime Gaming", "Prime Reading", "Frete Grátis Amazon"], observacoes: "" },
+  { id: "opcional-apple-tv-plus-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Apple TV+ (Mensal)", precoMensal: 21.90, precoAnual: null, beneficios: ["Catálogo Apple TV+", "5 acessos", "4K HDR", "Sem anúncios"], observacoes: "" },
+  { id: "opcional-crunchyroll-fan-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Crunchyroll Fan (Mensal)", precoMensal: 14.99, precoAnual: null, beneficios: ["Catálogo de animes Crunchyroll"], observacoes: "" },
+  { id: "opcional-disney-plus-padrao-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Padrão (Mensal)", precoMensal: 46.90, precoAnual: null, beneficios: ["Catálogo Disney+ Padrão com anúncios"], observacoes: "" },
+  { id: "opcional-disney-plus-premium-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Premium (Mensal)", precoMensal: 66.90, precoAnual: null, beneficios: ["Catálogo Disney+ Premium sem anúncios"], observacoes: "" },
+  { id: "opcional-disney-plus-premium-anual", regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Premium (Anual)", precoMensal: 46.91, precoAnual: 562.90, beneficios: ["Catálogo Disney+ Premium sem anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 562,90" },
+  { id: "opcional-max-hbo-anuncios-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) com Anúncios (Mensal)", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo HBO Max com anúncios"], observacoes: "" },
+  { id: "opcional-max-hbo-anuncios-anual", regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) com Anúncios (Anual)", precoMensal: 18.90, precoAnual: 226.80, beneficios: ["Catálogo HBO Max com anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 226,80" },
+  { id: "opcional-max-hbo-sem-anuncios-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) Sem Anúncios (Mensal)", precoMensal: 39.90, precoAnual: null, beneficios: ["Catálogo HBO Max sem anúncios"], observacoes: "" },
+  { id: "opcional-max-hbo-sem-anuncios-anual", regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) Sem Anúncios (Anual)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Catálogo HBO Max sem anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 358,80" },
+  { id: "opcional-paramount-plus-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Paramount+ (Mensal)", precoMensal: 27.90, precoAnual: null, beneficios: ["Catálogo Paramount+"], observacoes: "" },
+  { id: "opcional-paramount-plus-anual", regiaoId: "nacional", tipo: "Opcional", nome: "Paramount+ (Anual)", precoMensal: 20.83, precoAnual: 249.90, beneficios: ["Catálogo Paramount+", "Pagamento anual em 12x"], observacoes: "Valor total R$ 249,90" },
+  { id: "opcional-premiere-futebol-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Premiere Futebol (Mensal)", precoMensal: 59.90, precoAnual: null, beneficios: ["Acesso aos canais Premiere"], observacoes: "" },
+  { id: "opcional-premiere-futebol-anual", regiaoId: "nacional", tipo: "Opcional", nome: "Premiere Futebol (Anual)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Acesso aos canais Premiere", "Pagamento anual em 12x"], observacoes: "Valor total R$ 358,80" },
+  { id: "opcional-telecine-universal-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Combo Telecine e Universal+ (Mensal)", precoMensal: 34.90, precoAnual: null, beneficios: ["Catálogo Telecine", "Catálogo Universal+"], observacoes: "" },
+  { id: "opcional-telecine-universal-anual", regiaoId: "nacional", tipo: "Opcional", nome: "Combo Telecine e Universal+ (Anual)", precoMensal: 24.90, precoAnual: 298.80, beneficios: ["Catálogo Telecine", "Catálogo Universal+", "Pagamento anual em 12x"], observacoes: "Valor total R$ 298,80" },
+  { id: "opcional-telecine-mensal", regiaoId: "nacional", tipo: "Opcional", nome: "Telecine (Mensal)", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo Telecine"], observacoes: "" },
+  { id: "opcional-telecine-anual", regiaoId: "nacional", tipo: "Opcional", nome: "Telecine (Anual)", precoMensal: 19.90, precoAnual: 238.80, beneficios: ["Catálogo Telecine", "Pagamento anual em 12x"], observacoes: "Valor total R$ 238,80" },
+  { id: "opcional-netflix-anuncios-avulso", regiaoId: "nacional", tipo: "Opcional", nome: "Netflix com Anúncios (Avulso)", precoMensal: 20.90, precoAnual: null, beneficios: ["Acesso ao Netflix com anúncios"], observacoes: "" },
+  { id: "opcional-netflix-padrao-avulso", regiaoId: "nacional", tipo: "Opcional", nome: "Netflix Padrão (Avulso)", precoMensal: 44.90, precoAnual: null, beneficios: ["Acesso ao Netflix Padrão", "2 telas simultâneas", "Sem anúncios"], observacoes: "" },
+  { id: "opcional-netflix-premium-avulso", regiaoId: "nacional", tipo: "Opcional", nome: "Netflix Premium (Avulso)", precoMensal: 59.90, precoAnual: null, beneficios: ["Acesso ao Netflix Premium", "4 telas simultâneas", "Qualidade 4K HDR", "Sem anúncios"], observacoes: "" },
+  { id: "opcional-belas-artes", regiaoId: "nacional", tipo: "Opcional", nome: "Belas Artes", precoMensal: 12.90, precoAnual: null, beneficios: ["Catálogo Belas Artes"], observacoes: "" },
+  { id: "opcional-brasiliana", regiaoId: "nacional", tipo: "Opcional", nome: "Brasiliana", precoMensal: 9.90, precoAnual: null, beneficios: ["Catálogo Brasiliana"], observacoes: "" },
+  { id: "opcional-darkflix", regiaoId: "nacional", tipo: "Opcional", nome: "Darkflix", precoMensal: 9.90, precoAnual: null, beneficios: ["Catálogo Darkflix (Foco em terror)"], observacoes: "" },
+  { id: "opcional-edye", regiaoId: "nacional", tipo: "Opcional", nome: "Edye", precoMensal: 10.90, precoAnual: null, beneficios: ["Catálogo Edye (Infantil)"], observacoes: "" },
+  { id: "opcional-eduk", regiaoId: "nacional", tipo: "Opcional", nome: "Eduk", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Eduk (Cursos)"], observacoes: "" },
+  { id: "opcional-fi-tv", regiaoId: "nacional", tipo: "Opcional", nome: "Fi TV", precoMensal: 29.00, precoAnual: null, beneficios: ["Catálogo Fi TV"], observacoes: "" },
+  { id: "opcional-porta-curtas", regiaoId: "nacional", tipo: "Opcional", nome: "Porta Curtas", precoMensal: 6.90, precoAnual: null, beneficios: ["Catálogo Porta Curtas"], observacoes: "" },
+  { id: "opcional-reaw-play", regiaoId: "nacional", tipo: "Opcional", nome: "Reaw Play", precoMensal: 19.90, precoAnual: null, beneficios: ["Catálogo Reaw Play"], observacoes: "" },
+  { id: "opcional-universal-plus", regiaoId: "nacional", tipo: "Opcional", nome: "Universal Plus", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo Universal+"], observacoes: "" },
+  { id: "opcional-box-brazil-play", regiaoId: "nacional", tipo: "Opcional", nome: "Box Brazil Play", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Box Brazil Play"], observacoes: "" },
+  { id: "opcional-cine-brasil", regiaoId: "nacional", tipo: "Opcional", nome: "Cine Brasil", precoMensal: 6.90, precoAnual: null, beneficios: ["Catálogo Cine Brasil"], observacoes: "" },
+  { id: "opcional-cindie", regiaoId: "nacional", tipo: "Opcional", nome: "Cindie", precoMensal: 12.90, precoAnual: null, beneficios: ["Catálogo Cindie"], observacoes: "" },
+  { id: "opcional-looke", regiaoId: "nacional", tipo: "Opcional", nome: "Looke", precoMensal: 16.90, precoAnual: null, beneficios: ["Catálogo Looke"], observacoes: "" },
+  { id: "opcional-looke-kids", regiaoId: "nacional", tipo: "Opcional", nome: "Looke Kids", precoMensal: 12.90, precoAnual: null, beneficios: ["Catálogo Looke Kids"], observacoes: "" },
+  { id: "opcional-lumine", regiaoId: "nacional", tipo: "Opcional", nome: "Lumine", precoMensal: 32.90, precoAnual: null, beneficios: ["Catálogo Lumine (Conteúdo Católico)"], observacoes: "" },
+  { id: "opcional-medialand-play", regiaoId: "nacional", tipo: "Opcional", nome: "Medialand Play", precoMensal: 7.90, precoAnual: null, beneficios: ["Catálogo Medialand Play"], observacoes: "" },
+  { id: "opcional-mundus-play", regiaoId: "nacional", tipo: "Opcional", nome: "Mundus Play", precoMensal: 18.90, precoAnual: null, beneficios: ["Catálogo Mundus Play"], observacoes: "" },
+  { id: "opcional-sportynet-plus", regiaoId: "nacional", tipo: "Opcional", nome: "Sportynet+", precoMensal: 29.90, precoAnual: null, beneficios: ["Copa Nordeste", "Brasileirão Série C"], observacoes: "" },
+  { id: "opcional-combate-hd-avulso", regiaoId: "nacional", tipo: "Opcional", nome: "Combate HD (Avulso)", precoMensal: 34.90, precoAnual: null, beneficios: ["Acesso ao canal Combate"], observacoes: "" },
+  { id: "opcional-ufc-fight-pass", regiaoId: "nacional", tipo: "Opcional", nome: "UFC Fight Pass", precoMensal: 29.90, precoAnual: null, beneficios: ["Acesso ao UFC Fight Pass"], observacoes: "" },
+  { id: "opcional-dog-tv", regiaoId: "nacional", tipo: "Opcional", nome: "Canal Dog TV", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal com programação para cães"], observacoes: "" },
+  { id: "opcional-claro-musica-ilimitado-avulso", regiaoId: "nacional", tipo: "Opcional", nome: "Claro Música Ilimitado (Avulso)", precoMensal: 12.90, precoAnual: null, beneficios: ["Acesso ao Claro Música"], observacoes: "" },
+  { id: "opcional-curta-on", regiaoId: "nacional", tipo: "Opcional", nome: "Curta On", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Curta On"], observacoes: "" },
+  { id: "opcional-mezzo-live-hd", regiaoId: "nacional", tipo: "Opcional", nome: "Mezzo Live HD", precoMensal: 16.00, precoAnual: null, beneficios: ["Canal de música clássica e jazz"], observacoes: "" },
+  { id: "opcional-sic-internacional", regiaoId: "nacional", tipo: "Opcional", nome: "SIC Internacional", precoMensal: 6.90, precoAnual: null, beneficios: ["Canal de variedades de Portugal"], observacoes: "" },
+  { id: "opcional-stingray-classica", regiaoId: "nacional", tipo: "Opcional", nome: "Stingray Classica", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Stingray Classica"], observacoes: "" },
+  { id: "opcional-stingray-karaoke", regiaoId: "nacional", tipo: "Opcional", nome: "Stingray Karaoke", precoMensal: 9.90, precoAnual: null, beneficios: ["Catálogo Stingray Karaoke"], observacoes: "" },
+  { id: "opcional-adrenalina-pura", regiaoId: "nacional", tipo: "Opcional", nome: "Adrenalina Pura", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Adrenalina Pura (Filmes de Ação)"], observacoes: "" },
+  { id: "opcional-claro-shows", regiaoId: "nacional", tipo: "Opcional", nome: "Claro Shows", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Claro Shows"], observacoes: "" },
+  { id: "opcional-only-tv", regiaoId: "nacional", tipo: "Opcional", nome: "Only TV", precoMensal: 29.90, precoAnual: null, beneficios: ["Conteúdo Árabe"], observacoes: "" },
 
   // --- 9. OPCIONAIS (ADULTOS) ---
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Brasileirinhas", precoMensal: 24.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "For Man", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Playboy HD", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "PPV Adultos (por Evento)", precoMensal: 13.90, precoAnual: null, beneficios: ["Canal Adulto (Pay-per-view)"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Sexy Play", precoMensal: 24.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Sex Prive", precoMensal: 24.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Sextreme Digital", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Sexy Hot Digital", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Venus Digital", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Combo Adulto (5 Canais)", precoMensal: 43.90, precoAnual: null, beneficios: ["Sexy Hot", "Playboy", "Venus", "Sextreme", "For Man HD"], observacoes: "Promoção R$ 21,95 por 2 meses." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Combo Adulto (4 Canais)", precoMensal: 39.90, precoAnual: null, beneficios: ["Sexy Hot", "Playboy", "Venus", "Sextreme HD"], observacoes: "Promoção R$ 19,95 por 2 meses." },
+  { id: "opcional-adulto-brasileirinhas", regiaoId: "nacional", tipo: "Opcional", nome: "Brasileirinhas", precoMensal: 24.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
+  { id: "opcional-adulto-for-man", regiaoId: "nacional", tipo: "Opcional", nome: "For Man", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
+  { id: "opcional-adulto-playboy-hd", regiaoId: "nacional", tipo: "Opcional", nome: "Playboy HD", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
+  { id: "opcional-adulto-ppv", regiaoId: "nacional", tipo: "Opcional", nome: "PPV Adultos (por Evento)", precoMensal: 13.90, precoAnual: null, beneficios: ["Canal Adulto (Pay-per-view)"], observacoes: "" },
+  { id: "opcional-adulto-sexy-play", regiaoId: "nacional", tipo: "Opcional", nome: "Sexy Play", precoMensal: 24.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
+  { id: "opcional-adulto-sex-prive", regiaoId: "nacional", tipo: "Opcional", nome: "Sex Prive", precoMensal: 24.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
+  { id: "opcional-adulto-sextreme-digital", regiaoId: "nacional", tipo: "Opcional", nome: "Sextreme Digital", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
+  { id: "opcional-adulto-sexy-hot-digital", regiaoId: "nacional", tipo: "Opcional", nome: "Sexy Hot Digital", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
+  { id: "opcional-adulto-venus-digital", regiaoId: "nacional", tipo: "Opcional", nome: "Venus Digital", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
+  { id: "opcional-adulto-combo-5", regiaoId: "nacional", tipo: "Opcional", nome: "Combo Adulto (5 Canais)", precoMensal: 43.90, precoAnual: null, beneficios: ["Sexy Hot", "Playboy", "Venus", "Sextreme", "For Man HD"], observacoes: "Promoção R$ 21,95 por 2 meses." },
+  { id: "opcional-adulto-combo-4", regiaoId: "nacional", tipo: "Opcional", nome: "Combo Adulto (4 Canais)", precoMensal: 39.90, precoAnual: null, beneficios: ["Sexy Hot", "Playboy", "Venus", "Sextreme HD"], observacoes: "Promoção R$ 19,95 por 2 meses." },
 ];
 
 
@@ -772,15 +695,16 @@ async function seedDatabase() {
         const chunk = productChunks[i];
         
         chunk.forEach((produto) => {
-            const produtoRef = doc(collection(db, 'produtos'));
+            // Usando um ID fixo para o documento, o set irá sobrescrever se já existir.
+            const produtoRef = doc(db, 'produtos', produto.id); 
+            // Criamos uma cópia do objeto produto para não modificar o original
+            const produtoData: any = {...produto};
+            // Removemos o ID do objeto de dados, pois ele já está no nome do documento
+            delete produtoData.id; 
+            
             batch.set(produtoRef, {
-                regiaoId: produto.regiaoId,
-                tipo: produto.tipo,
-                nome: produto.nome,
-                precoMensal: produto.precoMensal,
+                ...produtoData,
                 precoAnual: produto.precoAnual || null, // Garante que o campo exista
-                beneficios: produto.beneficios,
-                observacoes: produto.observacoes
             });
         });
         
@@ -798,3 +722,5 @@ async function seedDatabase() {
 
 // Roda a função
 seedDatabase();
+
+    
