@@ -67,7 +67,7 @@ const regioesParaCadastrar = [
   {
     id: "especial-plus-promo-6m",
     nome: "Especial+ Promo 6M (Cabo/Fibra)",
-    cidades: ["Fortaleza-CE", "Teresina-PI", "Lagoa Santa-MG", "Santa Luzia-MG", "Vespasiano-MG", "Macapa-AP"]
+    cidades: ["Fortaleza-CE", "Teresina-PI", "Lagoa Santa-MG", "Santa Luzia-MG", "Macapa-AP"]
   },
   // Regiões de BL "Especial+ Promo 3/6M" (p.24) e TV "MED" (p.67)
   {
@@ -115,9 +115,9 @@ const regioesParaCadastrar = [
   {
     id: "fibra-pura",
     nome: "Fibra Pura (TV p.66)",
-    cidades: ["Apucarana-PR", "Biguacu-SC", "Cambe-PR", "Guaramirim-SC", "Jaragua Do Sul-SC", "Rolandia-PR", "Sao Francisco Do Sul-SC", "Aluminio-SP", "Americo Brasiliense-SP", "Aruja-SP", "Cabreuva-SP", "Caieiras-SP", "Cajamar-SP", "Campo Limpo Paulista-SP", "Caraguatatuba-SP", "Cordeiropolis-SP", "Itaguai-RJ", "Itanhaem-SP", "Itaquaquecetuba-SP", "Itatiba-SP", "Itupeva-SP", "Jaguariuna-SP", "Jarinu-SP", "Lagoa Santa-MG", "Mairinque-SP", "Mirassol-SP", "Mongagua-SP", "Morungaba-SP", "Perube-SP", "Piracaia-SP", "Ribeirao Pires-SP", "Santa Gertrudes-SP", "Santa Isabel-SP", "Santa Luzia-MG", "Sao Roque-SP", "Sao Sebastiao-SP", "Ubatuba-SP", "Varzea Paulista-SP", "Vespasiano-MG", "Macapa-AP", "Santana-AP", "Aquiraz-CE", "Camacari-BA", "Eusebio-CE", "Mata De Sao Joao-BA"]
+    cidades: ["Apucarana-PR", "Cambe-PR", "Guaramirim-SC", "Jaragua Do Sul-SC", "Rolandia-PR", "Aruja-SP", "Caieiras-SP", "Itupeva-SP", "Mairinque-SP", "Perube-SP", "Ribeirao Pires-SP", "Sao Roque-SP", "Vespasiano-MG", "Camacari-BA", "Mata De Sao Joao-BA"]
   },
-  // Região Nacional para produtos que não dependem de geografia (Móvel, Opcionais, App, Upgrade)
+  // Região Nacional para produtos que não dependem de geografia (Móvel, Opcionais, Upgrade)
   {
     id: "nacional",
     nome: "Nacional (Móvel/Opcional)",
@@ -258,108 +258,108 @@ const produtosParaCadastrar = [
 
   // Região: padrao (p.18)
   { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 299.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 149,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 149.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fone)", precoMensal: 119.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 99.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 149,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 149.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fixo)", precoMensal: 119.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "padrao", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
 
   // Região: especial (p.19)
   { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 149,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 149.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fone)", precoMensal: 119.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 99.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 149,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 149.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fixo)", precoMensal: 119.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   
   // Região: especial-promo-6m (p.20)
   { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 149,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 149.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 49,90/6M)", precoMensal: 49.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 6 meses, após R$ 79,90. Preço Single/Fone: R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fone)", precoMensal: 119.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 149,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 149.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 49,90/6M)", precoMensal: 49.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 6 meses, após R$ 79,90. Preço Single/Fixo: R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fixo)", precoMensal: 119.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-6m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   
   // Região: especial-promo-3m (p.21)
   { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 149,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 149.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 59,90/3M)", precoMensal: 59.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 3 meses, após R$ 99,90. Preço Single/Fone: R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fone)", precoMensal: 119.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 99.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 149,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 149.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 59,90/3M)", precoMensal: 59.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 3 meses, após R$ 99,90. Preço Single/Fixo: R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fixo)", precoMensal: 119.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-promo-3m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
 
   // Região: especial-plus (p.22)
   { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 129,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 129,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 89,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 89,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
 
   // Região: especial-plus-promo-6m (p.23)
   { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: N/A. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: N/A. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 49,90/6M)", precoMensal: 49.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 6 meses, após R$ 79,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fone)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fixo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-6m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
 
   // Região: especial-plus-promo-3-6m (p.24)
   { regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 49,90/6M)", precoMensal: 49.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 6 meses, após R$ 79,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 59,90/3M)", precoMensal: 59.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fone por 3 meses, após R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 59,90/3M)", precoMensal: 59.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fixo por 3 meses, após R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-3-6m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   
   // Região: especial-plus-promo-3m (p.25)
   { regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 59,90/3M)", precoMensal: 59.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 3 meses, após R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fone)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 600 Mega (Single/Fixo)", precoMensal: 99.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-3m", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   
   // Região: especial-plus-promo-3m-b (p.26)
   { regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 199.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 129.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 59,90/3M)", precoMensal: 59.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 3 meses, após R$ 99,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 59,90/3M)", precoMensal: 59.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fone por 3 meses, após R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 59,90/3M)", precoMensal: 59.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fixo por 3 meses, após R$ 119,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 79.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "especial-plus-promo-3m-b", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 89.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
 
   // Região: med-01 (p.27)
   { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 204.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 134,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 134,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 64,90/6M)", precoMensal: 64.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 6 meses, após R$ 84,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 74,90/6M)", precoMensal: 74.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fone por 6 meses, após R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 94.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 74,90/6M)", precoMensal: 74.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fixo por 6 meses, após R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-01", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 94.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
 
   // Região: med-02 (p.28)
   { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 204.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 134,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 134,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 54,90/6M)", precoMensal: 54.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 6 meses, após R$ 84,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 64,90/6M)", precoMensal: 64.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fone por 6 meses, após R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 74.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 84,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 84.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 64,90/6M)", precoMensal: 64.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fixo por 6 meses, após R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 74.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 84,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-02", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 84.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
 
   // Região: med-redes-neutras-02 (p.29)
   { regiaoId: "med-redes-neutras-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Combo R$ 54,90/6M)", precoMensal: 54.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL por 6 meses, após R$ 84,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-redes-neutras-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 64,90/6M)", precoMensal: 64.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fone por 6 meses, após R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-redes-neutras-02", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 64,90/6M)", precoMensal: 64.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fixo por 6 meses, após R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   { regiaoId: "med-redes-neutras-02", tipo: "Banda Larga", nome: "BL 350 Mega (Combo)", precoMensal: 74.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-redes-neutras-02", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 84.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-redes-neutras-02", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 84.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
   
   // Região: med-03 (p.30)
   { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 1 Giga (Combo)", precoMensal: 204.90, precoAnual: null, beneficios: beneficios1GBL, observacoes: "Preço COM TV OU MÓVEL. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fone: R$ 134,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fone)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 54.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL. Preço Single/Fone: R$ 64,90 (6M) -> R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 64,90/6M)", precoMensal: 64.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fone por 6 meses, após R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
-  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fone)", precoMensal: 84.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM FONE/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 750 Mega (Combo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM TV OU MÓVEL. Preço Single/Fixo: R$ 134,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 750 Mega (Single/Fixo)", precoMensal: 134.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 600 Mega (Combo)", precoMensal: 54.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço COM MÓVEL. Preço Single/Fixo: R$ 64,90 (6M) -> R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 600 Mega (Promo Single R$ 64,90/6M)", precoMensal: 64.90, precoAnual: null, beneficios: beneficios500MBL, observacoes: "Preço Single/Fixo por 6 meses, após R$ 104,90. Desconto R$ 5,00 DCC. Fidelidade 12m." },
+  { regiaoId: "med-03", tipo: "Banda Larga", nome: "BL 350 Mega (Single/Fixo)", precoMensal: 84.90, precoAnual: null, beneficios: beneficiosBaseBL, observacoes: "Preço Single ou COM Fixo/APP. Desconto R$ 5,00 DCC. Fidelidade 12m." },
 
   // --- 4. PRODUTOS DE TV (AQUISIÇÃO - p.65-68) ---
   
@@ -373,7 +373,7 @@ const produtosParaCadastrar = [
     {
       regiaoId: regiao, tipo: "TV", nome: "Claro TV+ Soundbox (Cabo) (Single/BL/Móvel)", precoMensal: 164.90, precoAnual: null,
       beneficios: [...beneficiosTVComboCompleto, "Equipamento: Soundbox (Áudio Dolby Atmos)"],
-      observacoes: "Preço COM BL OU MÓVEL ou SINGLE COM FONE (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
+      observacoes: "Preço COM BL OU MÓVEL ou SINGLE COM Fixo (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
     },
     {
       regiaoId: regiao, tipo: "TV", nome: "Claro TV+ Box Cabo (Combo BL+Móvel)", precoMensal: 124.90, precoAnual: null,
@@ -381,9 +381,9 @@ const produtosParaCadastrar = [
       observacoes: "Preço COM BL E MÓVEL (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
     },
     {
-      regiaoId: regiao, tipo: "TV", nome: "Claro TV+ Box Cabo (Single/Combo Fone)", precoMensal: 134.90, precoAnual: null,
+      regiaoId: regiao, tipo: "TV", nome: "Claro TV+ Box Cabo (Single/Combo Fixo)", precoMensal: 134.90, precoAnual: null,
       beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Cabo (Qualidade 4K)"],
-      observacoes: "Preço SINGLE COM FONE (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
+      observacoes: "Preço SINGLE COM Fixo (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
     }
   ]),
 
@@ -399,9 +399,9 @@ const produtosParaCadastrar = [
     observacoes: "Preço COM BL E MÓVEL (p.66). Desconto de R$ 5,00 no DCC+Fatura Digital."
   },
   {
-    regiaoId: "fibra-pura", tipo: "TV", nome: "Claro TV+ Box (Streaming) (Single/Combo Fone)", precoMensal: 134.90, precoAnual: null,
+    regiaoId: "fibra-pura", tipo: "TV", nome: "Claro TV+ Box (Streaming) (Single/Combo Fixo)", precoMensal: 134.90, precoAnual: null,
     beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Streaming"],
-    observacoes: "Preço SINGLE COM FONE (p.66). Desconto de R$ 5,00 no DCC+Fatura Digital."
+    observacoes: "Preço SINGLE COM Fixo (p.66). Desconto de R$ 5,00 no DCC+Fatura Digital."
   },
   
   // TV MED (p.67) - Todas as outras regiões
@@ -432,7 +432,7 @@ const produtosParaCadastrar = [
       observacoes: "Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
     {
-      regiaoId: regiao, tipo: "TV", nome: "Claro TV+ Box Cabo (Single/Combo Fone)", precoMensal: 134.90, precoAnual: null,
+      regiaoId: regiao, tipo: "TV", nome: "Claro TV+ Box Cabo (Single/Combo Fixo)", precoMensal: 134.90, precoAnual: null,
       beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Cabo (Qualidade 4K)"],
       observacoes: "Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
@@ -442,7 +442,7 @@ const produtosParaCadastrar = [
       observacoes: "Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
     {
-      regiaoId: regiao, tipo: "TV", nome: "Claro TV+ Box (Streaming) (Single/Combo Fone)", precoMensal: 134.90, precoAnual: null,
+      regiaoId: regiao, tipo: "TV", nome: "Claro TV+ Box (Streaming) (Single/Combo Fixo)", precoMensal: 134.90, precoAnual: null,
       beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Streaming"],
       observacoes: "Preço MED (p.67). Desconto R$ 5,00 DCC."
     }
@@ -455,7 +455,7 @@ const produtosParaCadastrar = [
     observacoes: "Preço para ÁREA NÃO CABEADA (p.68). Desconto R$ 5,00 DCC."
   },
   {
-    regiaoId: "nacional", tipo: "TV", nome: "Claro TV+ Box (Não Cabeada) (Single/Fone)", precoMensal: 134.90, precoAnual: null,
+    regiaoId: "nacional", tipo: "TV", nome: "Claro TV+ Box (Não Cabeada) (Single/Fixo)", precoMensal: 134.90, precoAnual: null,
     beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Streaming"],
     observacoes: "Preço para ÁREA NÃO CABEADA (p.68). Desconto R$ 5,00 DCC."
   },
@@ -515,9 +515,9 @@ const produtosParaCadastrar = [
     observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m. Procedimento: INICIAL HD RET ANUNCIO TELECINE FID"
   },
 
-  // --- 5. FONE FIXO (PDF 2, p.81) ---
+  // --- 5. Fixo FIXO (PDF 2, p.81) ---
   {
-    regiaoId: "nacional", tipo: "Fixo", nome: "Fone Ilimitado Mundo Total (Combo 3P)", precoMensal: 35.00, precoAnual: null,
+    regiaoId: "nacional", tipo: "Fixo", nome: "Fixo Ilimitado Mundo Total (Combo 3P)", precoMensal: 35.00, precoAnual: null,
     beneficios: [
       "Ligações Nacionais Ilimitadas (Fixo e Celular de qualquer operadora)",
       "Ligações Ilimitadas para Celulares dos EUA",
@@ -528,26 +528,26 @@ const produtosParaCadastrar = [
       "Japão, México, Noruega, Nova Zelândia, Porto Rico, Portugal (Açores/Madeira)",
       "Peru, Polônia, Reino Unido, Rep. Tcheca, Suécia, Suíça e Venezuela"
     ],
-    observacoes: "Preço na combinação FONE+BL+TV ou FONE+BL+MOVEL."
+    observacoes: "Preço na combinação Fixo+BL+TV ou Fixo+BL+MOVEL."
   },
   {
-    regiaoId: "nacional", tipo: "Fixo", nome: "Fone Ilimitado Mundo Total (Single/Combo 2P)", precoMensal: 65.00, precoAnual: null,
+    regiaoId: "nacional", tipo: "Fixo", nome: "Fixo Ilimitado Mundo Total (Single/Combo 2P)", precoMensal: 65.00, precoAnual: null,
     beneficios: [
       "Ligações Nacionais Ilimitadas (Fixo e Celular de qualquer operadora)",
       "Ligações Ilimitadas para Celulares dos EUA",
       "Ligações Ilimitadas para Fixos de 35 países (lista completa acima)"
     ],
-    observacoes: "Preço Single ou em combos 2P (ex: Fone+TV)."
+    observacoes: "Preço Single ou em combos 2P (ex: Fixo+TV)."
   },
   {
-    regiaoId: "nacional", tipo: "Fixo", nome: "Fone Ilimitado Brasil Total (Combo 4P)", precoMensal: 5.00, precoAnual: null,
+    regiaoId: "nacional", tipo: "Fixo", nome: "Fixo Ilimitado Brasil Total (Combo 4P)", precoMensal: 5.00, precoAnual: null,
     beneficios: [
       "Ligações Nacionais Ilimitadas (Fixo e Celular de qualquer operadora)"
     ],
-    observacoes: "Preço na combinação FONE+BL+MOVEL+TV."
+    observacoes: "Preço na combinação Fixo+BL+MOVEL+TV."
   },
   {
-    regiaoId: "nacional", tipo: "Fixo", nome: "Fone Ilimitado Brasil Total (Single/Combo 2P/3P)", precoMensal: 35.00, precoAnual: null,
+    regiaoId: "nacional", tipo: "Fixo", nome: "Fixo Ilimitado Brasil Total (Single/Combo 2P/3P)", precoMensal: 35.00, precoAnual: null,
     beneficios: [
       "Ligações Nacionais Ilimitadas (Fixo e Celular de qualquer operadora)"
     ],
@@ -583,7 +583,7 @@ const produtosParaCadastrar = [
   { regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Padrão (Mensal)", precoMensal: 46.90, precoAnual: null, beneficios: ["Catálogo Disney+ Padrão com anúncios"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Premium (Mensal)", precoMensal: 66.90, precoAnual: null, beneficios: ["Catálogo Disney+ Premium sem anúncios"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Disney+ Premium (Anual)", precoMensal: 46.91, precoAnual: 562.90, beneficios: ["Catálogo Disney+ Premium sem anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 562,90" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) com Anúncios (Mensal)", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo HBO Max com anúncios"], observacoes: "" },
+  { regiaoId: "nциональный", tipo: "Opcional", nome: "Max (HBO) com Anúncios (Mensal)", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo HBO Max com anúncios"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) com Anúncios (Anual)", precoMensal: 18.90, precoAnual: 226.80, beneficios: ["Catálogo HBO Max com anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 226,80" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) Sem Anúncios (Mensal)", precoMensal: 39.90, precoAnual: null, beneficios: ["Catálogo HBO Max sem anúncios"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Max (HBO) Sem Anúncios (Anual)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Catálogo HBO Max sem anúncios", "Pagamento anual em 12x"], observacoes: "Valor total R$ 358,80" },
@@ -648,6 +648,13 @@ const produtosParaCadastrar = [
 // 4. O SCRIPT DE UPLOAD (NÃO MEXA AQUI)
 // =============================================================================
 
+function createProductId(produto: Omit<typeof produtosParaCadastrar[0], 'id'>): string {
+    const name = produto.nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    const type = produto.tipo.toLowerCase().replace(/\s/g, '');
+    const region = produto.regiaoId;
+    return `${region}-${type}-${name}-${produto.precoMensal}`;
+}
+
 /**
  * Função principal para semear o banco de dados.
  */
@@ -655,6 +662,18 @@ async function seedDatabase() {
   console.log('Iniciando o script de semeadura (V9.0 - 100% GRANULAR)...');
 
   try {
+    // --- LIMPEZA DE PRODUTOS ANTIGOS ---
+    console.log('Limpando a coleção de produtos existente...');
+    const produtosCollection = collection(db, 'produtos');
+    const produtosSnapshot = await getDocs(produtosCollection);
+    const deleteBatch = writeBatch(db);
+    produtosSnapshot.docs.forEach((doc) => {
+      deleteBatch.delete(doc.ref);
+    });
+    await deleteBatch.commit();
+    console.log(`✅ ${produtosSnapshot.size} produtos antigos foram removidos.`);
+
+
     // --- UPLOAD DAS REGIÕES ---
     console.log(`Iniciando upload de ${regioesParaCadastrar.length} regiões...`);
     const regioesBatch = writeBatch(db);
@@ -668,7 +687,7 @@ async function seedDatabase() {
     });
 
     await regioesBatch.commit();
-    console.log(`✅ ${regioesParaCadastrar.length} Regiões cadastradas com sucesso!`);
+    console.log(`✅ ${regioesParaCadastrar.length} Regiões cadastradas/sobrescritas com sucesso!`);
 
     // --- UPLOAD DOS PRODUTOS ---
     console.log(`Iniciando upload de ${produtosParaCadastrar.length} produtos...`);
@@ -684,24 +703,22 @@ async function seedDatabase() {
         const batch = writeBatch(db);
         const chunk = productChunks[i];
         
-        chunk.forEach((produto) => {
-            const produtoRef = doc(collection(db, 'produtos'));
-            batch.set(produtoRef, {
-                regiaoId: produto.regiaoId,
-                tipo: produto.tipo,
-                nome: produto.nome,
-                precoMensal: produto.precoMensal,
-                precoAnual: produto.precoAnual || null, // Garante que o campo exista
-                beneficios: produto.beneficios,
-                observacoes: produto.observacoes
-            });
+        chunk.forEach((produtoData) => {
+            const produtoId = createProductId(produtoData);
+            const produtoRef = doc(db, 'produtos', produtoId);
+            const dataToSet = {
+                ...produtoData,
+                id: produtoId, // Garante que o ID está no documento
+                precoAnual: produtoData.precoAnual || null, // Garante que o campo exista
+            };
+            batch.set(produtoRef, dataToSet);
         });
         
         await batch.commit();
         console.log(`✅ Lote ${i + 1} cadastrado com sucesso!`);
     }
     
-    console.log(`✅ TOTAL de ${produtosParaCadastrar.length} Produtos cadastrados com sucesso!`);
+    console.log(`✅ TOTAL de ${produtosParaCadastrar.length} Produtos cadastrados/sobrescritos com sucesso!`);
     console.log('🚀 Semeadura do banco de dados concluída!');
 
   } catch (error) {
@@ -711,5 +728,4 @@ async function seedDatabase() {
 
 // Roda a função
 seedDatabase();
-
     

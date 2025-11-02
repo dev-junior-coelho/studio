@@ -117,7 +117,7 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
 
     if (!targetPontoAdicionalName) return undefined;
     
-    return allProducts.find(p => p.tipo === 'Opcional' && p.nome === targetPontoAdicionalName);
+    return allProducts.find(p => p.tipo === 'Opcional' && p.nome.startsWith(targetPontoAdicionalName));
   };
   
   const upsellProduct = getUpsellProduct(product);
@@ -131,7 +131,9 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
   };
   
   const handleConfirmUpsell = (quantity: number) => {
-    addProductWithExtras(product, upsellProduct, quantity);
+    if(upsellProduct){
+        addProductWithExtras(product, upsellProduct, quantity);
+    }
   };
 
 
@@ -211,9 +213,21 @@ export default function MontadorPortfolioPage() {
   // 2. Create a flat, sorted list of all cities with their region ID
   const allCities = useMemo(() => {
     if (!regioes) return [];
-    return regioes
-      .flatMap(regiao => regiao.cidades.map(cidade => ({ value: cidade.toLowerCase(), label: cidade, regiaoId: regiao.id })))
+    
+    const allCitiesMap = new Map<string, { value: string; label: string; regiaoId: string }>();
+
+    regioes.forEach(regiao => {
+        regiao.cidades.forEach(cidade => {
+            const lowerCaseCidade = cidade.toLowerCase();
+            if (!allCitiesMap.has(lowerCaseCidade)) {
+                allCitiesMap.set(lowerCaseCidade, { value: lowerCaseCidade, label: cidade, regiaoId: regiao.id });
+            }
+        });
+    });
+
+    return Array.from(allCitiesMap.values())
       .sort((a, b) => a.label.localeCompare(b.label));
+      
   }, [regioes]);
 
   // 3. Find the selected region ID based on the selected city from context
@@ -243,8 +257,8 @@ export default function MontadorPortfolioPage() {
       
     // Sort by tipo (category), then by nome (name)
     return filtered.sort((a, b) => {
-        if (a.tipo < b.tipo) return -1;
-        if (a.tipo > b.tipo) return 1;
+        const typeOrder = productTypes.indexOf(a.tipo) - productTypes.indexOf(b.tipo);
+        if (typeOrder !== 0) return typeOrder;
         return a.nome.localeCompare(b.nome);
     });
 
