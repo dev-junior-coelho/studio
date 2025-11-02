@@ -1,4 +1,4 @@
-export type ProductType = "Movel" | "Banda Larga" | "TV" | "Fixo" | "Opcional";
+export type ProductType = "Movel" | "Banda Larga" | "TV" | "Fixo" | "Opcional" | "Ponto Adicional";
 
 export interface Produto {
   id: string;

@@ -6,7 +6,7 @@ import { useOffer } from '@/contexts/offer-context';
 import type { ProductType, Produto, Regiao } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check, Minus, Plus } from 'lucide-react';
+import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useCollection } from '@/firebase/firestore/use-collection';
@@ -16,80 +16,19 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle 
-} from '@/components/ui/alert-dialog';
 
-
-const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
+const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Ponto Adicional", "Opcional"];
 const typeDisplayNames: Record<ProductType, string> = {
   "Movel": "Móvel",
   "Banda Larga": "Banda Larga",
   "TV": "TV",
   "Fixo": "Fixo",
+  "Ponto Adicional": "Ponto Adicional",
   "Opcional": "A La Carte"
 };
 
-function ExtraPointDialog({ 
-  mainTvProduct, 
-  upsellProduct, 
-  isOpen, 
-  onClose, 
-  onConfirm 
-}: { 
-  mainTvProduct: Produto, 
-  upsellProduct: Produto, 
-  isOpen: boolean, 
-  onClose: () => void, 
-  onConfirm: (quantity: number) => void 
-}) {
-  const [quantity, setQuantity] = useState(0);
-
-  if (!isOpen) return null;
-  
-  const handleConfirm = () => {
-    onConfirm(quantity);
-    onClose();
-  };
-
-  return (
-    <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Adicionar Ponto Adicional?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Você adicionou <span className="font-bold">{mainTvProduct.nome}</span>. 
-            Deseja incluir pontos adicionais de <span className="font-bold">{upsellProduct.nome.replace('Ponto Adicional - ', '')}</span> por {upsellProduct.precoMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} cada?
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <div className="flex items-center justify-center space-x-4 py-4">
-          <Button variant="outline" size="icon" onClick={() => setQuantity(q => Math.max(0, q - 1))}>
-            <Minus className="h-4 w-4" />
-          </Button>
-          <span className="text-2xl font-bold w-12 text-center">{quantity}</span>
-          <Button variant="outline" size="icon" onClick={() => setQuantity(q => q + 1)}>
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm}>Adicionar à Oferta</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
-
-function ProductCard({ product, allProducts }: { product: Produto, allProducts: Produto[] }) {
-  const { addProduct, addProductWithExtras } = useOffer();
-  const [isUpsellDialogOpen, setUpsellDialogOpen] = useState(false);
+function ProductCard({ product }: { product: Produto }) {
+  const { addProduct } = useOffer();
   
   const price = product.precoMensal;
   const isPriceValid = typeof price === 'number' && price > 0;
@@ -99,57 +38,14 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
     'Banda Larga': 'banda-larga',
     'TV': 'tv',
     'Fixo': 'fixo',
-    'Opcional': 'fixo'
+    'Opcional': 'fixo',
+    'Ponto Adicional': 'tv'
   }
   const placeholder = PlaceHolderImages.find(p => p.id === imageMap[product.tipo]);
 
-  const getUpsellProduct = (mainProduct: Produto): Produto | undefined => {
-    if (mainProduct.tipo !== 'TV' || mainProduct.nome.toLowerCase().includes('app') || mainProduct.nome.toLowerCase().includes('streamings')) {
-        return undefined;
-    }
-
-    const lowerCaseName = mainProduct.nome.toLowerCase();
-    
-    // Rule for "RET" plans -> R$ 10,00
-    if (lowerCaseName.includes(' ret')) {
-        return allProducts.find(p => p.nome === 'Ponto Adicional - Claro TV+ HD (RET)');
-    }
-    
-    // Rule for Soundbox -> R$ 69,90
-    if (lowerCaseName.includes('soundbox')) {
-        return allProducts.find(p => p.nome === 'Ponto Adicional - Claro TV+ Soundbox');
-    }
-    
-    // Rule for other Boxes (Streaming/Cabo) -> R$ 39,90
-    if (lowerCaseName.includes('box')) {
-        return allProducts.find(p => p.nome === 'Ponto Adicional - Claro TV+ Box');
-    }
-    
-    // Rule for HD decoders -> R$ 39,90
-    if (lowerCaseName.includes('hd')) {
-        return allProducts.find(p => p.nome === 'Ponto Adicional - Claro TV+ HD');
-    }
-    
-    return undefined;
-  };
-  
-  const upsellProduct = getUpsellProduct(product);
-
   const handleAddClick = () => {
-    if (upsellProduct) {
-      setUpsellDialogOpen(true);
-    } else {
-      addProduct(product);
-    }
+    addProduct(product);
   };
-  
-  const handleConfirmUpsell = (quantity: number) => {
-    addProduct(product); // Add the main product regardless
-    if(upsellProduct && quantity > 0){
-        addProductWithExtras(product, upsellProduct, quantity);
-    }
-  };
-
 
   return (
     <>
@@ -199,16 +95,6 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
           </Button>
         </CardFooter>
       </Card>
-      
-      {upsellProduct && (
-        <ExtraPointDialog 
-          mainTvProduct={product}
-          upsellProduct={upsellProduct}
-          isOpen={isUpsellDialogOpen}
-          onClose={() => setUpsellDialogOpen(false)}
-          onConfirm={handleConfirmUpsell}
-        />
-      )}
     </>
   );
 }
@@ -390,7 +276,7 @@ export default function MontadorPortfolioPage() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {!isLoading && filteredAndSortedProducts.map(product => (
-              <ProductCard key={product.id} product={product} allProducts={productsData || []} />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </>

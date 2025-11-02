@@ -554,11 +554,13 @@ const produtosParaCadastrar = [
     observacoes: "Preço em qualquer combinação que não seja 4P."
   },
 
-  // --- 6. OPCIONAIS (PONTOS ADICIONAIS - p.71 e p.72) ---
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Soundbox", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional", "Máximo de 2 pontos por contrato"], observacoes: "Valor de aluguel mensal. Para planos de Aquisição e Upgrade." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Box", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional", "Máximo de 4 pontos por contrato para Cabo, 2 para Streaming"], observacoes: "Valor de aluguel mensal. Para planos de Aquisição e Upgrade." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ HD", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Decodificador HD adicional"], observacoes: "Valor de aluguel mensal. Para planos de Aquisição ou Upgrade." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ HD (RET)", precoMensal: 10.00, precoAnual: null, beneficios: ["Aluguel de 1 equipamento HD adicional para planos de Rentabilização (RET)."], observacoes: "Valor de aluguel mensal. Para planos de Upgrade INICIAL HD RET." },
+  // --- 6. PONTOS ADICIONAIS ---
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox (Aquisição)", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox (Upgrade)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box (Aquisição)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box (Upgrade)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (Aquisição)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Decodificador HD adicional"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (RET)", precoMensal: 10.00, precoAnual: null, beneficios: ["Aluguel de 1 equipamento HD adicional para planos de Rentabilização (RET)."], observacoes: "Valor de aluguel mensal para planos INICIAL HD RET." },
 
   // --- 7. OPCIONAIS (CONECTIVIDADE E GAMING - p.46) ---
   { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
@@ -698,14 +700,15 @@ async function seedDatabase() {
         
         chunk.forEach((produtoData) => {
             const produtoId = createProductId(produtoData as any);
-            const produtoRef = doc(db, 'produtos', produtoId);
             const dataToSet = {
                 ...produtoData,
                 id: produtoId, // Garante que o ID está no documento
                 precoAnual: (produtoData as any).precoAnual || null, // Garante que o campo exista
-                fidelidade: (produtoData as any).fidelidade || 'Não informado'
+                fidelidade: (produtoData as any).fidelidade || 'Não informado',
+                observacoes: (produtoData as any).observacoes || ''
             };
-            batch.set(produtoRef, dataToSet);
+            batch.set(produtoRef, doc(db, 'produtos', produtoId));
+            batch.set(doc(db, 'produtos', produtoId), dataToSet);
         });
         
         await batch.commit();
