@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -12,6 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/contexts/auth-context';
 import { useFirebase } from '@/firebase/provider';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import type { Produto, ProductType } from '@/lib/types';
 
 type Gastos = {
   tv: number;
@@ -33,11 +35,21 @@ export default function ComparadorOfertaPage() {
   };
   
   const totalGastoAtual = useMemo(() => Object.values(gastos).reduce((acc, val) => acc + val, 0), [gastos]);
-  const novoTotalClaro = useMemo(() => products.reduce((acc, p) => acc + p.precoMensal, 0), [products]);
+  const novoTotalClaro = useMemo(() => products.reduce((acc, p) => acc + (p.precoMensal || 0), 0), [products]);
   const economiaMensal = useMemo(() => totalGastoAtual - novoTotalClaro, [totalGastoAtual, novoTotalClaro]);
 
-  const allBeneficios = useMemo(() => products.flatMap(p => p.beneficios), [products]);
-  const allFidelidade = useMemo(() => [...new Set(products.map(p => p.fidelidade).filter(f => f !== 'Sem fidelidade'))], [products]);
+  const beneficiosAgrupados = useMemo(() => {
+    return products.reduce((acc, product) => {
+      const { tipo, beneficios } = product;
+      if (!acc[tipo]) {
+        acc[tipo] = [];
+      }
+      acc[tipo].push(...beneficios);
+      return acc;
+    }, {} as Record<ProductType, string[]>);
+  }, [products]);
+  
+  const allFidelidade = useMemo(() => [...new Set(products.map(p => p.fidelidade).filter(f => f && f !== 'Sem fidelidade'))], [products]);
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -153,18 +165,24 @@ export default function ComparadorOfertaPage() {
                 <p className="text-muted-foreground">"Por apenas {formatCurrency(Math.abs(economiaMensal))} a mais, o cliente leva todos estes benefícios:"</p>
               </div>
             )}
-            {(allBeneficios.length > 0 || allFidelidade.length > 0) && <Separator />}
-            {allBeneficios.length > 0 && (
-              <div>
-                  <h4 className="font-bold mb-2">Benefícios Inclusos:</h4>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                      {allBeneficios.map((b, i) => <div key={i} className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">{b}</div>)}
+            
+            <Separator />
+            
+            <div className="space-y-4 text-left">
+              {Object.entries(beneficiosAgrupados).map(([tipo, beneficios]) => (
+                <div key={tipo}>
+                  <h4 className="font-bold mb-2 text-primary">{`Benefícios ${tipo}`}</h4>
+                  <div className="flex flex-wrap gap-2 justify-start">
+                    {beneficios.map((b, i) => <div key={i} className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">{b}</div>)}
                   </div>
-              </div>
-            )}
+                </div>
+              ))}
+            </div>
+
             {allFidelidade.length > 0 && (
-              <div>
-                  <h4 className="font-bold mb-2 mt-4">Fidelidade:</h4>
+              <div className="text-left pt-4">
+                  <Separator className="mb-4"/>
+                  <h4 className="font-bold mb-2">Fidelidade:</h4>
                   <p className="text-sm">{allFidelidade.join(', ')}</p>
               </div>
             )}
