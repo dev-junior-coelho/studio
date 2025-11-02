@@ -6,7 +6,7 @@ import { useOffer } from '@/contexts/offer-context';
 import type { ProductType, Produto, Regiao } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Loader2 } from 'lucide-react';
+import { PlusCircle, Loader2, XCircle } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useCollection } from '@/firebase/firestore/use-collection';
@@ -19,7 +19,6 @@ const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opci
 function ProductCard({ product }: { product: Produto }) {
   const { addProduct } = useOffer();
 
-  // Since the DB is fixed, we can reliably use product.precoMensal
   const price = product.precoMensal;
   const isPriceValid = typeof price === 'number' && price > 0;
 
@@ -84,7 +83,7 @@ function ProductCard({ product }: { product: Produto }) {
 
 export default function MontadorPortfolioPage() {
   const [selectedType, setSelectedType] = useState<ProductType | 'Todos'>('Todos');
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const { selectedCity, setSelectedCity } = useOffer();
   
   const { firestore } = useFirebase();
 
@@ -117,15 +116,31 @@ export default function MontadorPortfolioPage() {
   
   const { data: productsData, isLoading: isLoadingProducts } = useCollection<Produto>(productsQuery);
 
-  const filteredProducts = useMemo(() => {
+  const filteredAndSortedProducts = useMemo(() => {
     if (!productsData) return [];
-    if (selectedType === 'Todos') return productsData;
-    return productsData.filter(p => p.tipo === selectedType);
+    
+    // Filter by type
+    const filtered = selectedType === 'Todos' 
+      ? productsData 
+      : productsData.filter(p => p.tipo === selectedType);
+      
+    // Sort by tipo (category), then by nome (name)
+    return filtered.sort((a, b) => {
+        if (a.tipo < b.tipo) return -1;
+        if (a.tipo > b.tipo) return 1;
+        return a.nome.localeCompare(b.nome);
+    });
+
   }, [productsData, selectedType]);
 
   const handleCityChange = (city: string) => {
     setSelectedCity(city);
     setSelectedType('Todos'); // Reset filter when city changes
+  }
+  
+  const clearSelection = () => {
+    setSelectedCity(null);
+    setSelectedType('Todos');
   }
 
   const isLoading = isLoadingRegioes || (selectedCity && isLoadingProducts);
@@ -159,6 +174,11 @@ export default function MontadorPortfolioPage() {
 
       {selectedCity && (
         <>
+          <Button onClick={clearSelection} variant="outline" size="sm" className="w-full">
+            <XCircle className="mr-2 h-4 w-4" />
+            Limpar Seleção ({selectedCity})
+          </Button>
+
           <div className="flex flex-wrap gap-2">
             <Button 
               variant={selectedType === 'Todos' ? 'default' : 'outline'}
@@ -186,14 +206,14 @@ export default function MontadorPortfolioPage() {
             </div>
           )}
 
-          {!isLoading && filteredProducts.length === 0 && (
+          {!isLoading && filteredAndSortedProducts.length === 0 && (
              <div className="text-center py-10">
               <p className="text-muted-foreground">Nenhum produto encontrado para esta seleção.</p>
             </div>
           )}
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {!isLoading && filteredProducts.map(product => (
+            {!isLoading && filteredAndSortedProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -201,5 +221,3 @@ export default function MontadorPortfolioPage() {
       )}
     </div>
   );
-
-    

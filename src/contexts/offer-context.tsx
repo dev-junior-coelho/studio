@@ -21,6 +21,8 @@ interface OfferContextType {
   clearOffer: () => void;
   gastos: Gastos;
   setGastos: React.Dispatch<React.SetStateAction<Gastos>>;
+  selectedCity: string | null;
+  setSelectedCity: (city: string | null) => void;
 }
 
 const OfferContext = createContext<OfferContextType | undefined>(undefined);
@@ -28,6 +30,7 @@ const OfferContext = createContext<OfferContextType | undefined>(undefined);
 export function OfferProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Produto[]>([]);
   const [gastos, setGastos] = useState<Gastos>(initialGastos);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const { toast } = useToast();
 
   const addProduct = useCallback((product: Produto) => {
@@ -59,15 +62,25 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const clearOffer = useCallback(() => {
     setProducts([]);
     setGastos(initialGastos);
+    setSelectedCity(null); // Also clear city on full clear
     setTimeout(() => {
       toast({
           title: "Oferta Limpa",
-          description: "A oferta foi reiniciada.",
+          description: "A oferta e a cidade foram reiniciadas.",
         });
     }, 0);
   }, [toast]);
 
-  const value = { products, addProduct, removeProduct, clearOffer, gastos, setGastos };
+  const value = { 
+    products, 
+    addProduct, 
+    removeProduct, 
+    clearOffer, 
+    gastos, 
+    setGastos, 
+    selectedCity, 
+    setSelectedCity 
+  };
 
   return (
     <OfferContext.Provider value={value}>
