@@ -109,15 +109,22 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
     }
 
     const lowerCaseName = mainProduct.nome.toLowerCase();
-
-    // Logic is now more specific to avoid incorrect matches.
-    // It checks for 'soundbox' first, then 'box', then 'hd'.
+    const isUpgrade = lowerCaseName.includes('upgrade');
+    
+    // Most specific first
     if (lowerCaseName.includes('soundbox')) {
-        return allProducts.find(p => p.nome.startsWith('Ponto Adicional - Claro TV+ Soundbox'));
-    } else if (lowerCaseName.includes('box')) {
-        return allProducts.find(p => p.nome.startsWith('Ponto Adicional - Claro TV+ Box'));
-    } else if (lowerCaseName.includes('hd')) {
-        return allProducts.find(p => p.nome.startsWith('Ponto Adicional - Claro TV+ HD'));
+        const searchString = isUpgrade ? 'Ponto Adicional - Soundbox (Upgrade)' : 'Ponto Adicional - Claro TV+ Soundbox';
+        return allProducts.find(p => p.nome.startsWith(searchString));
+    }
+    // Then box
+    if (lowerCaseName.includes('box cabo') || lowerCaseName.includes('box (streaming)')) {
+        const searchString = isUpgrade ? 'Ponto Adicional - Box' : 'Ponto Adicional - Claro TV+ Box';
+        return allProducts.find(p => p.nome.startsWith(searchString));
+    }
+    // Then HD
+    if (lowerCaseName.includes('hd')) {
+        const searchString = isUpgrade ? 'Ponto Adicional - HD' : 'Ponto Adicional - Claro TV+ HD';
+        return allProducts.find(p => p.nome.startsWith(searchString));
     }
     
     return undefined;
@@ -134,11 +141,10 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
   };
   
   const handleConfirmUpsell = (quantity: number) => {
-    if(upsellProduct){
-        addProductWithExtras(product, upsellProduct, quantity);
-    } else {
-        // Fallback for TVs without a specific upsell, just add the main product
-        addProduct(product);
+    // Always add the main product, even if quantity is 0
+    addProduct(product);
+    if(upsellProduct && quantity > 0){
+        addProductWithExtras(mainProduct, upsellProduct, quantity);
     }
   };
 

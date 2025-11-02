@@ -60,11 +60,6 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const addProductWithExtras = useCallback((mainProduct: Produto, extraProduct: Produto, quantity: number) => {
     setProducts(prevProducts => {
       const newProducts = [...prevProducts];
-
-      // Add main product if not already there
-      if (!newProducts.find(p => p.id === mainProduct.id)) {
-        newProducts.push(mainProduct);
-      }
       
       let extrasAdded = 0;
       // Add extra products with unique IDs
@@ -76,8 +71,8 @@ export function OfferProvider({ children }: { children: ReactNode }) {
 
       setTimeout(() => {
           toast({
-            title: "Produtos Adicionados!",
-            description: `${mainProduct.nome} ${extrasAdded > 0 ? `e ${extrasAdded} Ponto(s) Adicional(is)` : ''} foram adicionados.`,
+            title: "Pontos Adicionais!",
+            description: `${extrasAdded} Ponto(s) Adicional(is) de ${extraProduct.nome.replace('Ponto Adicional - ', '')} foram adicionados.`,
           });
         }, 0);
 
