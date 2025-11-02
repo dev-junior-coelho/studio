@@ -107,7 +107,7 @@ const regioesParaCadastrar = [
 ];
 
 // =============================================================================
-// 3. DADOS DOS PRODUTOS (V4.0 - LISTA DE BENEFÍCIOS 100% COMPLETA)
+// 3. DADOS DOS PRODUTOS (V5.0 - 100% COMPLETA + PONTOS ADICIONAIS)
 // =============================================================================
 
 const produtosParaCadastrar = [
@@ -651,7 +651,19 @@ const produtosParaCadastrar = [
     observacoes: "Preço em qualquer combinação que não seja 4P."
   },
 
-  // --- 7. OPCIONAIS (A LA CARTE - STREAMING) ---
+  // --- 7. OPCIONAIS (CONECTIVIDADE E GAMING) ---
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Soundbox", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox adicional", "Requer ponto principal Soundbox"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Box Cabo", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box Cabo adicional", "Requer ponto principal Box Cabo"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional - Claro TV+ Box (Streaming)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional", "Requer ponto principal Box (Streaming)"], observacoes: "Valor de aluguel mensal." },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Geek", precoMensal: 9.90, precoAnual: 118.80, beneficios: ["Suporte técnico especializado para dispositivos"], observacoes: "Fidelidade 12 meses. Multa R$ 59,40 proporcional." },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Geforce NOW (Avulso)", precoMensal: 63.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos na nuvem"], observacoes: "" },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Abya Go", precoMensal: 25.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos"], observacoes: "" },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "No Ping", precoMensal: 10.00, precoAnual: null, beneficios: ["Redutor de latência (ping) para jogos online"], observacoes: "" },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro SmartHome (1 Câmera)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Monitoramento com 1 Câmera HD Wi-Fi (interna)", "Equipamento em comodato"], observacoes: "Fidelidade 12 meses. Multa R$ 500,00 proporcional." },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Extensor Wi-Fi Mesh (Comodato)", precoMensal: 30.00, precoAnual: 360.00, beneficios: ["Kit com 2 extensores para melhorar o sinal Wi-Fi"], observacoes: "Fidelidade 12 meses. Multa R$ 300,00 por extensor." },
+
+  // --- 8. OPCIONAIS (A LA CARTE - STREAMING) ---
   { regiaoId: "nacional", tipo: "Opcional", nome: "Amazon Prime (Mensal)", precoMensal: 19.90, precoAnual: null, beneficios: ["Amazon Prime Video", "Amazon Music", "Prime Gaming", "Prime Reading", "Frete Grátis Amazon"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Apple TV+ (Mensal)", precoMensal: 21.90, precoAnual: null, beneficios: ["Catálogo Apple TV+", "5 acessos", "4K HDR", "Sem anúncios"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Crunchyroll Fan (Mensal)", precoMensal: 14.99, precoAnual: null, beneficios: ["Catálogo de animes Crunchyroll"], observacoes: "" },
@@ -668,8 +680,8 @@ const produtosParaCadastrar = [
   { regiaoId: "nacional", tipo: "Opcional", nome: "Premiere Futebol (Anual)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Acesso aos canais Premiere", "Pagamento anual em 12x"], observacoes: "Valor total R$ 358,80" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Combo Telecine e Universal+ (Mensal)", precoMensal: 34.90, precoAnual: null, beneficios: ["Catálogo Telecine", "Catálogo Universal+"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Combo Telecine e Universal+ (Anual)", precoMensal: 24.90, precoAnual: 298.80, beneficios: ["Catálogo Telecine", "Catálogo Universal+", "Pagamento anual em 12x"], observacoes: "Valor total R$ 298,80" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Televine (Mensal)", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo Telecine"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Televine (Anual)", precoMensal: 19.90, precoAnual: 238.80, beneficios: ["Catálogo Telecine", "Pagamento anual em 12x"], observacoes: "Valor total R$ 238,80" },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Telecine (Mensal)", precoMensal: 29.90, precoAnual: null, beneficios: ["Catálogo Telecine"], observacoes: "" },
+  { regiaoId: "nacional", tipo: "Opcional", nome: "Telecine (Anual)", precoMensal: 19.90, precoAnual: 238.80, beneficios: ["Catálogo Telecine", "Pagamento anual em 12x"], observacoes: "Valor total R$ 238,80" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Netflix com Anúncios (Avulso)", precoMensal: 20.90, precoAnual: null, beneficios: ["Acesso ao Netflix com anúncios"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Netflix Padrão (Avulso)", precoMensal: 44.90, precoAnual: null, beneficios: ["Acesso ao Netflix Padrão", "2 telas simultâneas", "Sem anúncios"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Netflix Premium (Avulso)", precoMensal: 59.90, precoAnual: null, beneficios: ["Acesso ao Netflix Premium", "4 telas simultâneas", "Qualidade 4K HDR", "Sem anúncios"], observacoes: "" },
@@ -704,7 +716,7 @@ const produtosParaCadastrar = [
   { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Shows", precoMensal: 14.90, precoAnual: null, beneficios: ["Catálogo Claro Shows"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Only TV", precoMensal: 29.90, precoAnual: null, beneficios: ["Conteúdo Árabe"], observacoes: "" },
 
-  // --- 8. OPCIONAIS (ADULTOS) ---
+  // --- 9. OPCIONAIS (ADULTOS) ---
   { regiaoId: "nacional", tipo: "Opcional", nome: "Brasileirinhas", precoMensal: 24.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "For Man", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Playboy HD", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
@@ -716,15 +728,6 @@ const produtosParaCadastrar = [
   { regiaoId: "nacional", tipo: "Opcional", nome: "Venus Digital", precoMensal: 19.90, precoAnual: null, beneficios: ["Canal Adulto"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Combo Adulto (5 Canais)", precoMensal: 43.90, precoAnual: null, beneficios: ["Sexy Hot", "Playboy", "Venus", "Sextreme", "For Man HD"], observacoes: "Promoção R$ 21,95 por 2 meses." },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Combo Adulto (4 Canais)", precoMensal: 39.90, precoAnual: null, beneficios: ["Sexy Hot", "Playboy", "Venus", "Sextreme HD"], observacoes: "Promoção R$ 19,95 por 2 meses." },
-
-  // --- 9. OPCIONAIS (CONECTIVIDADE E GAMING) ---
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Geek", precoMensal: 9.90, precoAnual: 118.80, beneficios: ["Suporte técnico especializado para dispositivos"], observacoes: "Fidelidade 12 meses. Multa R$ 59,40 proporcional." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Geforce NOW (Avulso)", precoMensal: 63.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos na nuvem"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Abya Go", precoMensal: 25.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "No Ping", precoMensal: 10.00, precoAnual: null, beneficios: ["Redutor de latência (ping) para jogos online"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro SmartHome (1 Câmera)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Monitoramento com 1 Câmera HD Wi-Fi (interna)", "Equipamento em comodato"], observacoes: "Fidelidade 12 meses. Multa R$ 500,00 proporcional." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Extensor Wi-Fi Mesh (Comodato)", precoMensal: 30.00, precoAnual: 360.00, beneficios: ["Kit com 2 extensores para melhorar o sinal Wi-Fi"], observacoes: "Fidelidade 12 meses. Multa R$ 300,00 por extensor." }
 ];
 
 
@@ -736,7 +739,7 @@ const produtosParaCadastrar = [
  * Função principal para semear o banco de dados.
  */
 async function seedDatabase() {
-  console.log('Iniciando o script de semeadura (V4.0 - 100% COMPLETA)...');
+  console.log('Iniciando o script de semeadura (V5.0 - 100% COMPLETA)...');
 
   try {
     // --- UPLOAD DAS REGIÕES ---
@@ -756,24 +759,36 @@ async function seedDatabase() {
 
     // --- UPLOAD DOS PRODUTOS ---
     console.log(`Iniciando upload de ${produtosParaCadastrar.length} produtos...`);
-    const produtosBatch = writeBatch(db);
+    // O Firestore limita as operações de batch a 500. Se tivermos mais, quebramos em múltiplos batches.
+    const CHUNK_SIZE = 499;
+    const productChunks = [];
+    for (let i = 0; i < produtosParaCadastrar.length; i += CHUNK_SIZE) {
+        productChunks.push(produtosParaCadastrar.slice(i, i + CHUNK_SIZE));
+    }
 
-    produtosParaCadastrar.forEach((produto) => {
-      const produtoRef = doc(collection(db, 'produtos'));
-      produtosBatch.set(produtoRef, {
-        regiaoId: produto.regiaoId,
-        tipo: produto.tipo,
-        nome: produto.nome,
-        precoMensal: produto.precoMensal,
-        precoAnual: produto.precoAnual || null, // Garante que o campo exista
-        beneficios: produto.beneficios,
-        observacoes: produto.observacoes
-      });
-    });
-
-    await produtosBatch.commit();
-    console.log(`✅ ${produtosParaCadastrar.length} Produtos cadastrados com sucesso!`);
+    for (let i = 0; i < productChunks.length; i++) {
+        console.log(`Processando lote de produtos ${i + 1} de ${productChunks.length}...`);
+        const batch = writeBatch(db);
+        const chunk = productChunks[i];
+        
+        chunk.forEach((produto) => {
+            const produtoRef = doc(collection(db, 'produtos'));
+            batch.set(produtoRef, {
+                regiaoId: produto.regiaoId,
+                tipo: produto.tipo,
+                nome: produto.nome,
+                precoMensal: produto.precoMensal,
+                precoAnual: produto.precoAnual || null, // Garante que o campo exista
+                beneficios: produto.beneficios,
+                observacoes: produto.observacoes
+            });
+        });
+        
+        await batch.commit();
+        console.log(`✅ Lote ${i + 1} cadastrado com sucesso!`);
+    }
     
+    console.log(`✅ TOTAL de ${produtosParaCadastrar.length} Produtos cadastrados com sucesso!`);
     console.log('🚀 Semeadura do banco de dados concluída!');
 
   } catch (error) {

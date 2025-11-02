@@ -15,6 +15,13 @@ import { useFirebase, useMemoFirebase } from '@/firebase/provider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
+const typeDisplayNames: Record<ProductType, string> = {
+  "Movel": "Móvel",
+  "Banda Larga": "Banda Larga",
+  "TV": "TV",
+  "Fixo": "Fixo",
+  "Opcional": "A La Carte"
+};
 
 function ProductCard({ product }: { product: Produto }) {
   const { addProduct } = useOffer();
@@ -83,7 +90,7 @@ function ProductCard({ product }: { product: Produto }) {
 
 export default function MontadorPortfolioPage() {
   const [selectedType, setSelectedType] = useState<ProductType | 'Todos'>('Todos');
-  const { selectedCity, setSelectedCity } = useOffer();
+  const { selectedCity, setSelectedCity, clearOffer } = useOffer();
   
   const { firestore } = useFirebase();
 
@@ -139,8 +146,7 @@ export default function MontadorPortfolioPage() {
   }
   
   const clearSelection = () => {
-    setSelectedCity(null);
-    setSelectedType('Todos');
+    clearOffer(); // This now clears city, products, and gastos from context
   }
 
   const isLoading = isLoadingRegioes || (selectedCity && isLoadingProducts);
@@ -194,7 +200,7 @@ export default function MontadorPortfolioPage() {
                 onClick={() => setSelectedType(type)}
                 size="sm"
               >
-                {type}
+                {typeDisplayNames[type]}
               </Button>
             ))}
           </div>
@@ -221,3 +227,5 @@ export default function MontadorPortfolioPage() {
       )}
     </div>
   );
+}
+    
