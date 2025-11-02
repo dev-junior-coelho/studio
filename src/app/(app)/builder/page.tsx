@@ -111,17 +111,20 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
     const lowerCaseName = mainProduct.nome.toLowerCase();
     const isUpgrade = lowerCaseName.includes('upgrade');
     
-    // Most specific first
+    // Exact match for Soundbox first
     if (lowerCaseName.includes('soundbox')) {
         const searchString = isUpgrade ? 'Ponto Adicional - Soundbox (Upgrade)' : 'Ponto Adicional - Claro TV+ Soundbox';
         return allProducts.find(p => p.nome.startsWith(searchString));
     }
-    // Then box
+    
+    // Then check for Box Cabo or Box Streaming
     if (lowerCaseName.includes('box cabo') || lowerCaseName.includes('box (streaming)')) {
         const searchString = isUpgrade ? 'Ponto Adicional - Box' : 'Ponto Adicional - Claro TV+ Box';
-        return allProducts.find(p => p.nome.startsWith(searchString));
+        // Ensure it's not a soundbox
+        return allProducts.find(p => p.nome.startsWith(searchString) && !p.nome.includes('Soundbox'));
     }
-    // Then HD
+    
+    // Then check for HD
     if (lowerCaseName.includes('hd')) {
         const searchString = isUpgrade ? 'Ponto Adicional - HD' : 'Ponto Adicional - Claro TV+ HD';
         return allProducts.find(p => p.nome.startsWith(searchString));
@@ -141,10 +144,9 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
   };
   
   const handleConfirmUpsell = (quantity: number) => {
-    // Always add the main product, even if quantity is 0
-    addProduct(product);
+    addProduct(product); // Add the main product regardless
     if(upsellProduct && quantity > 0){
-        addProductWithExtras(mainProduct, upsellProduct, quantity);
+        addProductWithExtras(product, upsellProduct, quantity);
     }
   };
 
@@ -396,4 +398,6 @@ export default function MontadorPortfolioPage() {
     </div>
   );
 }
+    
+
     
