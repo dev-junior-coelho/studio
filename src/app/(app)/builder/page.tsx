@@ -108,21 +108,19 @@ function ProductCard({ product, allProducts }: { product: Produto, allProducts: 
         return undefined;
     }
 
-    let targetPontoAdicionalName: string | undefined;
-
     const lowerCaseName = mainProduct.nome.toLowerCase();
 
+    // Logic is now more specific to avoid incorrect matches.
+    // It checks for 'soundbox' first, then 'box', then 'hd'.
     if (lowerCaseName.includes('soundbox')) {
-        targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Soundbox';
+        return allProducts.find(p => p.nome.startsWith('Ponto Adicional - Claro TV+ Soundbox'));
     } else if (lowerCaseName.includes('box')) {
-        targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Box';
+        return allProducts.find(p => p.nome.startsWith('Ponto Adicional - Claro TV+ Box'));
     } else if (lowerCaseName.includes('hd')) {
-        targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ HD';
+        return allProducts.find(p => p.nome.startsWith('Ponto Adicional - Claro TV+ HD'));
     }
     
-    if (!targetPontoAdicionalName) return undefined;
-    
-    return allProducts.find(p => p.tipo === 'Opcional' && p.nome.startsWith(targetPontoAdicionalName));
+    return undefined;
   };
   
   const upsellProduct = getUpsellProduct(product);
