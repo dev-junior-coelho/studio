@@ -115,7 +115,7 @@ const regioesParaCadastrar = [
   {
     id: "fibra-pura",
     nome: "Fibra Pura (TV p.66)",
-    cidades: ["Apucarana-PR", "Cambe-PR", "Guaramirim-SC", "Jaragua Do Sul-SC", "Rolandia-PR", "Aruja-SP", "Caieiras-SP", "Itupeva-SP", "Mairinque-SP", "Perube-SP", "Ribeirao Pires-SP", "Sao Roque-SP", "Vespasiano-MG", "Camacari-BA", "Mata De Sao Joao-BA"]
+    cidades: ["Apucarana-PR", "Cambe-PR", "Guaramirim-SC", "Jaragua Do Sul-SC", "Rolandia-PR", "Aruja-SP", "Caieiras-SP", "Itupeva-SP", "Mairinque-SP", "Perube-SP", "Ribeirao Pires-SP", "Sao Roque-SP", "Camacari-BA", "Mata De Sao Joao-BA"]
   },
   // Região Nacional para produtos que não dependem de geografia (Móvel, Opcionais, Upgrade)
   {
@@ -554,13 +554,14 @@ const produtosParaCadastrar = [
     observacoes: "Preço em qualquer combinação que não seja 4P."
   },
 
-  // --- 6. PONTOS ADICIONAIS ---
+  // --- 6. PONTOS ADICIONAIS (CORRIGIDO) ---
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Soundbox (Aquisição)", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Soundbox (Upgrade)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Box (Aquisição)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ Box (Upgrade)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ HD (Aquisição)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Decodificador HD adicional"], observacoes: "Valor de aluguel mensal." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Claro TV+ HD (RET)", precoMensal: 10.00, precoAnual: null, beneficios: ["Aluguel de 1 equipamento HD adicional para planos de Rentabilização (RET)."], observacoes: "Valor de aluguel mensal para planos INICIAL HD RET." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox (Upgrade)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box (Upgrade)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Cabo ou Streaming) adicional"], observacoes: "Valor de aluguel mensal para clientes de upgrade." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (Upgrade RET)", precoMensal: 10.00, precoAnual: null, beneficios: ["Aluguel de 1 equipamento HD adicional para planos de Rentabilização (RET)."], observacoes: "Valor para planos INICIAL HD RET." },
+
 
   // --- 7. OPCIONAIS (CONECTIVIDADE E GAMING - p.46) ---
   { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
@@ -729,4 +730,5 @@ seedDatabase();
     
 
 
+    
     
