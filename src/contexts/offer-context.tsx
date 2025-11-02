@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
@@ -17,6 +18,7 @@ const initialGastos: Gastos = { tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0
 interface OfferContextType {
   products: Produto[];
   addProduct: (product: Produto) => void;
+  addProductWithExtras: (mainProduct: Produto, extraProduct: Produto, quantity: number) => void;
   removeProduct: (productId: string) => void;
   clearOffer: () => void;
   gastos: Gastos;
@@ -55,6 +57,35 @@ export function OfferProvider({ children }: { children: ReactNode }) {
     });
   }, [toast]);
 
+  const addProductWithExtras = useCallback((mainProduct: Produto, extraProduct: Produto, quantity: number) => {
+    setProducts(prevProducts => {
+      const newProducts = [...prevProducts];
+
+      // Add main product if not already there
+      if (!newProducts.find(p => p.id === mainProduct.id)) {
+        newProducts.push(mainProduct);
+      }
+      
+      let extrasAdded = 0;
+      // Add extra products with unique IDs
+      for (let i = 0; i < quantity; i++) {
+        const uniqueId = `${extraProduct.id}-${Date.now()}-${i}`;
+        newProducts.push({ ...extraProduct, id: uniqueId });
+        extrasAdded++;
+      }
+
+      setTimeout(() => {
+          toast({
+            title: "Produtos Adicionados!",
+            description: `${mainProduct.nome} ${extrasAdded > 0 ? `e ${extrasAdded} Ponto(s) Adicional(is)` : ''} foram adicionados.`,
+          });
+        }, 0);
+
+      return newProducts;
+    });
+  }, [toast]);
+
+
   const removeProduct = useCallback((productId: string) => {
     setProducts((prevProducts) => prevProducts.filter((p) => p.id !== productId));
   }, []);
@@ -73,7 +104,8 @@ export function OfferProvider({ children }: { children: ReactNode }) {
 
   const value = { 
     products, 
-    addProduct, 
+    addProduct,
+    addProductWithExtras, 
     removeProduct, 
     clearOffer, 
     gastos, 
@@ -96,3 +128,5 @@ export function useOffer() {
   }
   return context;
 }
+
+    

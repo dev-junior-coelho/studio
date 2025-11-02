@@ -6,7 +6,7 @@ import { useOffer } from '@/contexts/offer-context';
 import type { ProductType, Produto, Regiao } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check } from 'lucide-react';
+import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check, Minus, Plus } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useCollection } from '@/firebase/firestore/use-collection';
@@ -16,6 +16,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from '@/components/ui/alert-dialog';
 
 
 const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
@@ -27,9 +37,60 @@ const typeDisplayNames: Record<ProductType, string> = {
   "Opcional": "A La Carte"
 };
 
-function ProductCard({ product }: { product: Produto }) {
-  const { addProduct } = useOffer();
+function ExtraPointDialog({ 
+  mainTvProduct, 
+  upsellProduct, 
+  isOpen, 
+  onClose, 
+  onConfirm 
+}: { 
+  mainTvProduct: Produto, 
+  upsellProduct: Produto, 
+  isOpen: boolean, 
+  onClose: () => void, 
+  onConfirm: (quantity: number) => void 
+}) {
+  const [quantity, setQuantity] = useState(0);
 
+  if (!isOpen) return null;
+  
+  const handleConfirm = () => {
+    onConfirm(quantity);
+    onClose();
+  };
+
+  return (
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Adicionar Ponto Adicional?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Você adicionou <span className="font-bold">{mainTvProduct.nome}</span>. 
+            Deseja incluir pontos adicionais de <span className="font-bold">{upsellProduct.nome.replace('Ponto Adicional - ', '')}</span> por {upsellProduct.precoMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} cada?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="flex items-center justify-center space-x-4 py-4">
+          <Button variant="outline" size="icon" onClick={() => setQuantity(q => Math.max(0, q - 1))}>
+            <Minus className="h-4 w-4" />
+          </Button>
+          <span className="text-2xl font-bold w-12 text-center">{quantity}</span>
+          <Button variant="outline" size="icon" onClick={() => setQuantity(q => q + 1)}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm}>Adicionar à Oferta</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function ProductCard({ product, allProducts }: { product: Produto, allProducts: Produto[] }) {
+  const { addProduct, addProductWithExtras } = useOffer();
+  const [isUpsellDialogOpen, setUpsellDialogOpen] = useState(false);
+  
   const price = product.precoMensal;
   const isPriceValid = typeof price === 'number' && price > 0;
 
@@ -42,53 +103,97 @@ function ProductCard({ product }: { product: Produto }) {
   }
   const placeholder = PlaceHolderImages.find(p => p.id === imageMap[product.tipo]);
 
+  const getUpsellProduct = (mainProduct: Produto): Produto | undefined => {
+    if (mainProduct.tipo !== 'TV') return undefined;
+
+    let targetPontoAdicionalName: string | undefined;
+    if (mainProduct.nome.includes('Soundbox')) {
+      targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Soundbox';
+    } else if (mainProduct.nome.includes('Box Cabo')) {
+      targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Box Cabo';
+    } else if (mainProduct.nome.includes('Box (Streaming)')) {
+      targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Box (Streaming)';
+    }
+
+    if (!targetPontoAdicionalName) return undefined;
+    
+    return allProducts.find(p => p.tipo === 'Opcional' && p.nome === targetPontoAdicionalName);
+  };
+  
+  const upsellProduct = getUpsellProduct(product);
+
+  const handleAddClick = () => {
+    if (upsellProduct) {
+      setUpsellDialogOpen(true);
+    } else {
+      addProduct(product);
+    }
+  };
+  
+  const handleConfirmUpsell = (quantity: number) => {
+    addProductWithExtras(product, upsellProduct, quantity);
+  };
+
+
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="p-4">
-        {placeholder && (
-          <div className="relative aspect-video w-full overflow-hidden rounded-md mb-4">
-             <Image 
-                src={placeholder.imageUrl}
-                alt={product.nome}
-                fill
-                className="object-cover"
-                data-ai-hint={placeholder.imageHint}
-             />
-          </div>
-        )}
-        <CardTitle className="text-base font-bold leading-snug">{product.nome}</CardTitle>
-        <CardDescription>{product.tipo}</CardDescription>
-      </CardHeader>
-      <CardContent className="p-4 flex-grow space-y-3">
-        <div>
-          <p className="text-sm text-muted-foreground">Preço mensal</p>
-          <p className="text-2xl font-bold">
-            {isPriceValid ? (
-              <>
-                {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-              </>
-            ) : (
-              <span className="text-base text-muted-foreground">Preço indisponível</span>
-            )}
-          </p>
-        </div>
-        
-        {product.beneficios?.length > 0 && (
+    <>
+      <Card className="flex flex-col">
+        <CardHeader className="p-4">
+          {placeholder && (
+            <div className="relative aspect-video w-full overflow-hidden rounded-md mb-4">
+              <Image 
+                  src={placeholder.imageUrl}
+                  alt={product.nome}
+                  fill
+                  className="object-cover"
+                  data-ai-hint={placeholder.imageHint}
+              />
+            </div>
+          )}
+          <CardTitle className="text-base font-bold leading-snug">{product.nome}</CardTitle>
+          <CardDescription>{product.tipo}</CardDescription>
+        </CardHeader>
+        <CardContent className="p-4 flex-grow space-y-3">
           <div>
-            <p className="text-sm font-medium">Benefícios:</p>
-            <ul className="text-sm text-muted-foreground list-disc pl-5 mt-1 space-y-1">
-                {product.beneficios.slice(0, 3).map((b, i) => <li key={i}>{b}</li>)}
-                {product.beneficios.length > 3 && <li className="font-medium">e mais...</li>}
-            </ul>
+            <p className="text-sm text-muted-foreground">Preço mensal</p>
+            <p className="text-2xl font-bold">
+              {isPriceValid ? (
+                <>
+                  {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </>
+              ) : (
+                <span className="text-base text-muted-foreground">Preço indisponível</span>
+              )}
+            </p>
           </div>
-        )}
-      </CardContent>
-      <CardFooter className="p-4 mt-auto">
-        <Button className="w-full" onClick={() => addProduct(product)} disabled={!isPriceValid}>
-          <PlusCircle className="mr-2 h-4 w-4" /> Adicionar à Oferta
-        </Button>
-      </CardFooter>
-    </Card>
+          
+          {product.beneficios?.length > 0 && (
+            <div>
+              <p className="text-sm font-medium">Benefícios:</p>
+              <ul className="text-sm text-muted-foreground list-disc pl-5 mt-1 space-y-1">
+                  {product.beneficios.slice(0, 3).map((b, i) => <li key={i}>{b}</li>)}
+                  {product.beneficios.length > 3 && <li className="font-medium">e mais...</li>}
+              </ul>
+            </div>
+          )}
+        </CardContent>
+        <CardFooter className="p-4 mt-auto">
+          <Button className="w-full" onClick={handleAddClick} disabled={!isPriceValid}>
+            <PlusCircle className="mr-2 h-4 w-4" /> Adicionar à Oferta
+          </Button>
+        </CardFooter>
+      </Card>
+      
+      {upsellProduct && (
+        <ExtraPointDialog 
+          mainTvProduct={product}
+          upsellProduct={upsellProduct}
+          isOpen={isUpsellDialogOpen}
+          onClose={() => setUpsellDialogOpen(false)}
+          onConfirm={handleConfirmUpsell}
+        />
+      )}
+    </>
   );
 }
 
@@ -111,7 +216,7 @@ export default function MontadorPortfolioPage() {
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [regioes]);
 
-  // 3. Find the selected region ID based on the selected city
+  // 3. Find the selected region ID based on the selected city from context
   const selectedRegiaoId = useMemo(() => {
     if (!selectedCity || !allCities) return null;
     return allCities.find(c => c.label === selectedCity)?.regiaoId ?? null;
@@ -257,7 +362,7 @@ export default function MontadorPortfolioPage() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {!isLoading && filteredAndSortedProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} allProducts={productsData || []} />
             ))}
           </div>
         </>
@@ -265,4 +370,6 @@ export default function MontadorPortfolioPage() {
     </div>
   );
 }
+    
+
     

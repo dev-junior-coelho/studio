@@ -8,13 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { TrendingDown, TrendingUp, X, PlusCircle, Loader2 } from 'lucide-react';
+import { TrendingDown, TrendingUp, X, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/contexts/auth-context';
-import { useFirebase, useMemoFirebase } from '@/firebase/provider';
-import { useCollection } from '@/firebase/firestore/use-collection';
-import { collection, addDoc, serverTimestamp, query, where, CollectionReference } from 'firebase/firestore';
-import type { Produto, ProductType } from '@/lib/types';
+import { useFirebase } from '@/firebase/provider';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import type { ProductType } from '@/lib/types';
 
 type Gastos = {
   tv: number;
@@ -25,21 +24,10 @@ type Gastos = {
 };
 
 export default function ComparadorOfertaPage() {
-  const { products, clearOffer, removeProduct, gastos, setGastos, addProduct } = useOffer();
+  const { products, clearOffer, removeProduct, gastos, setGastos } = useOffer();
   const { user } = useAuth();
   const { firestore } = useFirebase();
   const [isSaving, setIsSaving] = useState(false);
-
-  // 1. Fetch "Opcional" products for upsell
-  const opcionaisQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(
-      collection(firestore, 'produtos') as CollectionReference<Produto>,
-      where('tipo', '==', 'Opcional')
-    );
-  }, [firestore]);
-
-  const { data: opcionais, isLoading: isLoadingOpcionais } = useCollection<Produto>(opcionaisQuery);
 
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -90,32 +78,6 @@ export default function ComparadorOfertaPage() {
     }
   };
 
-  // 2. Upsell logic
-  const getUpsellProduct = (product: Produto): Produto | undefined => {
-    if (product.tipo !== 'TV' || !opcionais) return undefined;
-
-    let targetPontoAdicionalName: string | undefined;
-
-    if (product.nome.includes('Soundbox')) {
-      targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Soundbox';
-    } else if (product.nome.includes('Box Cabo')) {
-      targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Box Cabo';
-    } else if (product.nome.includes('Box (Streaming)')) {
-        targetPontoAdicionalName = 'Ponto Adicional - Claro TV+ Box (Streaming)';
-    }
-
-    if (!targetPontoAdicionalName) return undefined;
-
-    const upsellProd = opcionais.find(p => p.nome === targetPontoAdicionalName);
-    const isInCart = products.some(p => p.id === upsellProd?.id);
-
-    if (upsellProd && !isInCart) {
-      return upsellProd;
-    }
-    
-    return undefined;
-  };
-
   return (
     <div className="p-4 space-y-4">
       <div className="flex justify-between items-center">
@@ -161,30 +123,19 @@ export default function ComparadorOfertaPage() {
           ) : (
             <ScrollArea className="h-48">
               <ul className="space-y-3">
-                {products.map(product => {
-                    const upsellProduct = getUpsellProduct(product);
-                    return (
-                        <Fragment key={product.id}>
-                         <li className="flex justify-between items-center text-sm pr-1">
-                            <span>{product.nome}</span>
-                            <div className="flex items-center gap-2">
-                            <span className="font-semibold">{formatCurrency(product.precoMensal)}</span>
-                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeProduct(product.id)}>
-                                <X className="h-4 w-4" />
-                            </Button>
-                            </div>
-                        </li>
-                        {upsellProduct && (
-                            <li className="pl-4 pr-1 pb-2">
-                                <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => addProduct(upsellProduct)}>
-                                    <PlusCircle className="mr-2 h-4 w-4 text-green-500"/>
-                                    Adicionar {upsellProduct.nome.replace('Ponto Adicional - ', '')} - {formatCurrency(upsellProduct.precoMensal)}
-                                </Button>
-                            </li>
-                        )}
-                        </Fragment>
-                    )
-                })}
+                {products.map(product => (
+                    <Fragment key={product.id}>
+                      <li className="flex justify-between items-center text-sm pr-1">
+                        <span>{product.nome}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold">{formatCurrency(product.precoMensal)}</span>
+                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeProduct(product.id)}>
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </li>
+                    </Fragment>
+                ))}
               </ul>
             </ScrollArea>
           )}
@@ -260,3 +211,5 @@ export default function ComparadorOfertaPage() {
     </div>
   );
 }
+
+    
