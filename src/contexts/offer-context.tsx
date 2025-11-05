@@ -37,23 +37,33 @@ export function OfferProvider({ children }: { children: ReactNode }) {
 
   const addProduct = useCallback((product: Produto) => {
     setProducts((prevProducts) => {
-      if (prevProducts.find((p) => p.id === product.id)) {
-        setTimeout(() => {
-          toast({
-            title: "Produto já adicionado",
-            description: `${product.nome} já está na oferta.`,
-            variant: 'destructive',
-          });
-        }, 0);
-        return prevProducts;
+      // Verificar se é TV - TV não pode ser adicionada múltiplas vezes
+      if (product.tipo === 'TV') {
+        if (prevProducts.find((p) => p.tipo === 'TV')) {
+          setTimeout(() => {
+            toast({
+              title: "TV já adicionada",
+              description: `Você já possui um produto de TV na oferta. Remova-o para adicionar outro.`,
+              variant: 'destructive',
+            });
+          }, 0);
+          return prevProducts;
+        }
       }
+      
+      // Para outros produtos (Ponto Adicional, Fixo, Móvel, Banda Larga, Opcional),
+      // criar um ID único para permitir múltiplas adições do mesmo produto
+      const newProduct = product.tipo === 'TV' 
+        ? product 
+        : { ...product, id: `${product.id}-${Date.now()}-${Math.random()}` };
+      
       setTimeout(() => {
         toast({
           title: "Produto Adicionado!",
           description: `${product.nome} foi adicionado à oferta.`,
         });
       }, 0);
-      return [...prevProducts, product];
+      return [...prevProducts, newProduct];
     });
   }, [toast]);
 
