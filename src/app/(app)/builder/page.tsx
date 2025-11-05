@@ -6,7 +6,8 @@ import { useOffer } from '@/contexts/offer-context';
 import type { ProductType, Produto, Regiao } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check, Search } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useCollection } from '@/firebase/firestore/use-collection';
@@ -32,6 +33,10 @@ function ProductCard({ product }: { product: Produto }) {
   
   const price = product.precoMensal;
   const isPriceValid = typeof price === 'number' && price > 0;
+  
+  // Extrair preço pós-promoção das observações
+  const precoAposPromo = product.observacoes?.match(/após R\$\s*([0-9]+[,.]?[0-9]*)/i)?.[1];
+  const precoAposPromoFormatted = precoAposPromo ? parseFloat(precoAposPromo.replace(',', '.')) : null;
 
   const imageMap: { [key: string]: string } = {
     'Movel': 'movel',
@@ -77,6 +82,11 @@ function ProductCard({ product }: { product: Produto }) {
                 <span className="text-base text-muted-foreground">Preço indisponível</span>
               )}
             </p>
+            {precoAposPromoFormatted && product.tipo === 'Banda Larga' && (
+              <p className="text-sm text-muted-foreground mt-1">
+                Após promoção: {precoAposPromoFormatted.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              </p>
+            )}
           </div>
           
           {product.beneficios?.length > 0 && (
@@ -102,6 +112,7 @@ function ProductCard({ product }: { product: Produto }) {
 export default function MontadorPortfolioPage() {
   const [selectedType, setSelectedType] = useState<ProductType | 'Todos'>('Todos');
   const [isComboboxOpen, setComboboxOpen] = useState(false);
+  const [searchAlaCarte, setSearchAlaCarte] = useState('');
   const { selectedCity, setSelectedCity, clearOffer } = useOffer();
   
   const { firestore } = useFirebase();
@@ -138,7 +149,11 @@ export default function MontadorPortfolioPage() {
 
   // 4. Fetch products based on the selected region ID and national products
   const productsQuery = useMemoFirebase(() => {
-    if (!firestore || !selectedRegiaoId) return null;
+    if (!firestore || !selectedRegiaoId) {
+      console.log('Query não criada. Firestore:', !!firestore, 'RegiaoId:', selectedRegiaoId);
+      return null;
+    }
+    console.log('Criando query para regiaoId:', selectedRegiaoId);
     return query(
       collection(firestore, 'produtos') as CollectionReference<Produto>,
       where('regiaoId', 'in', [selectedRegiaoId, 'nacional'])
@@ -146,32 +161,91 @@ export default function MontadorPortfolioPage() {
   }, [firestore, selectedRegiaoId]);
   
   const { data: productsData, isLoading: isLoadingProducts } = useCollection<Produto>(productsQuery);
+  
+  console.log('productsData:', productsData ? `${productsData.length} produtos` : 'null', 'isLoading:', isLoadingProducts);
 
   const filteredAndSortedProducts = useMemo(() => {
     if (!productsData) return [];
     
+    // Debug: log dos produtos
+    console.log('Total de produtos carregados:', productsData.length);
+    console.log('Tipos únicos:', [...new Set(productsData.map(p => p.tipo))]);
+    console.log('Produtos do tipo "Ponto Adicional":', productsData.filter(p => p.tipo === 'Ponto Adicional').length);
+    
     // Filter by type
-    const filtered = selectedType === 'Todos' 
+    let filtered = selectedType === 'Todos' 
       ? productsData 
       : productsData.filter(p => p.tipo === selectedType);
+    
+    // Se estiver na categoria Opcional (A La Carte) e houver texto de busca, filtrar
+    if (selectedType === 'Opcional' && searchAlaCarte.trim() !== '') {
+      const searchLower = searchAlaCarte.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.nome.toLowerCase().includes(searchLower) ||
+        p.beneficios?.some(b => b.toLowerCase().includes(searchLower)) ||
+        p.observacoes?.toLowerCase().includes(searchLower)
+      );
+    }
       
-    // Sort by tipo (category), then by nome (name)
+    // Sort by tipo (category), then by price (ascending - menor para maior)
     return filtered.sort((a, b) => {
+        // Primeiro, ordena por tipo (categoria)
         const typeOrder = productTypes.indexOf(a.tipo) - productTypes.indexOf(b.tipo);
         if (typeOrder !== 0) return typeOrder;
+        
+        // Função para extrair preço pós-promoção
+        const getPostPromoPrice = (produto: Produto) => {
+          if (produto.tipo === 'Banda Larga' && produto.observacoes) {
+            const match = produto.observacoes.match(/após R\$\s*([0-9]+[,.]?[0-9]*)/i);
+            if (match) {
+              return parseFloat(match[1].replace(',', '.'));
+            }
+          }
+          return null;
+        };
+        
+        // Para produtos de Banda Larga, usar preço pós-promoção se existir
+        let priceA = typeof a.precoMensal === 'number' ? a.precoMensal : Infinity;
+        let priceB = typeof b.precoMensal === 'number' ? b.precoMensal : Infinity;
+        
+        if (a.tipo === 'Banda Larga') {
+          const postPromoA = getPostPromoPrice(a);
+          if (postPromoA !== null) priceA = postPromoA;
+        }
+        
+        if (b.tipo === 'Banda Larga') {
+          const postPromoB = getPostPromoPrice(b);
+          if (postPromoB !== null) priceB = postPromoB;
+        }
+        
+        if (priceA !== priceB) {
+          return priceA - priceB;
+        }
+        
+        // Se os preços forem iguais, ordena por nome
         return a.nome.localeCompare(b.nome);
     });
 
-  }, [productsData, selectedType]);
+  }, [productsData, selectedType, searchAlaCarte]);
 
   const handleCityChange = (cityLabel: string) => {
     setSelectedCity(cityLabel);
     setSelectedType('Todos'); // Reset filter when city changes
+    setSearchAlaCarte(''); // Limpar busca ao mudar de cidade
   }
   
   const clearSelection = () => {
     clearOffer(); // This now clears city, products, and gastos from context
+    setSearchAlaCarte(''); // Limpar busca ao limpar seleção
   }
+
+  // Limpar busca ao mudar de categoria
+  const handleTypeChange = (type: ProductType | 'Todos') => {
+    setSelectedType(type);
+    if (type !== 'Opcional') {
+      setSearchAlaCarte('');
+    }
+  };
 
   const isLoading = isLoadingRegioes || (selectedCity && isLoadingProducts);
 
@@ -244,7 +318,7 @@ export default function MontadorPortfolioPage() {
           <div className="flex flex-wrap gap-2">
             <Button 
               variant={selectedType === 'Todos' ? 'default' : 'outline'}
-              onClick={() => setSelectedType('Todos')}
+              onClick={() => handleTypeChange('Todos')}
               size="sm"
             >
               Todos
@@ -253,13 +327,26 @@ export default function MontadorPortfolioPage() {
               <Button 
                 key={type}
                 variant={selectedType === type ? 'default' : 'outline'}
-                onClick={() => setSelectedType(type)}
+                onClick={() => handleTypeChange(type)}
                 size="sm"
               >
                 {typeDisplayNames[type]}
               </Button>
             ))}
           </div>
+
+          {selectedType === 'Opcional' && (
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Buscar em A La Carte..."
+                value={searchAlaCarte}
+                onChange={(e) => setSearchAlaCarte(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          )}
           
           {isLoading && (
              <div className="flex items-center justify-center py-10 gap-2 text-muted-foreground">
