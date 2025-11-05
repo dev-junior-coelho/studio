@@ -1,39 +1,72 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { mockProcedimentos } from '@/lib/mock-data';
 import type { ProcedureCategory } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
+import { useCollection } from '@/firebase/firestore/use-collection';
+import { collection } from 'firebase/firestore';
+import { useFirebase, useMemoFirebase } from '@/firebase/provider';
+
+interface Procedimento {
+  id: string;
+  titulo: string;
+  categoria: string;
+  tags: string[];
+  conteudo: string;
+}
 
 export default function GuiaRapidoPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const { firestore } = useFirebase();
+
+  // Buscar procedimentos do Firestore
+  const procedimentosRef = useMemoFirebase(() => 
+    firestore ? collection(firestore, 'procedimentos') : null, 
+    [firestore]
+  );
+  
+  const { data: procedimentos, isLoading } = useCollection<Procedimento>(procedimentosRef);
 
   const filteredProcedimentos = useMemo(() => {
+    if (!procedimentos) {
+      return [];
+    }
     if (!searchTerm) {
-      return mockProcedimentos;
+      return procedimentos;
     }
     const lowercasedTerm = searchTerm.toLowerCase();
-    return mockProcedimentos.filter(
+    return procedimentos.filter(
       (proc) =>
         proc.titulo.toLowerCase().includes(lowercasedTerm) ||
         proc.tags.some((tag) => tag.toLowerCase().includes(lowercasedTerm))
     );
-  }, [searchTerm]);
+  }, [searchTerm, procedimentos]);
 
   const groupedProcedimentos = useMemo(() => {
     return filteredProcedimentos.reduce((acc, proc) => {
-      const category = proc.categoria;
+      const category = proc.categoria as ProcedureCategory;
       if (!acc[category]) {
         acc[category] = [];
       }
       acc[category].push(proc);
       return acc;
-    }, {} as Record<ProcedureCategory, typeof mockProcedimentos>);
+    }, {} as Record<ProcedureCategory, Procedimento[]>);
   }, [filteredProcedimentos]);
 
   const categories = Object.keys(groupedProcedimentos) as ProcedureCategory[];
+
+  if (isLoading) {
+    return (
+      <div className="p-4 flex items-center justify-center h-[50vh]">
+        <div className="text-center space-y-2">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground">Carregando procedimentos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 space-y-4">

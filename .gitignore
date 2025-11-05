@@ -38,6 +38,12 @@ yarn-error.log*
 next-env.d.ts
 
 .genkit/*
+
+# Scripts temporários
+update-procedures.ts
+fix-ca3r-ca4.ts
+check-data.js
+
 .env*
 
 # firebase
