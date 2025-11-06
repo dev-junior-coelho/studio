@@ -37,23 +37,27 @@ export function OfferProvider({ children }: { children: ReactNode }) {
 
   const addProduct = useCallback((product: Produto) => {
     setProducts((prevProducts) => {
-      // Verificar se é TV - TV não pode ser adicionada múltiplas vezes
-      if (product.tipo === 'TV') {
-        if (prevProducts.find((p) => p.tipo === 'TV')) {
-          setTimeout(() => {
-            toast({
-              title: "TV já adicionada",
-              description: `Você já possui um produto de TV na oferta. Remova-o para adicionar outro.`,
-              variant: 'destructive',
-            });
-          }, 0);
-          return prevProducts;
-        }
+      // Verificar se é algum tipo de TV (TV Cabeada, TV Box, Claro TV APP)
+      // Apenas um tipo de TV pode ser adicionado por oferta
+      const isTV = product.tipo === 'TV Cabeada' || product.tipo === 'TV Box' || product.tipo === 'Claro TV APP';
+      const hasTV = prevProducts.some(p => 
+        p.tipo === 'TV Cabeada' || p.tipo === 'TV Box' || p.tipo === 'Claro TV APP'
+      );
+      
+      if (isTV && hasTV) {
+        setTimeout(() => {
+          toast({
+            title: "TV já adicionada",
+            description: `Você já possui um produto de TV na oferta. Remova-o para adicionar outro.`,
+            variant: 'destructive',
+          });
+        }, 0);
+        return prevProducts;
       }
       
       // Para outros produtos (Ponto Adicional, Fixo, Móvel, Banda Larga, Opcional),
       // criar um ID único para permitir múltiplas adições do mesmo produto
-      const newProduct = product.tipo === 'TV' 
+      const newProduct = isTV 
         ? product 
         : { ...product, id: `${product.id}-${Date.now()}-${Math.random()}` };
       

@@ -18,13 +18,11 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV Cabeada", "TV Box", "Claro TV APP", "Fixo", "Ponto Adicional", "Opcional"];
+const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Ponto Adicional", "Opcional"];
 const typeDisplayNames: Record<ProductType, string> = {
   "Movel": "Móvel",
   "Banda Larga": "Banda Larga",
-  "TV Cabeada": "TV Cabeada",
-  "TV Box": "TV Box",
-  "Claro TV APP": "Claro TV APP",
+  "TV": "TV",
   "Fixo": "Fixo",
   "Ponto Adicional": "Ponto Adicional",
   "Opcional": "A La Carte"
