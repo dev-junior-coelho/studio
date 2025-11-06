@@ -1,5 +1,6 @@
-// seed.ts (VERSÃO 10.0 - NOMECLATURA DE TV CORRIGIDA)
-// O nome do produto agora é o código (Coluna 2 ou 3). Inclui TODAS as variações de TV e BL.
+// seed.ts (VERSÃO 11.0 - CORREÇÃO DE LINHAS E INTEGRIDADE MÁXIMA)
+// Inclui todas as variações de TV e BL com nomenclaturas e preços corretos.
+// TV separada em: TV Cabeada, TV Box, Claro TV APP
 
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, writeBatch, doc } from 'firebase/firestore';
@@ -629,7 +630,7 @@ const produtosParaCadastrar = [
  * Função principal para semear o banco de dados.
  */
 async function seedDatabase() {
-  console.log('Iniciando o script de semeadura (V10.0 - NOMECLATURA CORRIGIDA)...');
+  console.log('Iniciando o script de semeadura (V11.0 - CORREÇÃO E INTEGRIDADE MÁXIMA)...');
 
   try {
     // --- UPLOAD DAS REGIÕES ---
@@ -663,15 +664,22 @@ async function seedDatabase() {
         
         chunk.forEach((produto) => {
             const produtoRef = doc(collection(db, 'produtos'));
-            batch.set(produtoRef, {
+            const produtoData: any = {
                 regiaoId: produto.regiaoId,
                 tipo: produto.tipo,
                 nome: produto.nome,
                 precoMensal: produto.precoMensal,
-                precoAnual: produto.precoAnual || null, // Garante que o campo exista
+                precoAnual: produto.precoAnual || null,
                 beneficios: produto.beneficios,
                 observacoes: produto.observacoes
-            });
+            };
+            
+            // Adiciona ordem apenas se definida
+            if (produto.ordem !== undefined) {
+                produtoData.ordem = produto.ordem;
+            }
+            
+            batch.set(produtoRef, produtoData);
         });
         
         await batch.commit();
