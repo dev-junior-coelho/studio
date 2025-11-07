@@ -46,7 +46,7 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 
-const productTypes: ProductType[] = ["Movel", "Banda Larga", "TV", "Fixo", "Opcional"];
+const productTypes: ProductType[] = ["Movel", "Dependente Móvel", "Banda Larga", "TV Cabeada", "TV Box", "Claro TV APP", "Fixo", "Serviços Avançados", "Ponto Adicional", "Opcional"];
 
 function ProductForm({ product, onSave, onDone }: { product?: Produto, onSave: (product: Produto) => void, onDone: () => void }) {
   const [formData, setFormData] = useState<Produto>(product || { id: '', nome: '', tipo: 'Movel', precoMensal: 0, beneficios: [], fidelidade: '' });

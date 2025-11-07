@@ -1,4 +1,4 @@
-export type ProductType = "Movel" | "Banda Larga" | "TV Cabeada" | "TV Box" | "Claro TV APP" | "Fixo" | "Opcional" | "Ponto Adicional" | "Dependente Móvel";
+export type ProductType = "Movel" | "Banda Larga" | "TV Cabeada" | "TV Box" | "Claro TV APP" | "Fixo" | "Opcional" | "Ponto Adicional" | "Dependente Móvel" | "Serviços Avançados";
 
 export interface Produto {
   id: string;

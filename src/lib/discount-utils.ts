@@ -4,14 +4,17 @@
 import type { Produto } from './types';
 
 /**
- * Extrai o número de dependentes grátis dos benefícios de um produto
- * @param beneficios Array de benefícios do produto
+ * Obtém o número de dependentes grátis de um produto móvel
+ * Usa o campo dependentesGratis do Firestore (preenchido pelo seed)
+ * @param movelPrincipal Produto móvel principal
  * @returns Número de dependentes grátis (0 se não houver)
  */
-export function extrairDependentesGratis(beneficios: string[]): number {
-  const beneficiosTexto = beneficios.join(' ');
-  const match = beneficiosTexto.match(/(\d+)\s+dependentes?\s+gr[aá]tis/i);
-  return match ? parseInt(match[1]) : 0;
+export function extrairDependentesGratis(movelPrincipal: Produto | undefined): number {
+  if (!movelPrincipal || movelPrincipal.tipo !== 'Movel') {
+    return 0;
+  }
+  // Usa o campo dependentesGratis do Firestore (preenchido pelo seed-utils.ts)
+  return movelPrincipal.dependentesGratis ?? 0;
 }
 
 /**
@@ -41,8 +44,8 @@ export function calcularDescontoDependentes(
     }));
   }
 
-  // Extrair quantidade de dependentes grátis do plano móvel
-  const dependentesGratis = extrairDependentesGratis(movelPrincipal.beneficios);
+  // Extrair quantidade de dependentes grátis do plano móvel (do Firestore)
+  const dependentesGratis = extrairDependentesGratis(movelPrincipal);
 
   // Calcular qual é grátis e qual é pago
   return dependentesAdicionados.map((dep, index) => {

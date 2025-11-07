@@ -18,7 +18,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-const productTypes: ProductType[] = ["Movel", "Dependente Móvel", "Banda Larga", "TV Cabeada", "TV Box", "Claro TV APP", "Fixo", "Ponto Adicional", "Opcional"];
+const productTypes: ProductType[] = ["Movel", "Dependente Móvel", "Banda Larga", "TV Cabeada", "TV Box", "Claro TV APP", "Fixo", "Serviços Avançados", "Ponto Adicional", "Opcional"];
 const typeDisplayNames: Record<ProductType, string> = {
   "Movel": "Móvel",
   "Dependente Móvel": "Dependente Móvel",
@@ -27,6 +27,7 @@ const typeDisplayNames: Record<ProductType, string> = {
   "TV Box": "TV Box",
   "Claro TV APP": "Claro TV APP",
   "Fixo": "Fixo",
+  "Serviços Avançados": "Serviços Avançados",
   "Ponto Adicional": "Ponto Adicional",
   "Opcional": "A La Carte"
 };
@@ -49,7 +50,8 @@ function ProductCard({ product }: { product: Produto }) {
     'Fixo': 'fixo',
     'Opcional': 'fixo',
     'Ponto Adicional': 'tv',
-    'Dependente Móvel': 'movel'
+    'Dependente Móvel': 'movel',
+    'Serviços Avançados': 'banda-larga'
   }
   const placeholder = PlaceHolderImages.find(p => p.id === imageMap[product.tipo]);
 
@@ -97,6 +99,11 @@ function ProductCard({ product }: { product: Produto }) {
             {precoAposPromoFormatted && product.tipo === 'Banda Larga' && (
               <p className="text-sm text-muted-foreground mt-1">
                 Após promoção: {precoAposPromoFormatted.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              </p>
+            )}
+            {product.tipo === 'Serviços Avançados' && product.nome === 'Ponto Ultra' && (
+              <p className="text-sm text-orange-600 font-semibold mt-2 bg-orange-50 p-2 rounded">
+                Taxa única: R$ 150,00 ou 3x R$ 50,00
               </p>
             )}
           </div>

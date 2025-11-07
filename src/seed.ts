@@ -1,38 +1,11 @@
-// seed.ts (VERSÃO 11.0 - CORREÇÃO DE LINHAS E INTEGRIDADE MÁXIMA)
-// Inclui todas as variações de TV e BL com nomenclaturas e preços corretos.
-// TV separada em: TV Cabeada, TV Box, Claro TV APP
+// seed.ts (VERSÃO 10.1 - ATUALIZAÇÃO NOVEMBRO/2025 - TABELA CLARO)
+// O nome do produto agora é o código (Coluna 2 ou 3). Inclui TODAS as variações de TV e BL.
 
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, writeBatch, doc } from 'firebase/firestore';
-
-// =============================================================================
-// 1. CREDENCIAIS DO PROJETO
-// =============================================================================
-// Credenciais que você forneceu:
-const firebaseConfig = {
-  apiKey: "AIzaSyD_IW8CfZMseq-LsWkQoZnzEobByPywbss",
-  authDomain: "studio-878079588-1d0ae.firebaseapp.com",
-  projectId: "studio-878079588-1d0ae",
-  storageBucket: "studio-878079588-1d0ae.appspot.com",
-  messagingSenderId: "486175528141",
-  appId: "1:486175528141:web:4e4d4d291cd8e099c28584"
-};
-
-// Inicializa o Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { collection, writeBatch, doc } from 'firebase/firestore';
+import { db, extrairDependentesGratis } from './seed-utils';
 
 // =============================================================================
-// FUNÇÃO AUXILIAR: Extrair Dependentes Grátis dos Benefícios
-// =============================================================================
-function extrairDependentesGratis(beneficios: string[]): number {
-  // Procura por padrões como "3 dependentes grátis", "1 dependente grátis", etc
-  const match = beneficios.join(' ').match(/(\d+)\s+dependentes?\s+gr[aá]tis/i);
-  return match ? parseInt(match[1]) : 0;
-}
-
-// =============================================================================
-// 2. DADOS DAS REGIÕES (Extraído dos PDFs, p. 18-30)
+// 1. DADOS DAS REGIÕES (Extraído dos PDFs, p. 18-30)
 // =============================================================================
 const regioesParaCadastrar = [
   // Regiões de BL "Padrão" (p.18) e TV "Cabo" (p.65)
@@ -128,7 +101,7 @@ const regioesParaCadastrar = [
 ];
 
 // =============================================================================
-// 3. DADOS DOS PRODUTOS (V10.0 - NOMECLATURA DE TV CORRIGIDA)
+// 2. DADOS DOS PRODUTOS (V10.1 - ATUALIZAÇÃO NOVEMBRO/2025)
 // =============================================================================
 
 // Benefícios Padrão de BL: Globoplay Padrão (sem anúncios, 3 acessos), Proteção Digital McAfee (3 dispositivos), Skeelo Audiobooks (1 licença), ChatGPT Plus (se Multi).
@@ -165,95 +138,100 @@ const produtosParaCadastrar = [
   {
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 300GB (Multi)", precoMensal: 319.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 610 GB", "Detalhe da Franquia: 300 GB (uso livre) + 300 GB (Redes Sociais)", "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Passaporte: Passaporte Mundo (uso do plano em 80 países)", "Dependentes: 3 dependentes grátis",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App", "Benefício Multi: 4 meses de ChatGPT Plus",
+      "Franquia Total: 650 GB (300 GB Uso Livre + 300 GB Redes + 50 GB Bônus Multi Friday)",
+      "Passaporte: Passaporte Mundo (uso do plano em 80 países)",
+      "Dependentes: 3 dependentes inclusos",
+      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDS 300GB C/AP PAD / POS 300GB S/AP PAD"
   },
   {
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 150GB (Multi)", precoMensal: 219.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 310 GB", "Detalhe da Franquia: 150 GB (uso livre) + 150 GB (Redes Sociais)", "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Passaporte: Passaporte Américas (uso do plano nas Américas)", "Dependentes: 2 dependentes grátis",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App", "Benefício Multi: 4 meses de ChatGPT Plus",
+      "Franquia Total: 350 GB (150 GB Uso Livre + 150 GB Redes + 50 GB Bônus Multi Friday)",
+      "Passaporte: Passaporte Américas (uso do plano nas Américas)",
+      "Dependentes: 2 dependentes inclusos",
+      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDS 150GB C/AP PAD / POS 150GB S/AP PAD"
   },
   {
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 100GB (Multi)", precoMensal: 169.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 210 GB", "Detalhe da Franquia: 100 GB (uso livre) + 100 GB (Redes Sociais)", "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Dependentes: 1 dependente grátis", "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium", "Benefício Multi: 4 meses de ChatGPT Plus",
+      "Franquia Total: 250 GB (100 GB Uso Livre + 100 GB Redes + 50 GB Bônus Multi Friday)",
+      "Dependentes: 1 dependente incluso",
+      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDS 100GB C/AP PAD / POS 100GB S/AP PAD"
   },
   {
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 60GB Gaming (Multi)", precoMensal: 149.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 130 GB", "Detalhe da Franquia: 60 GB (uso livre) + 60 GB (Redes Sociais)", "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Streaming de Jogos: Geforce NOW incluso", "Dependentes: 0 dependentes inclusos", "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium", "Benefício Multi: 4 meses de ChatGPT Plus",
+      "Franquia Total: 170 GB (60 GB Uso Livre + 60 GB Redes + 50 GB Bônus Multi Friday)",
+      "Streaming de Jogos: Geforce NOW incluso",
+      "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDS 60GB GAMER C/AP PAD / POS 60GB GAMER S/AP PAD"
   },
   {
-    regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 50GB (Multi)", precoMensal: 119.90, precoAnual: null,
+    regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 50GB (Multi)", precoMensal: 99.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 110 GB", "Detalhe da Franquia: 50 GB (uso livre) + 50 GB (Redes Sociais)", "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Dependentes: 0 dependentes inclusos", "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Padrão, Truecaller, Claro Banca Premium", "Benefício Multi: 4 meses de ChatGPT Plus",
+      "Franquia Total: 150 GB (50 GB Uso Livre + 50 GB Redes + 50 GB Bônus Multi Friday)",
+      "SVAs Inclusos: Skeelo Padrão, Truecaller, Claro Banca Premium",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDS 50GB C/AP PAD / POS 50GB S/AP PAD"
   },
   {
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 25GB (Multi)", precoMensal: 59.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 60 GB", "Detalhe da Franquia: 25 GB (uso livre) + 25 GB (Redes Sociais)", "Bônus: 10 GB (bônus promocional por 12 meses)",
-      "Dependentes: 0 dependentes inclusos", "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "Benefício Multi: 4 meses de ChatGPT Plus", "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
+      "Franquia Total: 75 GB (25 GB Uso Livre + 25 GB Redes + 25 GB Bônus Multi Friday)",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
+      "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDS 25GB C/AP PAD / POS 25GB S/AP PAD"
   },
 
   // --- 2. PRODUTOS MÓVEIS (CONTROLE - MULTI) (PDF 2, p.52) ---
   {
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Controle 25GB Gamer (Multi)", precoMensal: 99.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 35 GB", "Detalhe da Franquia: 25 GB (uso livre) + 5 GB (Redes Sociais)", "Bônus: 5 GB (bônus promocional por 12 meses)",
-      "Streaming de Jogos: Geforce NOW incluso", "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão", "Benefício Multi: 2 meses de ChatGPT Plus",
+      "Franquia Total: 60 GB (25 GB Uso Livre + 25 GB Redes + 10 GB Bônus Multi Friday)",
+      "Streaming de Jogos: Geforce NOW incluso",
+      "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
+      "Benefício Multi: 2 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDC 25GB C/AP GEFORCE NOW / CDC 25GB S/AP GEFORCE NOW"
   },
   {
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Controle 25GB (Multi)", precoMensal: 69.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 35 GB", "Detalhe da Franquia: 25 GB (uso livre) + 5 GB (Redes Sociais)", "Bônus: 5 GB (bônus promocional por 12 meses)",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão", "Benefício Multi: 2 meses de ChatGPT Plus",
+      "Franquia Total: 60 GB (25 GB Uso Livre + 25 GB Redes + 10 GB Bônus Multi Friday)",
+      "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
+      "Benefício Multi: 2 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDC 25GB C/AP PAD / CDC 25GB S/AP PAD"
   },
   {
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Controle 20GB (Multi)", precoMensal: 44.90, precoAnual: null,
     beneficios: [
-      "Franquia Total: 30 GB", "Detalhe da Franquia: 20 GB (uso livre) + 5 GB (Redes Sociais)", "Bônus: 5 GB (bônus promocional por 12 meses)",
-      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
-      "SVAs Inclusos: Skeelo Light, Claro Banca Padrão", "Benefício Multi: 2 meses de ChatGPT Plus",
+      "Franquia Total: 50 GB (20 GB Uso Livre + 20 GB Redes + 10 GB Bônus Multi Friday)",
+      "SVAs Inclusos: Skeelo Light, Claro Banca Padrão",
+      "Benefício Multi: 2 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
-    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses."
+    observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDC 20GB C/AP PAD / CDC 20GB S/AP PAD"
   },
 
   // --- 2B. PRODUTOS DEPENDENTE MÓVEL ---
@@ -557,16 +535,11 @@ const produtosParaCadastrar = [
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (Upgrade INICIAL TELECINE R$ 25,00)", precoMensal: 25.00, precoAnual: null, beneficios: ["Aluguel de 1 equipamento HD adicional"], observacoes: "Valor de aluguel mensal. Para plano Upgrade INICIAL TELECINE." },
 
 
-  // --- 7. OPCIONAIS (CONECTIVIDADE E GAMING - p.46) ---
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Geek", precoMensal: 9.90, precoAnual: 118.80, beneficios: ["Suporte técnico especializado para dispositivos"], observacoes: "Fidelidade 12 meses. Multa R$ 59,40 proporcional." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Geforce NOW (Avulso)", precoMensal: 63.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos na nuvem"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Abya Go", precoMensal: 25.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "No Ping", precoMensal: 10.00, precoAnual: null, beneficios: ["Redutor de latência (ping) para jogos online"], observacoes: "" },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Claro SmartHome (1 Câmera)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Monitoramento com 1 Câmera HD Wi-Fi (interna)", "Equipamento em comodato"], observacoes: "Fidelidade 12 meses. Multa R$ 500,00 proporcional." },
-  { regiaoId: "nacional", tipo: "Opcional", nome: "Extensor Wi-Fi Mesh (Comodato)", precoMensal: 30.00, precoAnual: 360.00, beneficios: ["Kit com 2 extensores para melhorar o sinal Wi-Fi"], observacoes: "Fidelidade 12 meses. Multa R$ 300,00 por extensor." },
+  // --- 7. SERVIÇOS AVANÇADOS (CONECTIVIDADE - p.46) ---
+  { regiaoId: "nacional", tipo: "Serviços Avançados", nome: "Ponto Ultra", precoMensal: 50.00, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única: R$ 150,00 ou em até 3x de R$ 50,00 na fatura" },
+  { regiaoId: "nacional", tipo: "Serviços Avançados", nome: "Extensor Wi-Fi Mesh (Comodato)", precoMensal: 30.00, precoAnual: 360.00, beneficios: ["Kit com 2 extensores para melhorar o sinal Wi-Fi"], observacoes: "Fidelidade 12 meses. Multa R$ 300,00 por extensor." },
 
-  // --- 8. OPCIONAIS (A LA CARTE - STREAMING - p.47-48, 73-78) ---
+  // --- 7B. OPCIONAIS (CONECTIVIDADE E GAMING - p.46) ---
   { regiaoId: "nacional", tipo: "Opcional", nome: "Amazon Prime (Mensal)", precoMensal: 19.90, precoAnual: null, beneficios: ["Amazon Prime Video", "Amazon Music", "Prime Gaming", "Prime Reading", "Frete Grátis Amazon"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Apple TV+ (Mensal)", precoMensal: 21.90, precoAnual: null, beneficios: ["Catálogo Apple TV+", "5 acessos", "4K HDR", "Sem anúncios"], observacoes: "" },
   { regiaoId: "nacional", tipo: "Opcional", nome: "Crunchyroll Fan (Mensal)", precoMensal: 14.99, precoAnual: null, beneficios: ["Catálogo de animes Crunchyroll"], observacoes: "" },
