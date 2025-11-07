@@ -13,6 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/contexts/auth-context';
 import { useFirebase } from '@/firebase/provider';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { DependentesDescontoInfo } from '@/components/dependentes-desconto-info';
 import type { ProductType } from '@/lib/types';
 
 type Gastos = {
@@ -24,7 +25,7 @@ type Gastos = {
 };
 
 export default function ComparadorOfertaPage() {
-  const { products, clearOffer, removeProduct, gastos, setGastos } = useOffer();
+  const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal } = useOffer();
   const { user } = useAuth();
   const { firestore } = useFirebase();
   const [isSaving, setIsSaving] = useState(false);
@@ -35,8 +36,7 @@ export default function ComparadorOfertaPage() {
   };
   
   const totalGastoAtual = useMemo(() => Object.values(gastos).reduce((acc, val) => acc + val, 0), [gastos]);
-  const novoTotalClaro = useMemo(() => products.reduce((acc, p) => acc + (p.precoMensal || 0), 0), [products]);
-  const economiaMensal = useMemo(() => totalGastoAtual - novoTotalClaro, [totalGastoAtual, novoTotalClaro]);
+  const economiaMensal = useMemo(() => totalGastoAtual - totalMensal, [totalGastoAtual, totalMensal]);
 
   const beneficiosAgrupados = useMemo(() => {
     return products.reduce((acc, product) => {
@@ -65,7 +65,7 @@ export default function ComparadorOfertaPage() {
         produtos: products, // Saving full product info for easier display later
         status,
         timestamp: serverTimestamp(),
-        totalOferta: novoTotalClaro,
+        totalOferta: totalMensal,
         economia: economiaMensal,
       };
       const collectionPath = `users/${user.uid}/ofertas_salvas`;
@@ -143,10 +143,13 @@ export default function ComparadorOfertaPage() {
         <CardFooter className="bg-primary text-primary-foreground p-4 rounded-b-lg">
           <div className="flex justify-between items-center w-full">
             <span className="font-semibold">Novo Total Claro</span>
-            <span className="text-lg font-bold">{formatCurrency(novoTotalClaro)}</span>
+            <span className="text-lg font-bold">{formatCurrency(totalMensal)}</span>
           </div>
         </CardFooter>
       </Card>
+
+      {/* Mostrar desconto de dependentes se houver */}
+      <DependentesDescontoInfo />
 
       {products.length > 0 && (
         <Card className={economiaMensal >= 0 ? "border-green-500" : "border-red-500"}>
