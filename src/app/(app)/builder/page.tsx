@@ -33,6 +33,7 @@ const typeDisplayNames: Record<ProductType, string> = {
 
 function ProductCard({ product }: { product: Produto }) {
   const { addProduct } = useOffer();
+  const [dependentesQty, setDependentesQty] = useState(1);
   
   const price = product.precoMensal;
   const isPriceValid = typeof price === 'number' && price > 0;
@@ -47,12 +48,20 @@ function ProductCard({ product }: { product: Produto }) {
     'TV': 'tv',
     'Fixo': 'fixo',
     'Opcional': 'fixo',
-    'Ponto Adicional': 'tv'
+    'Ponto Adicional': 'tv',
+    'Dependente Móvel': 'movel'
   }
   const placeholder = PlaceHolderImages.find(p => p.id === imageMap[product.tipo]);
 
   const handleAddClick = () => {
-    addProduct(product);
+    if (product.tipo === 'Dependente Móvel') {
+      // Adicionar múltiplos dependentes
+      for (let i = 0; i < dependentesQty; i++) {
+        addProduct(product);
+      }
+    } else {
+      addProduct(product);
+    }
   };
 
   return (
@@ -92,6 +101,37 @@ function ProductCard({ product }: { product: Produto }) {
             )}
           </div>
           
+          {product.tipo === 'Dependente Móvel' && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Quantidade de Dependentes</label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setDependentesQty(Math.max(1, dependentesQty - 1))}
+                  className="px-2 py-1 border rounded hover:bg-gray-100"
+                >
+                  −
+                </button>
+                <Input
+                  type="number"
+                  min="1"
+                  max="5"
+                  value={dependentesQty}
+                  onChange={(e) => setDependentesQty(Math.max(1, Math.min(5, parseInt(e.target.value) || 1)))}
+                  className="text-center w-16"
+                />
+                <button
+                  onClick={() => setDependentesQty(Math.min(5, dependentesQty + 1))}
+                  className="px-2 py-1 border rounded hover:bg-gray-100"
+                >
+                  +
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Total: {(dependentesQty * price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} ({dependentesQty}x R$ {price.toFixed(2).replace('.', ',')})
+              </p>
+            </div>
+          )}
+          
           {product.beneficios?.length > 0 && (
             <div>
               <p className="text-sm font-medium">Benefícios:</p>
@@ -104,7 +144,8 @@ function ProductCard({ product }: { product: Produto }) {
         </CardContent>
         <CardFooter className="p-4 mt-auto">
           <Button className="w-full" onClick={handleAddClick} disabled={!isPriceValid}>
-            <PlusCircle className="mr-2 h-4 w-4" /> Adicionar à Oferta
+            <PlusCircle className="mr-2 h-4 w-4" /> 
+            {product.tipo === 'Dependente Móvel' ? `Adicionar ${dependentesQty} à Oferta` : 'Adicionar à Oferta'}
           </Button>
         </CardFooter>
       </Card>

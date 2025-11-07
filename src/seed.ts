@@ -248,9 +248,7 @@ const produtosParaCadastrar = [
   },
 
   // --- 2B. PRODUTOS DEPENDENTE MÓVEL ---
-  { regiaoId: "nacional", tipo: "Dependente Móvel", nome: "Dependente Móvel 50GB", precoMensal: 50.00, precoAnual: null, beneficios: ["Franquia: 50 GB", "Apps Inclusos: TikTok, Instagram, Facebook, X (Twitter), WhatsApp", "Ligações Ilimitadas: Fixo e Celular de qualquer operadora", "Benefício Multi: 1 mês de ChatGPT Plus"], observacoes: "Adicional ao plano móvel principal. Máximo 5 dependentes por contrato." },
-  { regiaoId: "nacional", tipo: "Dependente Móvel", nome: "Dependente Móvel 30GB", precoMensal: 50.00, precoAnual: null, beneficios: ["Franquia: 30 GB", "Apps Inclusos: TikTok, Instagram, Facebook, X (Twitter), WhatsApp", "Ligações Ilimitadas: Fixo e Celular de qualquer operadora", "Benefício Multi: 1 mês de ChatGPT Plus"], observacoes: "Adicional ao plano móvel principal. Máximo 5 dependentes por contrato." },
-  { regiaoId: "nacional", tipo: "Dependente Móvel", nome: "Dependente Móvel 15GB", precoMensal: 50.00, precoAnual: null, beneficios: ["Franquia: 15 GB", "Apps Inclusos: TikTok, Instagram, Facebook, X (Twitter), WhatsApp", "Ligações Ilimitadas: Fixo e Celular de qualquer operadora"], observacoes: "Adicional ao plano móvel principal. Máximo 5 dependentes por contrato." },
+  { regiaoId: "nacional", tipo: "Dependente Móvel", nome: "Dependente Móvel", precoMensal: 50.00, precoAnual: null, beneficios: [], observacoes: "Adicional ao plano móvel principal. Herda a franquia do plano do titular." },
   
   // --- 3. PRODUTOS BANDA LARGA (GRANULAR POR REGIÃO E COMBO) ---
 
