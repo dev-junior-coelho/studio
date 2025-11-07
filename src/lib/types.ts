@@ -9,6 +9,8 @@ export interface Produto {
   fidelidade: string;
   observacoes?: string;
   regiaoId?: string; // Adicionado para filtro
+  dependentesGratis?: number; // Número de dependentes grátis (apenas para Móvel)
+  precoAplicado?: number; // Preço final com descontos aplicados
 }
 
 export type ProcedureCategory = "Financeiro" | "Técnico" | "Cadastro";

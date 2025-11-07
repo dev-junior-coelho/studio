@@ -23,6 +23,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // =============================================================================
+// FUNÇÃO AUXILIAR: Extrair Dependentes Grátis dos Benefícios
+// =============================================================================
+function extrairDependentesGratis(beneficios: string[]): number {
+  // Procura por padrões como "3 dependentes grátis", "1 dependente grátis", etc
+  const match = beneficios.join(' ').match(/(\d+)\s+dependentes?\s+gr[aá]tis/i);
+  return match ? parseInt(match[1]) : 0;
+}
+
+// =============================================================================
 // 2. DADOS DAS REGIÕES (Extraído dos PDFs, p. 18-30)
 // =============================================================================
 const regioesParaCadastrar = [
@@ -680,6 +689,11 @@ async function seedDatabase() {
             // Adiciona ordem apenas se definida
             if (produto.ordem !== undefined) {
                 produtoData.ordem = produto.ordem;
+            }
+
+            // Adiciona dependentesGratis para produtos móvel
+            if (produto.tipo === 'Movel') {
+                produtoData.dependentesGratis = extrairDependentesGratis(produto.beneficios);
             }
             
             batch.set(produtoRef, produtoData);

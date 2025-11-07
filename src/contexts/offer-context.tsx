@@ -1,9 +1,10 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback, useMemo } from 'react';
 import type { Produto } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { calcularTotalComDescontos, calcularDescontoDependentes } from '@/lib/discount-utils';
 
 type Gastos = {
   tv: number;
@@ -25,6 +26,8 @@ interface OfferContextType {
   setGastos: React.Dispatch<React.SetStateAction<Gastos>>;
   selectedCity: string | null;
   setSelectedCity: (city: string | null) => void;
+  totalMensal: number;
+  dependentesInfo: Array<{ index: number; dependente: Produto; precoAplicado: number; isGratis: boolean; descricao: string }>;
 }
 
 const OfferContext = createContext<OfferContextType | undefined>(undefined);
@@ -111,6 +114,17 @@ export function OfferProvider({ children }: { children: ReactNode }) {
     }, 0);
   }, [toast]);
 
+  // Calcular informações de dependentes com desconto
+  const movelPrincipal = useMemo(() => products.find(p => p.tipo === 'Movel'), [products]);
+  const dependentesAdicionados = useMemo(() => products.filter(p => p.tipo === 'Dependente Móvel'), [products]);
+  
+  const dependentesInfo = useMemo(
+    () => calcularDescontoDependentes(movelPrincipal, dependentesAdicionados),
+    [movelPrincipal, dependentesAdicionados]
+  );
+
+  const totalMensal = useMemo(() => calcularTotalComDescontos(products), [products]);
+
   const value = { 
     products, 
     addProduct,
@@ -120,7 +134,9 @@ export function OfferProvider({ children }: { children: ReactNode }) {
     gastos, 
     setGastos, 
     selectedCity, 
-    setSelectedCity 
+    setSelectedCity,
+    totalMensal,
+    dependentesInfo
   };
 
   return (
