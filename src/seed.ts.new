@@ -1,0 +1,38 @@
+// seed.ts (VERSÃO 10.1 - ATUALIZAÇÃO NOVEMBRO/2025 - TABELA CLARO)
+// O nome do produto agora é o código (Coluna 2 ou 3). Inclui TODAS as variações de TV e BL.
+
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, writeBatch, doc } from 'firebase/firestore';
+
+// =============================================================================
+// 1. CREDENCIAIS DO PROJETO
+// =============================================================================
+// Credenciais que você forneceu:
+const firebaseConfig = {
+  apiKey: "AIzaSyD_IW8CfZMseq-LsWkQoZnzEobByPywbss",
+  authDomain: "studio-878079588-1d0ae.firebaseapp.com",
+  projectId: "studio-878079588-1d0ae",
+  storageBucket: "studio-878079588-1d0ae.appspot.com",
+  messagingSenderId: "486175528141",
+  appId: "1:486175528141:web:4e4d4d291cd8e099c28584"
+};
+
+// Inicializa o Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// =============================================================================
+// FUNÇÃO AUXILIAR: Extrair Dependentes Grátis dos Benefícios
+// =============================================================================
+function extrairDependentesGratis(beneficios: string[]): number {
+  // Procura por "Dependentes: X dependentes inclusos" (formato V10.1)
+  const matchInclusos = beneficios.join(' ').match(/Dependentes:\s*(\d+)\s+dependentes?\s+inclusos?/i);
+  if (matchInclusos) return parseInt(matchInclusos[1]);
+  
+  // Procura por "X dependentes grátis" (formato antigo - compatibilidade)
+  const matchGratis = beneficios.join(' ').match(/(\d+)\s+dependentes?\s+gr[aá]tis/i);
+  if (matchGratis) return parseInt(matchGratis[1]);
+  
+  return 0;
+}
+

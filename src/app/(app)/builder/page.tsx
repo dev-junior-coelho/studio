@@ -142,10 +142,11 @@ function ProductCard({ product }: { product: Produto }) {
           {product.beneficios?.length > 0 && (
             <div>
               <p className="text-sm font-medium">Benefícios:</p>
-              <ul className="text-sm text-muted-foreground list-disc pl-5 mt-1 space-y-1">
-                  {product.beneficios.slice(0, 3).map((b, i) => <li key={i}>{b}</li>)}
-                  {product.beneficios.length > 3 && <li className="font-medium">e mais...</li>}
-              </ul>
+              <ScrollArea className="max-h-36 mt-1 pr-2">
+                <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
+                  {product.beneficios.map((b, i) => <li key={i}>{b}</li>)}
+                </ul>
+              </ScrollArea>
             </div>
           )}
         </CardContent>

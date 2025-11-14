@@ -236,16 +236,21 @@ export default function ComparadorOfertaPage() {
             
             <Separator />
             
-            <div className="space-y-4 text-left">
-              {Object.entries(beneficiosAgrupados).map(([tipo, beneficios]) => (
-                <div key={tipo}>
-                  <h4 className="font-bold mb-2 text-primary">{`Benefícios ${tipo}`}</h4>
-                  <div className="flex flex-wrap gap-2 justify-start">
-                    {[...new Set(beneficios)].map((b, i) => <div key={i} className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">{b}</div>)}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ScrollArea className="max-h-[600px] pr-4 w-full">
+              <div className="space-y-4 text-left w-full">
+                {Object.entries(beneficiosAgrupados).map(([tipo, beneficios]) => {
+                  const beneficiosUnicos = [...new Set(beneficios)];
+                  return (
+                    <div key={tipo} className="w-full">
+                      <h4 className="font-bold mb-2 text-primary">{`Benefícios ${tipo}`}</h4>
+                      <div className="flex flex-wrap gap-2 justify-start w-full">
+                        {beneficiosUnicos.map((b, i) => <div key={i} className="bg-secondary text-secondary-foreground text-sm px-3 py-1.5 rounded-full break-words">{b}</div>)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
 
             {allFidelidade.length > 0 && (
               <div className="text-left pt-4">
