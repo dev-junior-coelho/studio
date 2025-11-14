@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { TrendingDown, TrendingUp, X, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -29,14 +30,44 @@ export default function ComparadorOfertaPage() {
   const { user } = useAuth();
   const { firestore } = useFirebase();
   const [isSaving, setIsSaving] = useState(false);
+  const [debitoEmConta, setDebitoEmConta] = useState(false);
 
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setGastos((prev) => ({ ...prev, [name]: Number(value) || 0 }));
   };
+
+  // Calcular desconto de débito em conta
+  const descontoDCC = useMemo(() => {
+    if (!debitoEmConta) return 0;
+    
+    let desconto = 0;
+    products.forEach(product => {
+      // Móvel Pós-Pago: R$ 10,00 de desconto
+      if (product.tipo === 'Movel' && product.nome.includes('Pós')) {
+        desconto += 10;
+      }
+      // Móvel Controle: R$ 5,00 de desconto
+      else if (product.tipo === 'Movel' && product.nome.includes('Controle')) {
+        desconto += 5;
+      }
+      // Banda Larga: R$ 5,00 de desconto
+      else if (product.tipo === 'Banda Larga') {
+        desconto += 5;
+      }
+      // TV: R$ 5,00 de desconto
+      else if (product.tipo === 'TV Cabeada' || product.tipo === 'TV Box' || product.tipo === 'Claro TV APP') {
+        desconto += 5;
+      }
+    });
+    
+    return desconto;
+  }, [debitoEmConta, products]);
+
+  const totalComDesconto = useMemo(() => totalMensal - descontoDCC, [totalMensal, descontoDCC]);
   
   const totalGastoAtual = useMemo(() => Object.values(gastos).reduce((acc, val) => acc + val, 0), [gastos]);
-  const economiaMensal = useMemo(() => totalGastoAtual - totalMensal, [totalGastoAtual, totalMensal]);
+  const economiaMensal = useMemo(() => totalGastoAtual - totalComDesconto, [totalGastoAtual, totalComDesconto]);
 
   const beneficiosAgrupados = useMemo(() => {
     return products.reduce((acc, product) => {
@@ -65,8 +96,10 @@ export default function ComparadorOfertaPage() {
         produtos: products, // Saving full product info for easier display later
         status,
         timestamp: serverTimestamp(),
-        totalOferta: totalMensal,
+        totalOferta: totalComDesconto,
         economia: economiaMensal,
+        debitoEmConta,
+        descontoDCC,
       };
       const collectionPath = `users/${user.uid}/ofertas_salvas`;
       await addDoc(collection(firestore, collectionPath), offerData);
@@ -116,6 +149,21 @@ export default function ComparadorOfertaPage() {
       <Card>
         <CardHeader>
           <CardTitle>Nova Oferta Claro</CardTitle>
+          <CardDescription>
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-sm">Adicione produtos no Montador</span>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="debitoConta"
+                  checked={debitoEmConta}
+                  onCheckedChange={setDebitoEmConta}
+                />
+                <Label htmlFor="debitoConta" className="text-sm font-normal cursor-pointer">
+                  Débito em Conta + Fatura Digital
+                </Label>
+              </div>
+            </div>
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {products.length === 0 ? (
@@ -139,11 +187,26 @@ export default function ComparadorOfertaPage() {
               </ul>
             </ScrollArea>
           )}
+          
+          {debitoEmConta && descontoDCC > 0 && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
+              <p className="text-sm font-semibold text-green-700">💰 Desconto Débito em Conta</p>
+              <p className="text-xs text-green-600 mt-1">
+                Economia de {formatCurrency(descontoDCC)} com DCC + Fatura Digital
+              </p>
+            </div>
+          )}
         </CardContent>
-        <CardFooter className="bg-primary text-primary-foreground p-4 rounded-b-lg">
+        <CardFooter className="bg-primary text-primary-foreground p-4 rounded-b-lg flex-col gap-2">
+          {debitoEmConta && descontoDCC > 0 && (
+            <div className="flex justify-between items-center w-full text-sm opacity-75">
+              <span>Subtotal</span>
+              <span className="line-through">{formatCurrency(totalMensal)}</span>
+            </div>
+          )}
           <div className="flex justify-between items-center w-full">
             <span className="font-semibold">Novo Total Claro</span>
-            <span className="text-lg font-bold">{formatCurrency(totalMensal)}</span>
+            <span className="text-lg font-bold">{formatCurrency(totalComDesconto)}</span>
           </div>
         </CardFooter>
       </Card>
