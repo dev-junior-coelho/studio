@@ -1,7 +1,7 @@
 // seed.ts (VERSÃO 10.1 - ATUALIZAÇÃO NOVEMBRO/2025 - TABELA CLARO)
 // O nome do produto agora é o código (Coluna 2 ou 3). Inclui TODAS as variações de TV e BL.
 
-import { collection, writeBatch, doc } from 'firebase/firestore';
+import { collection, writeBatch, doc, getDocs } from 'firebase/firestore';
 import { db, extrairDependentesGratis } from './seed-utils';
 
 // =============================================================================
@@ -629,12 +629,33 @@ const produtosParaCadastrar = [
 // =============================================================================
 
 /**
+ * Função para limpar todos os produtos antes de fazer seed
+ */
+async function cleanProducts() {
+  console.log('🧹 Limpando produtos duplicados...');
+  try {
+    const querySnapshot = await getDocs(collection(db, 'produtos'));
+    const batch = writeBatch(db);
+    querySnapshot.docs.forEach((doc: any) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+    console.log(`✅ ${querySnapshot.docs.length} produtos removidos.`);
+  } catch (error) {
+    console.error('Erro ao limpar produtos:', error);
+  }
+}
+
+/**
  * Função principal para semear o banco de dados.
  */
 async function seedDatabase() {
   console.log('Iniciando o script de semeadura (V11.0 - CORREÇÃO E INTEGRIDADE MÁXIMA)...');
 
   try {
+    // Limpar produtos antigos
+    await cleanProducts();
+    
     // --- UPLOAD DAS REGIÕES ---
     console.log(`Iniciando upload de ${regioesParaCadastrar.length} regiões...`);
     const regioesBatch = writeBatch(db);
