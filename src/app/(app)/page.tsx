@@ -26,15 +26,44 @@ type Gastos = {
 };
 
 export default function ComparadorOfertaPage() {
-  const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal } = useOffer();
+  const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct } = useOffer();
   const { user } = useAuth();
   const { firestore } = useFirebase();
   const [isSaving, setIsSaving] = useState(false);
   const [debitoEmConta, setDebitoEmConta] = useState(false);
+  const [calculadoraValor, setCalculadoraValor] = useState('');
+  const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Movel' | null>(null);
 
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setGastos((prev) => ({ ...prev, [name]: Number(value) || 0 }));
+  };
+
+  const handleAdicionarCalculadora = () => {
+    const valor = Number(calculadoraValor);
+    if (valor > 0 && calculadoraTipo) {
+      // Mapa de tipo para nome legível
+      const tipoMap: Record<string, string> = {
+        'TV': 'TV',
+        'Internet': 'Internet',
+        'Fixo': 'Fixo',
+        'Movel': 'Móvel'
+      };
+      
+      // Criar produto customizado
+      const produtoCustomizado: any = {
+        id: `custom-${Date.now()}`,
+        nome: `${tipoMap[calculadoraTipo]} (Mantém como está)`,
+        tipo: 'Opcional',
+        precoMensal: valor,
+        beneficios: ['Valor mantido conforme informado pelo cliente'],
+        fidelidade: 'Sem fidelidade',
+        observacoes: `Produto customizado - ${tipoMap[calculadoraTipo]} adicionado via calculadora`
+      };
+      addProduct(produtoCustomizado);
+      setCalculadoraValor('');
+      setCalculadoraTipo(null);
+    }
   };
 
   // Calcular desconto de débito em conta
@@ -138,6 +167,53 @@ export default function ComparadorOfertaPage() {
             </div>
           ))}
         </CardContent>
+        
+        {/* Calculadora */}
+        <div className="px-4 py-3 bg-blue-50 border-t border-blue-200 space-y-3">
+          <label className="text-sm font-medium">Calculadora - Adicionar Valor à Oferta</label>
+          
+          <div className="space-y-2">
+            <Label className="text-xs">Selecione o tipo de serviço</Label>
+            <div className="grid grid-cols-4 gap-2">
+              {['TV', 'Internet', 'Fixo', 'Movel'].map((tipo) => (
+                <button
+                  key={tipo}
+                  onClick={() => setCalculadoraTipo(tipo as any)}
+                  className={`px-3 py-2 rounded border-2 font-medium text-sm transition-all ${
+                    calculadoraTipo === tipo
+                      ? 'border-blue-600 bg-blue-600 text-white'
+                      : 'border-blue-300 bg-white text-blue-700 hover:border-blue-500'
+                  }`}
+                >
+                  {tipo === 'Movel' ? 'Móvel' : tipo}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="calc-valor" className="text-xs">Valor em Reais</Label>
+            <div className="flex gap-2">
+              <Input
+                id="calc-valor"
+                type="number"
+                value={calculadoraValor}
+                onChange={(e) => setCalculadoraValor(e.target.value)}
+                placeholder="Ex: 50,00"
+                className="text-right"
+              />
+              <Button 
+                onClick={handleAdicionarCalculadora}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 min-w-fit"
+                disabled={!calculadoraValor || Number(calculadoraValor) <= 0 || !calculadoraTipo}
+              >
+                Adicionar
+              </Button>
+            </div>
+          </div>
+          <p className="text-xs text-blue-600">✓ O valor será adicionado como um item na Nova Oferta</p>
+        </div>
+        
         <CardFooter className="bg-muted p-4 rounded-b-lg">
           <div className="flex justify-between items-center w-full">
             <span className="font-semibold">Total Gasto Atual</span>
