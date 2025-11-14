@@ -141,6 +141,7 @@ const produtosParaCadastrar = [
       "Franquia Total: 650 GB (300 GB Uso Livre + 300 GB Redes + 50 GB Bônus Multi Friday)",
       "Passaporte: Passaporte Mundo (uso do plano em 80 países)",
       "Dependentes: 3 dependentes inclusos",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
       "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
@@ -153,6 +154,7 @@ const produtosParaCadastrar = [
       "Franquia Total: 350 GB (150 GB Uso Livre + 150 GB Redes + 50 GB Bônus Multi Friday)",
       "Passaporte: Passaporte Américas (uso do plano nas Américas)",
       "Dependentes: 2 dependentes inclusos",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
       "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
@@ -164,6 +166,7 @@ const produtosParaCadastrar = [
     beneficios: [
       "Franquia Total: 250 GB (100 GB Uso Livre + 100 GB Redes + 50 GB Bônus Multi Friday)",
       "Dependentes: 1 dependente incluso",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
       "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
@@ -175,6 +178,7 @@ const produtosParaCadastrar = [
     beneficios: [
       "Franquia Total: 170 GB (60 GB Uso Livre + 60 GB Redes + 50 GB Bônus Multi Friday)",
       "Streaming de Jogos: Geforce NOW incluso",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
       "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
@@ -185,6 +189,7 @@ const produtosParaCadastrar = [
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 50GB (Multi)", precoMensal: 99.90, precoAnual: null,
     beneficios: [
       "Franquia Total: 150 GB (50 GB Uso Livre + 50 GB Redes + 50 GB Bônus Multi Friday)",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Padrão, Truecaller, Claro Banca Premium",
       "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
@@ -195,6 +200,7 @@ const produtosParaCadastrar = [
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 25GB (Multi)", precoMensal: 59.90, precoAnual: null,
     beneficios: [
       "Franquia Total: 75 GB (25 GB Uso Livre + 25 GB Redes + 25 GB Bônus Multi Friday)",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
@@ -207,8 +213,9 @@ const produtosParaCadastrar = [
     beneficios: [
       "Franquia Total: 60 GB (25 GB Uso Livre + 25 GB Redes + 10 GB Bônus Multi Friday)",
       "Streaming de Jogos: Geforce NOW incluso",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
-      "Benefício Multi: 2 meses de ChatGPT Plus",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
     observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDC 25GB C/AP GEFORCE NOW / CDC 25GB S/AP GEFORCE NOW"
@@ -217,8 +224,9 @@ const produtosParaCadastrar = [
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Controle 25GB (Multi)", precoMensal: 69.90, precoAnual: null,
     beneficios: [
       "Franquia Total: 60 GB (25 GB Uso Livre + 25 GB Redes + 10 GB Bônus Multi Friday)",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
-      "Benefício Multi: 2 meses de ChatGPT Plus",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
     observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDC 25GB C/AP PAD / CDC 25GB S/AP PAD"
@@ -227,8 +235,9 @@ const produtosParaCadastrar = [
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Controle 20GB (Multi)", precoMensal: 44.90, precoAnual: null,
     beneficios: [
       "Franquia Total: 50 GB (20 GB Uso Livre + 20 GB Redes + 10 GB Bônus Multi Friday)",
+      "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Light, Claro Banca Padrão",
-      "Benefício Multi: 2 meses de ChatGPT Plus",
+      "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],
     observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: PDC 20GB C/AP PAD / CDC 20GB S/AP PAD"
