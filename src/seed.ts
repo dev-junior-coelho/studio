@@ -165,6 +165,7 @@ const produtosParaCadastrar = [
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 100GB (Multi)", precoMensal: 169.90, precoAnual: null,
     beneficios: [
       "Franquia Total: 250 GB (100 GB Uso Livre + 100 GB Redes + 50 GB Bônus Multi Friday)",
+      "Passaporte: Sem passaporte incluso",
       "Dependentes: 1 dependente incluso",
       "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
@@ -177,6 +178,8 @@ const produtosParaCadastrar = [
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 60GB Gaming (Multi)", precoMensal: 149.90, precoAnual: null,
     beneficios: [
       "Franquia Total: 170 GB (60 GB Uso Livre + 60 GB Redes + 50 GB Bônus Multi Friday)",
+      "Passaporte: Sem passaporte incluso",
+      "Dependentes: Sem dependentes inclusos",
       "Streaming de Jogos: Geforce NOW incluso",
       "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
@@ -189,6 +192,8 @@ const produtosParaCadastrar = [
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 50GB (Multi)", precoMensal: 99.90, precoAnual: null,
     beneficios: [
       "Franquia Total: 150 GB (50 GB Uso Livre + 50 GB Redes + 50 GB Bônus Multi Friday)",
+      "Passaporte: Sem passaporte incluso",
+      "Dependentes: Sem dependentes inclusos",
       "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
       "SVAs Inclusos: Skeelo Padrão, Truecaller, Claro Banca Premium",
       "Benefício Multi: 4 meses de ChatGPT Plus",
@@ -200,7 +205,10 @@ const produtosParaCadastrar = [
     regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 25GB (Multi)", precoMensal: 59.90, precoAnual: null,
     beneficios: [
       "Franquia Total: 75 GB (25 GB Uso Livre + 25 GB Redes + 25 GB Bônus Multi Friday)",
+      "Passaporte: Sem passaporte incluso",
+      "Dependentes: Sem dependentes inclusos",
       "Apps Inclusos (GB Extra): TikTok, Instagram, Facebook, X (Twitter), WhatsApp",
+      "SVAs Inclusos: Sem SVAs inclusos",
       "Benefício Multi: 4 meses de ChatGPT Plus",
       "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
     ],

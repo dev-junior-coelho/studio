@@ -242,10 +242,15 @@ export default function ComparadorOfertaPage() {
                   const beneficiosUnicos = [...new Set(beneficios)];
                   return (
                     <div key={tipo} className="w-full">
-                      <h4 className="font-bold mb-2 text-primary">{`Benefícios ${tipo}`}</h4>
-                      <div className="flex flex-wrap gap-2 justify-start w-full">
-                        {beneficiosUnicos.map((b, i) => <div key={i} className="bg-secondary text-secondary-foreground text-sm px-3 py-1.5 rounded-full break-words">{b}</div>)}
-                      </div>
+                      <h4 className="font-bold mb-3 text-primary text-lg">{`Benefícios ${tipo}`}</h4>
+                      <ul className="space-y-2 w-full">
+                        {beneficiosUnicos.map((b, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm">
+                            <span className="text-primary font-bold min-w-fit">•</span>
+                            <span className="text-foreground">{b}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   );
                 })}
