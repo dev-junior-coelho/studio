@@ -301,126 +301,190 @@ export default function MontadorPortfolioPage() {
 
   const isLoading = isLoadingRegioes || (selectedCity && isLoadingProducts);
 
+  // Group products by type/category
+  const groupedByType = useMemo(() => {
+    const grouped: Record<ProductType, Produto[]> = {} as Record<ProductType, Produto[]>;
+    productTypes.forEach(type => {
+      grouped[type] = [];
+    });
+    filteredAndSortedProducts.forEach(product => {
+      if (grouped[product.tipo]) {
+        grouped[product.tipo].push(product);
+      }
+    });
+    return grouped;
+  }, [filteredAndSortedProducts]);
+
+  // Get types that have products to display
+  const typesWithProducts = useMemo(() => {
+    if (selectedType === 'Todos') {
+      return productTypes.filter(type => groupedByType[type].length > 0);
+    }
+    return groupedByType[selectedType].length > 0 ? [selectedType] : [];
+  }, [selectedType, groupedByType]);
+
   return (
-    <div className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold">Montador de Portfólio</h1>
+    <main className="min-h-screen pb-20">
+      <div className="p-4 space-y-4">
+        {/* Header */}
+        <div className="mb-6 pt-4">
+          <h1 className="text-3xl font-bold mb-2">Montador de Portfólio</h1>
+          <p className="text-muted-foreground">
+            Crie sua oferta personalizada e acompanhe todos os benefícios
+          </p>
+        </div>
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Selecione a Cidade</label>
-        {isLoadingRegioes ? (
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Carregando cidades...</span>
-          </div>
-        ) : (
-          <Popover open={isComboboxOpen} onOpenChange={setComboboxOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={isComboboxOpen}
-                className="w-full justify-between"
-              >
-                {selectedCity || "Selecione uma cidade..."}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-              <Command>
-                <CommandInput placeholder="Buscar cidade..." />
-                <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
-                <CommandGroup>
-                  <ScrollArea className="h-72">
-                    {allCities.map((city) => (
-                      <CommandItem
-                        key={city.value}
-                        value={city.value}
-                        onSelect={(currentValue) => {
-                          const selected = allCities.find(c => c.value === currentValue);
-                          if (selected) {
-                            handleCityChange(selected.label);
-                          }
-                          setComboboxOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            selectedCity === city.label ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {city.label}
-                      </CommandItem>
-                    ))}
-                  </ScrollArea>
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        )}
-      </div>
+        {/* City Selection */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Selecione a Cidade</label>
+          {isLoadingRegioes ? (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Carregando cidades...</span>
+            </div>
+          ) : (
+            <Popover open={isComboboxOpen} onOpenChange={setComboboxOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={isComboboxOpen}
+                  className="w-full justify-between"
+                >
+                  {selectedCity || "Selecione uma cidade..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                <Command>
+                  <CommandInput placeholder="Buscar cidade..." />
+                  <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
+                  <CommandGroup>
+                    <ScrollArea className="h-72">
+                      {allCities.map((city) => (
+                        <CommandItem
+                          key={city.value}
+                          value={city.value}
+                          onSelect={(currentValue) => {
+                            const selected = allCities.find(c => c.value === currentValue);
+                            if (selected) {
+                              handleCityChange(selected.label);
+                            }
+                            setComboboxOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              selectedCity === city.label ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {city.label}
+                        </CommandItem>
+                      ))}
+                    </ScrollArea>
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
 
-      {selectedCity && (
-        <>
-          <Button onClick={clearSelection} variant="outline" size="sm" className="w-full">
-            <XCircle className="mr-2 h-4 w-4" />
-            Limpar Seleção ({selectedCity})
-          </Button>
-
-          <div className="flex flex-wrap gap-2">
-            <Button 
-              variant={selectedType === 'Todos' ? 'default' : 'outline'}
-              onClick={() => handleTypeChange('Todos')}
-              size="sm"
-            >
-              Todos
+        {selectedCity && (
+          <>
+            <Button onClick={clearSelection} variant="outline" size="sm" className="w-full">
+              <XCircle className="mr-2 h-4 w-4" />
+              Limpar Seleção ({selectedCity})
             </Button>
-            {productTypes.map(type => (
+
+            {/* Category Filter */}
+            <div className="flex flex-wrap gap-2">
               <Button 
-                key={type}
-                variant={selectedType === type ? 'default' : 'outline'}
-                onClick={() => handleTypeChange(type)}
+                variant={selectedType === 'Todos' ? 'default' : 'outline'}
+                onClick={() => handleTypeChange('Todos')}
                 size="sm"
               >
-                {typeDisplayNames[type]}
+                Todos
               </Button>
-            ))}
-          </div>
+              {productTypes.map(type => (
+                <Button 
+                  key={type}
+                  variant={selectedType === type ? 'default' : 'outline'}
+                  onClick={() => handleTypeChange(type)}
+                  size="sm"
+                >
+                  {typeDisplayNames[type]}
+                </Button>
+              ))}
+            </div>
 
-          {selectedType === 'Opcional' && (
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Buscar em A La Carte..."
-                value={searchAlaCarte}
-                onChange={(e) => setSearchAlaCarte(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          )}
-          
-          {isLoading && (
-             <div className="flex items-center justify-center py-10 gap-2 text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin" />
-              <span>Carregando produtos...</span>
-            </div>
-          )}
+            {/* Search for A La Carte */}
+            {selectedType === 'Opcional' && (
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Buscar em A La Carte..."
+                      value={searchAlaCarte}
+                      onChange={(e) => setSearchAlaCarte(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  {searchAlaCarte && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {filteredAndSortedProducts.length} produto(s) encontrado(s)
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+            
+            {isLoading && (
+              <div className="flex items-center justify-center py-10 gap-2 text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Carregando produtos...</span>
+              </div>
+            )}
 
-          {!isLoading && filteredAndSortedProducts.length === 0 && (
-             <div className="text-center py-10">
-              <p className="text-muted-foreground">Nenhum produto encontrado para esta seleção.</p>
-            </div>
-          )}
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {!isLoading && filteredAndSortedProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </>
-      )}
-    </div>
+            {!isLoading && filteredAndSortedProducts.length === 0 && (
+              <Card>
+                <CardContent className="pt-8 pb-8 text-center">
+                  <PlusCircle className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-muted-foreground">
+                    Nenhum produto encontrado para esta seleção.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Products by Category */}
+            {!isLoading && filteredAndSortedProducts.length > 0 && (
+              <div className="space-y-4">
+                {typesWithProducts.map((type) => (
+                  <Card key={type} className="overflow-hidden">
+                    <CardHeader className="pb-3 bg-gradient-to-r from-primary/10 to-primary/5">
+                      <CardTitle className="text-lg">{typeDisplayNames[type]}</CardTitle>
+                      <CardDescription>
+                        {groupedByType[type].length} produto(s)
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {groupedByType[type].map(product => (
+                          <ProductCard key={product.id} product={product} />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </main>
   );
 }
     
