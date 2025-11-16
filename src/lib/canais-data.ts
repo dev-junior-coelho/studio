@@ -51,13 +51,13 @@ export const canais: Canal[] = [
   { id: "36", nome: "MTV'S 00", categoria: "Entretenimento Música" },
 
   // ⚽ Esportes
-  { id: "37", nome: "ESPN Extra HD", categoria: "Esportes", cortesia: true },
+  { id: "37", nome: "ESPN 5 HD", categoria: "Esportes" },
   { id: "38", nome: "Band Sports HD", categoria: "Esportes" },
   { id: "39", nome: "ESPN 2 HD", categoria: "Esportes" },
   { id: "40", nome: "ESPN 3 HD", categoria: "Esportes" },
   { id: "41", nome: "ESPN 4 HD", categoria: "Esportes" },
   { id: "42", nome: "ESPN HD", categoria: "Esportes" },
-  { id: "43", nome: "FOX Sports 2 HD", categoria: "Esportes" },
+  { id: "43", nome: "ESPN 6 HD", categoria: "Esportes" },
   { id: "44", nome: "SporTV 2 HD", categoria: "Esportes" },
   { id: "45", nome: "SporTV 3 HD", categoria: "Esportes" },
   { id: "46", nome: "SporTV HD", categoria: "Esportes" },

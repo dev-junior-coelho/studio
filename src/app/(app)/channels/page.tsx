@@ -40,8 +40,8 @@ export default function CanalPage() {
   );
 
   return (
-    <main className="pb-20">
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+    <main className="min-h-screen pb-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="p-4">
         {/* Header */}
         <div className="mb-6 pt-4">
           <div className="flex items-center gap-2 mb-4">
