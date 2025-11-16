@@ -8,12 +8,12 @@ import { getFirestore } from 'firebase/firestore';
 // CREDENCIAIS DO FIREBASE
 // =============================================================================
 export const firebaseConfig = {
-  apiKey: "AIzaSyD_IW8CfZMseq-LsWkQoZnzEobByPywbss",
-  authDomain: "studio-878079588-1d0ae.firebaseapp.com",
-  projectId: "studio-878079588-1d0ae",
-  storageBucket: "studio-878079588-1d0ae.appspot.com",
-  messagingSenderId: "486175528141",
-  appId: "1:486175528141:web:4e4d4d291cd8e099c28584"
+  apiKey: "AIzaSyB2WyTED3BCmJPtYE_cqmc1Cof_2DWf8xk",
+  authDomain: "studio-claro.firebaseapp.com",
+  projectId: "studio-claro",
+  storageBucket: "studio-claro.firebasestorage.app",
+  messagingSenderId: "541789671472",
+  appId: "1:541789671472:web:4a3d7bfb1b429fb9151df5"
 };
 
 // Inicializa o Firebase
