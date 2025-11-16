@@ -23,6 +23,7 @@ type Gastos = {
   fixo: number;
   movel: number;
   outros: number;
+  wifiMesh: number;
 };
 
 export default function ComparadorOfertaPage() {
@@ -32,14 +33,14 @@ export default function ComparadorOfertaPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [debitoEmConta, setDebitoEmConta] = useState(false);
   const [calculadoraValor, setCalculadoraValor] = useState('');
-  const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Movel' | null>(null);
+  const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Mesh' | null>(null);
 
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setGastos((prev) => ({ ...prev, [name]: Number(value) || 0 }));
   };
 
-  const handleSelecionarTipo = (tipo: 'TV' | 'Internet' | 'Fixo' | 'Movel') => {
+  const handleSelecionarTipo = (tipo: 'TV' | 'Internet' | 'Fixo' | 'Mesh') => {
     setCalculadoraTipo(tipo);
     
     // Mapa de tipo para chave de gastos
@@ -47,7 +48,7 @@ export default function ComparadorOfertaPage() {
       'TV': 'tv',
       'Internet': 'internet',
       'Fixo': 'fixo',
-      'Movel': 'movel'
+      'Mesh': 'wifiMesh'
     };
     
     // Auto-preencher com o valor atual de gastos
@@ -64,7 +65,7 @@ export default function ComparadorOfertaPage() {
         'TV': 'TV',
         'Internet': 'Internet',
         'Fixo': 'Fixo',
-        'Movel': 'Móvel'
+        'Mesh': 'WiFi Mesh'
       };
       
       // Criar produto customizado
@@ -169,20 +170,34 @@ export default function ComparadorOfertaPage() {
           <CardDescription>Informe os valores que o cliente paga atualmente.</CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-4">
-          {Object.keys(gastos).map((key) => (
-            <div key={key} className="space-y-2">
-              <Label htmlFor={key} className="capitalize">{key}</Label>
-              <Input
-                type="number"
-                id={key}
-                name={key}
-                value={gastos[key as keyof Gastos] === 0 ? '' : gastos[key as keyof Gastos]}
-                onChange={handleGastoChange}
-                placeholder="R$ 0,00"
-                className="text-right"
-              />
-            </div>
-          ))}
+          {Object.keys(gastos).map((key) => {
+            // Mapa de labels customizados
+            const labelMap: Record<string, string> = {
+              'tv': 'TV',
+              'internet': 'Internet',
+              'fixo': 'Fixo',
+              'movel': 'Móvel',
+              'outros': 'Outros',
+              'wifiMesh': 'WiFi Mesh'
+            };
+            
+            const label = labelMap[key] || key;
+            
+            return (
+              <div key={key} className="space-y-2">
+                <Label htmlFor={key}>{label}</Label>
+                <Input
+                  type="number"
+                  id={key}
+                  name={key}
+                  value={gastos[key as keyof Gastos] === 0 ? '' : gastos[key as keyof Gastos]}
+                  onChange={handleGastoChange}
+                  placeholder="R$ 0,00"
+                  className="text-right"
+                />
+              </div>
+            );
+          })}
         </CardContent>
         
         {/* Calculadora */}
@@ -192,7 +207,7 @@ export default function ComparadorOfertaPage() {
           <div className="space-y-2">
             <Label className="text-xs">Selecione o tipo de serviço</Label>
             <div className="grid grid-cols-4 gap-2">
-              {['TV', 'Internet', 'Fixo', 'Movel'].map((tipo) => (
+              {['TV', 'Internet', 'Fixo', 'Mesh'].map((tipo) => (
                 <button
                   key={tipo}
                   onClick={() => handleSelecionarTipo(tipo as any)}
@@ -202,7 +217,7 @@ export default function ComparadorOfertaPage() {
                       : 'border-blue-300 bg-white text-blue-700 hover:border-blue-500'
                   }`}
                 >
-                  {tipo === 'Movel' ? 'Móvel' : tipo}
+                  {tipo === 'Mesh' ? 'WiFi Mesh' : tipo}
                 </button>
               ))}
             </div>
