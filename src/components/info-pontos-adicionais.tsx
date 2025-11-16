@@ -1,29 +1,50 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Info, AlertTriangle } from 'lucide-react';
-import { COMPATIBILIDADE_PA, getProcedimentoPa, getLimitePa } from '@/lib/pontos-adicionais';
+import { Info, AlertTriangle, Filter } from 'lucide-react';
+import { COMPATIBILIDADE_PA, getProcedimentoPa, getLimitePa, getConfigPorNomeTV } from '@/lib/pontos-adicionais';
 
 interface InfoPontosAdicionaisProps {
   nomePP?: string;
+  nomeTV?: string; // Nome do produto TV para filtro automático
   mostrarAlerta?: boolean;
 }
 
 export function InfoPontosAdicionais({
   nomePP,
+  nomeTV,
   mostrarAlerta = true,
 }: InfoPontosAdicionaisProps) {
-  if (!nomePP) return null;
+  // Se houver nomeTV, usar o mapeamento automático
+  let config = undefined;
+  let configKey = nomePP;
 
-  const config = COMPATIBILIDADE_PA[nomePP as keyof typeof COMPATIBILIDADE_PA];
+  if (nomeTV) {
+    const autoConfig = getConfigPorNomeTV(nomeTV);
+    if (autoConfig) {
+      config = autoConfig;
+      // Encontrar a chave do COMPATIBILIDADE_PA para este config
+      configKey = Object.entries(COMPATIBILIDADE_PA).find(
+        ([_, c]) => c === autoConfig
+      )?.[0];
+    }
+  } else if (nomePP) {
+    config = COMPATIBILIDADE_PA[nomePP as keyof typeof COMPATIBILIDADE_PA];
+    configKey = nomePP;
+  }
 
-  if (!config) {
+  if (!config || !configKey) {
     return (
       <Alert className="bg-amber-50 border-amber-200">
         <AlertTriangle className="h-4 w-4 text-amber-600" />
         <AlertTitle>Informação não disponível</AlertTitle>
         <AlertDescription>
-          Não há informações de Pontos Adicionais para "{nomePP}".
+          {nomeTV 
+            ? `Não há Pontos Adicionais para "${nomeTV}".`
+            : nomePP
+            ? `Não há informações de Pontos Adicionais para "${nomePP}".`
+            : "Selecione um produto de TV para visualizar Pontos Adicionais compatíveis."
+          }
         </AlertDescription>
       </Alert>
     );
@@ -34,15 +55,18 @@ export function InfoPontosAdicionais({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
-            <Info className="h-5 w-5 text-blue-600" />
-            Pontos Adicionais (PA) Compatíveis
+            <Filter className="h-5 w-5 text-blue-600" />
+            Pontos Adicionais Compatíveis
           </CardTitle>
           <Badge variant="secondary" className="bg-blue-100 text-blue-800">
             {config.categoria}
           </Badge>
         </div>
         <CardDescription>
-          Equipamentos extras disponíveis para este plano
+          {nomeTV 
+            ? `Equipamentos extras disponíveis para "${nomeTV}"`
+            : "Equipamentos extras disponíveis para este plano"
+          }
         </CardDescription>
       </CardHeader>
 
@@ -63,7 +87,7 @@ export function InfoPontosAdicionais({
             Equipamentos Compatíveis:
           </p>
           <div className="space-y-2">
-            {config.paCompativel.map((pa) => (
+            {config.paCompativel.map((pa: any) => (
               <div
                 key={pa.id}
                 className="flex items-center justify-between rounded border border-gray-200 bg-gray-50 p-2"
@@ -86,7 +110,7 @@ export function InfoPontosAdicionais({
             Procedimento de Cadastro:
           </p>
           <p className="text-sm text-gray-600 italic border-l-4 border-blue-400 pl-3">
-            {getProcedimentoPa(nomePP)}
+            {getProcedimentoPa(configKey)}
           </p>
         </div>
 
@@ -100,6 +124,17 @@ export function InfoPontosAdicionais({
               PA Box Cabo ou Soundbox, mas não o contrário.
             </AlertDescription>
           </Alert>
+        )}
+
+        {/* Badge informativo */}
+        {nomeTV && (
+          <div className="rounded-lg bg-blue-100 p-3 flex items-start gap-2">
+            <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-blue-700">
+              ✅ Filtro ativado automaticamente para este produto de TV. Apenas os Pontos Adicionais 
+              compatíveis são exibidos.
+            </p>
+          </div>
         )}
       </CardContent>
     </Card>

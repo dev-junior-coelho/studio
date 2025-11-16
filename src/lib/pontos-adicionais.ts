@@ -34,6 +34,26 @@ export const PONTOS_ADICIONAIS_CONFIG = {
   },
 };
 
+// === MAPEAMENTO DE PRODUTOS TV → PA COMPATÍVEIS ===
+// Este mapeamento identifica qual configuração de PA usar baseado no nome do produto de TV
+export const MAPEAMENTO_TV_PARA_PA = {
+  // AQUISIÇÃO - Produtos com padrão "4K"
+  "CTV+ TOP HD 4K": "Claro TV+ BOX CABO", // 4K padrão
+  "CTV+ TOP HD 4K MULTI": "Claro TV+ BOX CABO", // 4K Multi
+  "CTV+ TOP HD 4K SOUND": "Claro TV+ BOX CABO", // 4K Sound
+  "CTV+ TOP HD 4K SOUND MULTI": "Claro TV+ BOX CABO", // 4K Sound Multi
+
+  // AQUISIÇÃO - Produtos com padrão "STREAMING"
+  "CLARO STREAMING HD TOP": "Claro TV+ BOX STREAMING", // Streaming padrão
+
+  // RENTABILIZAÇÃO - Produtos com padrão "RENT"
+  "CTV+TOP HD 4K RENT ANUNCIO FID": "Claro TV+ BOX CABO RENT", // Box Cabo RENT
+  "CLARO STREAMING HD TOP RENT ANUNCIO FID": "Claro TV+ BOX STREAMING RENT", // Box Streaming RENT
+  "CTV+ TOP HD RENT ANUNCIO FID": "Claro TV+ HD RENT", // HD RENT
+  "CTV+TOP HD 4K SOUND RENT ANUNCIO FID": "Claro TV+ SOUNDBOX RENT CABO", // Soundbox RENT Cabo
+  "CLARO STREAMING HD TOP SOUND RENT AN FID": "Claro TV+ SOUNDBOX RENT FIBRA", // Soundbox RENT Fibra
+};
+
 // Compatibilidade entre Pontos Principais (PP) e Pontos Adicionais (PA)
 export const COMPATIBILIDADE_PA = {
   "Claro TV+ BOX CABO": {
@@ -164,16 +184,27 @@ export const COMPATIBILIDADE_PA = {
 };
 
 /**
+ * Obtém a configuração de PA compatível baseado no nome do produto TV
+ * @param nomeTV - Nome do produto de TV Cabeada
+ * @returns Configuração de PA ou undefined se não encontrado
+ */
+export function getConfigPorNomeTV(nomeTV: string) {
+  const nomePP = MAPEAMENTO_TV_PARA_PA[nomeTV as keyof typeof MAPEAMENTO_TV_PARA_PA];
+  if (!nomePP) return undefined;
+  return COMPATIBILIDADE_PA[nomePP as keyof typeof COMPATIBILIDADE_PA];
+}
+
+/**
  * Verifica se um PA é compatível com um PP
  * @param nomePP - Nome do Ponto Principal
  * @param nomePa - Nome do Ponto Adicional
  * @returns boolean - true se compatível
  */
 export function ehCompativel(nomePP: string, nomePa: string): boolean {
-  const config = COMPATIBILIDADE_PA[nomePP];
+  const config = COMPATIBILIDADE_PA[nomePP as keyof typeof COMPATIBILIDADE_PA];
   if (!config) return false;
 
-  return config.paCompativel.some((pa) => pa.nome === nomePa);
+  return config.paCompativel.some((pa: any) => pa.nome === nomePa);
 }
 
 /**
@@ -182,7 +213,7 @@ export function ehCompativel(nomePP: string, nomePa: string): boolean {
  * @returns number - Limite máximo de PA
  */
 export function getLimitePa(nomePP: string): number {
-  const config = COMPATIBILIDADE_PA[nomePP];
+  const config = COMPATIBILIDADE_PA[nomePP as keyof typeof COMPATIBILIDADE_PA];
   return config?.limite ?? 0;
 }
 
@@ -192,7 +223,7 @@ export function getLimitePa(nomePP: string): number {
  * @returns string - Procedimento de cadastro
  */
 export function getProcedimentoPa(nomePP: string): string {
-  const config = COMPATIBILIDADE_PA[nomePP];
+  const config = COMPATIBILIDADE_PA[nomePP as keyof typeof COMPATIBILIDADE_PA];
   return config?.procedimento ?? "Procedimento padrão";
 }
 

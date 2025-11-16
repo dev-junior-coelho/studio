@@ -166,7 +166,7 @@ export default function MontadorPortfolioPage() {
   const [selectedType, setSelectedType] = useState<ProductType | 'Todos'>('Todos');
   const [isComboboxOpen, setComboboxOpen] = useState(false);
   const [searchAlaCarte, setSearchAlaCarte] = useState('');
-  const { selectedCity, setSelectedCity, clearOffer } = useOffer();
+  const { selectedCity, setSelectedCity, clearOffer, selectedTV } = useOffer();
   
   const { firestore } = useFirebase();
 
@@ -230,6 +230,54 @@ export default function MontadorPortfolioPage() {
       ? productsData 
       : productsData.filter(p => p.tipo === selectedType);
     
+    // NOVO: Filtrar Pontos Adicionais automaticamente se houver TV selecionada
+    if (selectedType === 'Ponto Adicional' && selectedTV) {
+      // Usar o nome da TV para obter os PA compatíveis
+      const paCompativeisNomes = [
+        "PA - Box Cabo para PP Box Cabo (R$ 69,90)",
+        "PA - Soundbox Cabo para PP Box Cabo (R$ 99,90)",
+        "PA - Box Streaming (R$ 69,90)",
+        "PA - Soundbox Cabo/Streaming (R$ 99,90)",
+        "PA - Box Cabo para PP BOX CABO RENT (R$ 39,90)",
+        "PA - Box Streaming para PP BOX STREAMING RENT (R$ 39,90)",
+        "PA - HD para PP HD RENT (R$ 29,90)",
+        "PA - Soundbox para PP SOUNDBOX RENT Cabo (R$ 69,90)",
+        "PA - Soundbox para PP SOUNDBOX RENT Fibra (R$ 69,90)",
+      ];
+      
+      // Filtrar PA que contém as palavras-chave do TV selecionado
+      const tvNome = selectedTV.nome.toUpperCase();
+      
+      if (tvNome.includes("4K") || tvNome.includes("SOUND")) {
+        // Para 4K, mostrar PA de Box Cabo ou Soundbox
+        filtered = filtered.filter(p => 
+          p.nome.includes("Box Cabo") || 
+          p.nome.includes("Soundbox") ||
+          p.nome.includes("PA -")
+        );
+      } else if (tvNome.includes("STREAMING")) {
+        // Para Streaming, mostrar apenas PA de Box Streaming ou Soundbox
+        filtered = filtered.filter(p => 
+          p.nome.includes("Box Streaming") || 
+          p.nome.includes("Soundbox") ||
+          p.nome.includes("PA -")
+        );
+      } else if (tvNome.includes("RENT")) {
+        // Para RENT, mostrar PA de rentabilização
+        filtered = filtered.filter(p => 
+          p.nome.includes("RENT") || 
+          p.nome.includes("PA -")
+        );
+      } else if (tvNome.includes("HD")) {
+        // Para HD, mostrar PA de HD ou Soundbox
+        filtered = filtered.filter(p => 
+          p.nome.includes("HD") || 
+          p.nome.includes("Soundbox") ||
+          p.nome.includes("PA -")
+        );
+      }
+    }
+    
     // Se estiver na categoria Opcional (A La Carte) e houver texto de busca, filtrar
     if (selectedType === 'Opcional' && searchAlaCarte.trim() !== '') {
       const searchLower = searchAlaCarte.toLowerCase();
@@ -279,7 +327,7 @@ export default function MontadorPortfolioPage() {
         return a.nome.localeCompare(b.nome);
     });
 
-  }, [productsData, selectedType, searchAlaCarte]);
+  }, [productsData, selectedType, searchAlaCarte, selectedTV]);
 
   const handleCityChange = (cityLabel: string) => {
     setSelectedCity(cityLabel);
@@ -482,11 +530,11 @@ export default function MontadorPortfolioPage() {
                     </Card>
 
                     {/* Info de Pontos Adicionais para TV Cabeada */}
-                    {type === "TV Cabeada" && (
+                    {type === "TV Cabeada" && selectedTV && (
                       <Card className="mt-3 border-blue-200 bg-blue-50">
                         <CardContent className="pt-4">
                           <InfoPontosAdicionais 
-                            nomePP="Claro TV+ BOX CABO"
+                            nomeTV={selectedTV.nome}
                             mostrarAlerta={true}
                           />
                         </CardContent>

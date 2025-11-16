@@ -29,6 +29,8 @@ interface OfferContextType {
   setSelectedCity: (city: string | null) => void;
   totalMensal: number;
   dependentesInfo: Array<{ index: number; dependente: Produto; precoAplicado: number; isGratis: boolean; descricao: string }>;
+  selectedTV: Produto | null; // TV selecionada para filtrar PA compatíveis
+  setSelectedTV: (tv: Produto | null) => void;
 }
 
 const OfferContext = createContext<OfferContextType | undefined>(undefined);
@@ -37,6 +39,7 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Produto[]>([]);
   const [gastos, setGastos] = useState<Gastos>(initialGastos);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedTV, setSelectedTV] = useState<Produto | null>(null);
   const { toast } = useToast();
 
   const addProduct = useCallback((product: Produto) => {
@@ -57,6 +60,11 @@ export function OfferProvider({ children }: { children: ReactNode }) {
           });
         }, 0);
         return prevProducts;
+      }
+      
+      // Se é TV, rastrear como selecionada
+      if (isTV) {
+        setSelectedTV(product);
       }
       
       // Para outros produtos (Ponto Adicional, Fixo, Móvel, Banda Larga, Opcional),
@@ -100,13 +108,24 @@ export function OfferProvider({ children }: { children: ReactNode }) {
 
 
   const removeProduct = useCallback((productId: string) => {
-    setProducts((prevProducts) => prevProducts.filter((p) => p.id !== productId));
+    setProducts((prevProducts) => {
+      const productToRemove = prevProducts.find(p => p.id === productId);
+      
+      // Se removendo uma TV, limpar selectedTV
+      if (productToRemove && 
+          (productToRemove.tipo === 'TV Cabeada' || productToRemove.tipo === 'TV Box' || productToRemove.tipo === 'Claro TV APP')) {
+        setSelectedTV(null);
+      }
+      
+      return prevProducts.filter((p) => p.id !== productId);
+    });
   }, []);
 
   const clearOffer = useCallback(() => {
     setProducts([]);
     setGastos(initialGastos);
-    setSelectedCity(null); // Also clear city on full clear
+    setSelectedCity(null);
+    setSelectedTV(null); // Limpar TV selecionada
     setTimeout(() => {
       toast({
           title: "Oferta Limpa",
@@ -137,7 +156,9 @@ export function OfferProvider({ children }: { children: ReactNode }) {
     selectedCity, 
     setSelectedCity,
     totalMensal,
-    dependentesInfo
+    dependentesInfo,
+    selectedTV,
+    setSelectedTV
   };
 
   return (
