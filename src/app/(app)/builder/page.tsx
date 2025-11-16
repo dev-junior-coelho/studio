@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { InfoPontosAdicionais } from '@/components/info-pontos-adicionais';
 
 const productTypes: ProductType[] = ["Movel", "Dependente Móvel", "Banda Larga", "TV Cabeada", "TV Box", "Claro TV APP", "Fixo", "Serviços Avançados", "Ponto Adicional", "Opcional"];
 const typeDisplayNames: Record<ProductType, string> = {
@@ -463,21 +464,35 @@ export default function MontadorPortfolioPage() {
             {!isLoading && filteredAndSortedProducts.length > 0 && (
               <div className="space-y-4">
                 {typesWithProducts.map((type) => (
-                  <Card key={type} className="overflow-hidden">
-                    <CardHeader className="pb-3 bg-gradient-to-r from-primary/10 to-primary/5">
-                      <CardTitle className="text-lg">{typeDisplayNames[type]}</CardTitle>
-                      <CardDescription>
-                        {groupedByType[type].length} produto(s)
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {groupedByType[type].map(product => (
-                          <ProductCard key={product.id} product={product} />
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div key={type}>
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-primary/10 to-primary/5">
+                        <CardTitle className="text-lg">{typeDisplayNames[type]}</CardTitle>
+                        <CardDescription>
+                          {groupedByType[type].length} produto(s)
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="pt-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                          {groupedByType[type].map(product => (
+                            <ProductCard key={product.id} product={product} />
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Info de Pontos Adicionais para TV Cabeada */}
+                    {type === "TV Cabeada" && (
+                      <Card className="mt-3 border-blue-200 bg-blue-50">
+                        <CardContent className="pt-4">
+                          <InfoPontosAdicionais 
+                            nomePP="Claro TV+ BOX CABO"
+                            mostrarAlerta={true}
+                          />
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
                 ))}
               </div>
             )}
