@@ -64,7 +64,7 @@ export const canais: Canal[] = [
   { id: "47", nome: "Paramount+ Conmebol", categoria: "Esportes" },
   { id: "48", nome: "Paramount+ Conmebol 1", categoria: "Esportes" },
   { id: "49", nome: "Paramount+ Conmebol 2", categoria: "Esportes" },
-  { id: "50", nome: "Nosso Futebol", categoria: "Esportes" },
+  { id: "50", nome: "SportyNet", categoria: "Esportes" },
 
   // 🎬 Filmes
   { id: "51", nome: "AMC HD", categoria: "Filmes" },
