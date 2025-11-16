@@ -39,6 +39,23 @@ export default function ComparadorOfertaPage() {
     setGastos((prev) => ({ ...prev, [name]: Number(value) || 0 }));
   };
 
+  const handleSelecionarTipo = (tipo: 'TV' | 'Internet' | 'Fixo' | 'Movel') => {
+    setCalculadoraTipo(tipo);
+    
+    // Mapa de tipo para chave de gastos
+    const tipoMap: Record<string, keyof Gastos> = {
+      'TV': 'tv',
+      'Internet': 'internet',
+      'Fixo': 'fixo',
+      'Movel': 'movel'
+    };
+    
+    // Auto-preencher com o valor atual de gastos
+    const chave = tipoMap[tipo];
+    const valorAtual = gastos[chave];
+    setCalculadoraValor(valorAtual > 0 ? valorAtual.toString() : '');
+  };
+
   const handleAdicionarCalculadora = () => {
     const valor = Number(calculadoraValor);
     if (valor > 0 && calculadoraTipo) {
@@ -178,7 +195,7 @@ export default function ComparadorOfertaPage() {
               {['TV', 'Internet', 'Fixo', 'Movel'].map((tipo) => (
                 <button
                   key={tipo}
-                  onClick={() => setCalculadoraTipo(tipo as any)}
+                  onClick={() => handleSelecionarTipo(tipo as any)}
                   className={`px-3 py-2 rounded border-2 font-medium text-sm transition-all ${
                     calculadoraTipo === tipo
                       ? 'border-blue-600 bg-blue-600 text-white'
