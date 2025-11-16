@@ -539,10 +539,28 @@ const produtosParaCadastrar = [
     observacoes: "Preço em qualquer combinação que não seja 4P."
   },
   // --- 6. OPCIONAIS (PONTOS ADICIONAIS - p.71 e p.72) ---
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox Cabo (R$ 99,90)", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo) adicional", "Máximo de 2 pontos por contrato"], observacoes: "Valor de aluguel mensal. Para planos de Aquisição (p.72)." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox Streaming (R$ 99,90)", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Streaming) adicional", "Máximo de 2 pontos por contrato"], observacoes: "Valor de aluguel mensal. Para planos de Aquisição (p.72)." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box Cabo (R$ 69,90)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box Cabo adicional", "Máximo de 4 pontos por contrato"], observacoes: "Valor de aluguel mensal. Para planos de Aquisição (p.72)." },
-  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box Streaming (R$ 69,90)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional", "Máximo de 2 pontos por contrato"], observacoes: "Valor de aluguel mensal. Para planos de Aquisição (p.72)." },
+  // === 6A. PLANOS DE AQUISIÇÃO (Com Netflix, etc. - p.72) ===
+  // PP: Claro TV+ BOX CABO (Antigo 4K)
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - Box Cabo para PP Box Cabo (R$ 69,90)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box Cabo adicional", "Máximo de 4 pontos por contrato", "Para Claro TV+ BOX CABO (Antigo 4K)"], observacoes: "Aquisição (p.72). Usar mesmo procedimento do Ponto Principal. Hierarquia: tecnologia PA ≤ tecnologia PP." },
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - Soundbox Cabo para PP Box Cabo (R$ 99,90)", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo) adicional", "Máximo de 2 pontos por contrato", "Tecnologia superior (Dolby Atmos)", "Para Claro TV+ BOX CABO (Antigo 4K)"], observacoes: "Aquisição (p.72). Usar mesmo procedimento do Ponto Principal. ⚠️ Atenção: Soundbox > Box em qualidade." },
+  // PP: Claro TV+ BOX (Streaming)
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - Box Streaming (R$ 69,90)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional", "Máximo de 2 pontos por contrato", "Para Claro TV+ BOX (Streaming)"], observacoes: "Aquisição (p.72). Usar mesmo procedimento do Ponto Principal." },
+  // PP: Claro TV+ SOUNDBOX (Cabo/Streaming)
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - Soundbox Cabo/Streaming (R$ 99,90)", precoMensal: 99.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo/Streaming) adicional", "Máximo de 2 pontos por contrato", "Para Claro TV+ SOUNDBOX"], observacoes: "Aquisição (p.72). Usar mesmo procedimento do Ponto Principal." },
+
+  // === 6B. PLANOS DE RENTABILIZAÇÃO/UPGRADE (p.71) ===
+  // PP: Claro TV+ BOX CABO RENT ANUNCIO FID
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - Box Cabo para PP BOX CABO RENT (R$ 39,90)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box Cabo adicional", "Máximo de 4 pontos por contrato", "Para Claro TV+ BOX CABO RENT"], observacoes: "Rentabilização/Upgrade (p.71). Usar procedimento: CTV+TOP HD 4K RENT ANUNCIO FID" },
+  // PP: Claro TV+ BOX STREAMING RENT ANUNCIO FID
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - Box Streaming para PP BOX STREAMING RENT (R$ 39,90)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional", "Máximo de 2 pontos por contrato", "Para Claro TV+ BOX STREAMING RENT"], observacoes: "Rentabilização/Upgrade (p.71). Usar procedimento: CLARO STREAMING HD TOP RENT ANUNCIO FID" },
+  // PP: Claro TV+ HD RENT ANUNCIO FID
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - HD para PP HD RENT (R$ 29,90)", precoMensal: 29.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento HD adicional", "Para Claro TV+ HD RENT"], observacoes: "Rentabilização/Upgrade (p.71). Usar procedimento: CTV+ TOP HD RENT ANUNCIO FID" },
+  // PP: Claro TV+ SOUNDBOX RENT (Cabo)
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - Soundbox para PP SOUNDBOX RENT Cabo (R$ 69,90)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo) adicional", "Máximo de 2 pontos por contrato", "Para Claro TV+ SOUNDBOX RENT"], observacoes: "Rentabilização/Upgrade (p.71). Usar procedimento: CTV+TOP HD 4K SOUND RENT ANUNCIO FID (Cabo)" },
+  // PP: Claro TV+ SOUNDBOX RENT (Fibra/Streaming)
+  { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA - Soundbox para PP SOUNDBOX RENT Fibra (R$ 69,90)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox (Streaming) adicional", "Máximo de 2 pontos por contrato", "Para Claro TV+ SOUNDBOX RENT"], observacoes: "Rentabilização/Upgrade (p.71). Usar procedimento: CLARO STREAMING HD TOP SOUND RENT AN FID (Fibra)" },
+
+  // === 6C. INFORMAÇÕES LEGADAS (Manter para compatibilidade) ===
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox (Upgrade R$ 69,90)", precoMensal: 69.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Soundbox adicional"], observacoes: "Valor de aluguel mensal. Para planos de Upgrade (p.71)." },
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box Cabo (Upgrade R$ 39,90)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box Cabo adicional"], observacoes: "Valor de aluguel mensal. Para planos de Upgrade (p.71)." },
   { regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box Streaming (Upgrade R$ 39,90)", precoMensal: 39.90, precoAnual: null, beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional"], observacoes: "Valor de aluguel mensal. Para planos de Upgrade (p.71)." },
