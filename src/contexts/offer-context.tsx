@@ -12,9 +12,10 @@ type Gastos = {
   fixo: number;
   movel: number;
   outros: number;
+  wifiMesh: number;
 };
 
-const initialGastos: Gastos = { tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0 };
+const initialGastos: Gastos = { tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0, wifiMesh: 0 };
 
 interface OfferContextType {
   products: Produto[];
