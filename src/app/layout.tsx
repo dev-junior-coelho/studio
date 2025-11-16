@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'Claro SAA Mobile',
+  title: 'Studio App',
   description: 'Guia Rápido e Montador de Ofertas para operadores Claro.',
 };
 

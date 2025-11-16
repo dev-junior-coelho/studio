@@ -1,5 +1,5 @@
 /**
- * @fileoverview Firestore Security Rules for the Claro SAA Mobile application.
+ * @fileoverview Firestore Security Rules for the Studio App application.
  *
  * Core Philosophy:
  * This ruleset enforces a strict user-ownership model for saved offers and role-based access to user profiles.

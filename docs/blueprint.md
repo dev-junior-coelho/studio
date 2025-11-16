@@ -1,4 +1,4 @@
-# **App Name**: Claro SAA Mobile
+# **App Name**: Studio App
 
 ## Core Features:
 
