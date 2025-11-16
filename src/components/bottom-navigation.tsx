@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calculator, Search, ShoppingBasket } from "lucide-react";
+import { Calculator, Search, ShoppingBasket, Tv } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Comparador", icon: Calculator },
-  { href: "/builder", label: "Montador", icon: ShoppingBasket },
+  { href: "/channels", label: "Grade de Canais", icon: Tv },
   { href: "/guide", label: "Guia", icon: Search },
 ];
 
