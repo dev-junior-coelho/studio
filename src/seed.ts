@@ -475,7 +475,7 @@ const produtosParaCadastrar = [
       observacoes: "Pacote Soundbox Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
     {
-      regiaoId: regiao, tipo: "TV Cabeada", nome: "CLARO STREAMING HD TOP SOUND MULTI", precoMensal: 154.90, precoAnual: null,
+      regiaoId: regiao, tipo: "TV Box", nome: "CLARO STREAMING HD TOP SOUND MULTI", precoMensal: 154.90, precoAnual: null,
       beneficios: [...beneficiosTVComboCompleto, "Equipamento: Soundbox (Áudio Dolby Atmos)", "Benefício Multi: ChatGPT Plus (se Multi)"],
       observacoes: "Pacote Soundbox Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
@@ -490,12 +490,12 @@ const produtosParaCadastrar = [
       observacoes: "Pacote Box Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
     {
-      regiaoId: regiao, tipo: "TV Cabeada", nome: "CLARO STREAMING HD TOP MULTI", precoMensal: 104.90, precoAnual: null,
+      regiaoId: regiao, tipo: "TV Box", nome: "CLARO STREAMING HD TOP MULTI", precoMensal: 104.90, precoAnual: null,
       beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Streaming", "Benefício Multi: ChatGPT Plus (se Multi)"],
       observacoes: "Pacote Box Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
     {
-      regiaoId: regiao, tipo: "TV Cabeada", nome: "CLARO STREAMING HD TOP", precoMensal: 134.90, precoAnual: null,
+      regiaoId: regiao, tipo: "TV Box", nome: "CLARO STREAMING HD TOP", precoMensal: 134.90, precoAnual: null,
       beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Streaming"],
       observacoes: "Pacote Box Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
     }
@@ -547,7 +547,7 @@ const produtosParaCadastrar = [
     observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m."
   },
   {
-    regiaoId: "nacional", tipo: "TV Cabeada", nome: "CLARO STREAMING HD TOP RENT ANUNCIO FID", precoMensal: 104.90, precoAnual: null,
+    regiaoId: "nacional", tipo: "TV Box", nome: "CLARO STREAMING HD TOP RENT ANUNCIO FID", precoMensal: 104.90, precoAnual: null,
     beneficios: [...beneficiosTVComboUpgrade, "Equipamento: Box Streaming"],
     observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m."
   },
