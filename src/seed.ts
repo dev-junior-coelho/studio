@@ -434,8 +434,8 @@ const produtosParaCadastrar = [
       observacoes: "Pacote Soundbox Cabo. Preço COM BL OU MÓVEL ou SINGLE COM FONE (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
     },
     {
-      regiaoId: regiao, tipo: "TV Cabeada", nome: "CTV+ TOP HD 4K MULTI", precoMensal: 124.90, precoAnual: null,
-      beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Cabo (Qualidade 4K)", "Benefício Multi: ChatGPT Plus (se Multi)"],
+      regiaoId: regiao, tipo: "TV Cabeada", nome: "CTV+ TOP HD 4K MULTI", precoMensal: 134.90, precoAnual: null,
+      beneficios: [...beneficiosTVComboCompleto, "Equipamento: Decodificador HD", "Benefício Multi: ChatGPT Plus (se Multi)"],
       observacoes: "Pacote Box Cabo. Preço COM BL E MÓVEL (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
     },
     {
@@ -480,8 +480,8 @@ const produtosParaCadastrar = [
       observacoes: "Pacote Soundbox Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
     {
-      regiaoId: regiao, tipo: "TV Cabeada", nome: "CTV+ TOP HD 4K MULTI", precoMensal: 104.90, precoAnual: null,
-      beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Cabo (Qualidade 4K)", "Benefício Multi: ChatGPT Plus (se Multi)"],
+      regiaoId: regiao, tipo: "TV Cabeada", nome: "CTV+ TOP HD 4K MULTI", precoMensal: 124.90, precoAnual: null,
+      beneficios: [...beneficiosTVComboCompleto, "Equipamento: Decodificador HD", "Benefício Multi: ChatGPT Plus (se Multi)"],
       observacoes: "Pacote Box Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
     },
     {
@@ -552,8 +552,8 @@ const produtosParaCadastrar = [
     observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m."
   },
   {
-    regiaoId: "nacional", tipo: "TV Cabeada", nome: "CTV+ TOP HD RET ANUNCIO FID", precoMensal: 124.90, precoAnual: null,
-    beneficios: [...beneficiosTVComboUpgrade, "Equipamento: Decodificador HD"],
+    regiaoId: "nacional", tipo: "TV Cabeada", nome: "CTV+ TOP HD RET ANUNCIO FID", precoMensal: 104.90, precoAnual: null,
+    beneficios: [...beneficiosTVComboUpgrade, "Equipamento: Box Cabo (Qualidade 4K)"],
     observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m. Procedimento: CTV+ TOP HD RET ANUNCIO FID"
   },
   // NOVOS PLANOS HD (RENTABILIZAÇÃO)
