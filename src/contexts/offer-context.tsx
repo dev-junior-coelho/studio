@@ -111,7 +111,7 @@ export function OfferProvider({ children }: { children: ReactNode }) {
     setProducts((prevProducts) => {
       const productToRemove = prevProducts.find(p => p.id === productId);
       
-      // Se removendo uma TV, limpar selectedTV
+      // ✅ Sincronizar: Se removendo uma TV, limpar selectedTV
       if (productToRemove && 
           (productToRemove.tipo === 'TV Cabeada' || productToRemove.tipo === 'TV Box' || productToRemove.tipo === 'Claro TV APP')) {
         setSelectedTV(null);

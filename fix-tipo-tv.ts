@@ -4,13 +4,14 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 
+// ✅ Usar credenciais corretas do projeto studio-claro
 const firebaseConfig = {
-  apiKey: "AIzaSyD_IW8CfZMseq-LsWkQoZnzEobByPywbss",
-  authDomain: "studio-878079588-1d0ae.firebaseapp.com",
-  projectId: "studio-878079588-1d0ae",
-  storageBucket: "studio-878079588-1d0ae.appspot.com",
-  messagingSenderId: "486175528141",
-  appId: "1:486175528141:web:4e4d4d291cd8e099c28584"
+  projectId: "studio-claro",
+  appId: "1:541789671472:web:4a3d7bfb1b429fb9151df5",
+  apiKey: "AIzaSyB2WyTED3BCmJPtYE_cqmc1Cof_2DWf8xk",
+  authDomain: "studio-claro.firebaseapp.com",
+  storageBucket: "studio-claro.firebasestorage.app",
+  messagingSenderId: "541789671472"
 };
 
 const app = initializeApp(firebaseConfig);

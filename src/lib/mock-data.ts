@@ -4,7 +4,7 @@ export const mockProdutos: Produto[] = [
   {
     id: 'prod1',
     nome: 'Claro Pós 50GB',
-    tipo: 'Móvel',
+    tipo: 'Movel',
     precoMensal: 59.9,
     beneficios: ['WhatsApp ilimitado', 'Ligações ilimitadas', 'SMS ilimitado'],
     fidelidade: '12 meses',
@@ -13,7 +13,7 @@ export const mockProdutos: Produto[] = [
   {
     id: 'prod2',
     nome: 'Claro Pós 100GB + Netflix',
-    tipo: 'Móvel',
+    tipo: 'Movel',
     precoMensal: 109.9,
     beneficios: ['Assinatura Netflix Padrão', 'WhatsApp, Instagram, Facebook ilimitados', 'Passaporte Américas'],
     fidelidade: '12 meses',
@@ -29,7 +29,7 @@ export const mockProdutos: Produto[] = [
   {
     id: 'prod4',
     nome: 'TV+ App',
-    tipo: 'TV',
+    tipo: 'Claro TV APP',
     precoMensal: 59.9,
     beneficios: ['+100 canais ao vivo', 'Conteúdo On Demand', 'Acesso em 2 telas simultâneas'],
     fidelidade: 'Sem fidelidade',
@@ -37,7 +37,7 @@ export const mockProdutos: Produto[] = [
   {
     id: 'prod5',
     nome: 'Box Claro TV+',
-    tipo: 'TV',
+    tipo: 'TV Box',
     precoMensal: 89.9,
     beneficios: ['+100 canais ao vivo', 'Replay TV', 'Assinatura Globoplay inclusa'],
     fidelidade: '12 meses',

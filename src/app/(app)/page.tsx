@@ -15,7 +15,8 @@ import { useAuth } from '@/contexts/auth-context';
 import { useFirebase } from '@/firebase/provider';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { DependentesDescontoInfo } from '@/components/dependentes-desconto-info';
-import type { ProductType } from '@/lib/types';
+import { useToast } from '@/hooks/use-toast';
+import type { ProductType, Produto } from '@/lib/types';
 
 type Gastos = {
   tv: number;
@@ -30,17 +31,18 @@ export default function ComparadorOfertaPage() {
   const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct } = useOffer();
   const { user } = useAuth();
   const { firestore } = useFirebase();
+  const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [debitoEmConta, setDebitoEmConta] = useState(false);
   const [calculadoraValor, setCalculadoraValor] = useState('');
-  const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Mesh' | null>(null);
+  const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Mesh' | 'AlaCarte' | null>(null);
 
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setGastos((prev) => ({ ...prev, [name]: Number(value) || 0 }));
   };
 
-  const handleSelecionarTipo = (tipo: 'TV' | 'Internet' | 'Fixo' | 'Mesh') => {
+  const handleSelecionarTipo = (tipo: 'TV' | 'Internet' | 'Fixo' | 'Mesh' | 'AlaCarte') => {
     setCalculadoraTipo(tipo);
     
     // Mapa de tipo para chave de gastos
@@ -48,7 +50,8 @@ export default function ComparadorOfertaPage() {
       'TV': 'tv',
       'Internet': 'internet',
       'Fixo': 'fixo',
-      'Mesh': 'wifiMesh'
+      'Mesh': 'wifiMesh',
+      'AlaCarte': 'outros'
     };
     
     // Auto-preencher com o valor atual de gastos
@@ -65,18 +68,21 @@ export default function ComparadorOfertaPage() {
         'TV': 'TV',
         'Internet': 'Internet',
         'Fixo': 'Fixo',
-        'Mesh': 'WiFi Mesh'
+        'Mesh': 'WiFi Mesh',
+        'AlaCarte': 'A la carte'
       };
       
-      // Criar produto customizado
-      const produtoCustomizado: any = {
+      // ✅ Criar produto customizado com tipos corretos
+      const produtoCustomizado: Produto = {
         id: `custom-${Date.now()}`,
         nome: `${tipoMap[calculadoraTipo]} (Mantém como está)`,
         tipo: 'Opcional',
         precoMensal: valor,
+        precoAnual: null,
         beneficios: ['Valor mantido conforme informado pelo cliente'],
         fidelidade: 'Sem fidelidade',
-        observacoes: `Produto customizado - ${tipoMap[calculadoraTipo]} adicionado via calculadora`
+        observacoes: `Produto customizado - ${tipoMap[calculadoraTipo]} adicionado via calculadora`,
+        regiaoId: 'nacional'
       };
       addProduct(produtoCustomizado);
       setCalculadoraValor('');
@@ -151,15 +157,24 @@ export default function ComparadorOfertaPage() {
       const collectionPath = `users/${user.uid}/ofertas_salvas`;
       await addDoc(collection(firestore, collectionPath), offerData);
       clearOffer(); // This now clears products and gastos from context
+      toast({
+        title: "Sucesso!",
+        description: "Sua oferta foi salva com sucesso.",
+      });
     } catch (error) {
       console.error("Erro ao salvar oferta:", error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar a oferta. Tente novamente.",
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 min-h-screen">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Comparador de Ofertas</h1>
       </div>
@@ -177,7 +192,7 @@ export default function ComparadorOfertaPage() {
               'internet': 'Internet',
               'fixo': 'Fixo',
               'movel': 'Móvel',
-              'outros': 'Outros',
+              'outros': 'A la carte',
               'wifiMesh': 'WiFi Mesh'
             };
             
@@ -204,20 +219,20 @@ export default function ComparadorOfertaPage() {
         <div className="px-4 py-3 bg-blue-50 border-t border-blue-200 space-y-3">
           <label className="text-sm font-medium">Calculadora - Adicionar Valor à Oferta</label>
           
-          <div className="space-y-2">
+            <div className="space-y-2">
             <Label className="text-xs">Selecione o tipo de serviço</Label>
-            <div className="grid grid-cols-4 gap-2">
-              {['TV', 'Internet', 'Fixo', 'Mesh'].map((tipo) => (
+            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+              {['TV', 'Internet', 'Fixo', 'Mesh', 'AlaCarte'].map((tipo) => (
                 <button
                   key={tipo}
                   onClick={() => handleSelecionarTipo(tipo as any)}
-                  className={`px-3 py-2 rounded border-2 font-medium text-sm transition-all ${
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-md border font-medium text-xs transition-all whitespace-nowrap ${
                     calculadoraTipo === tipo
                       ? 'border-blue-600 bg-blue-600 text-white'
                       : 'border-blue-300 bg-white text-blue-700 hover:border-blue-500'
                   }`}
                 >
-                  {tipo === 'Mesh' ? 'WiFi Mesh' : tipo}
+                  {tipo === 'Mesh' ? 'WiFi Mesh' : (tipo === 'AlaCarte' ? 'A la carte' : tipo)}
                 </button>
               ))}
             </div>
@@ -344,7 +359,7 @@ export default function ComparadorOfertaPage() {
             
             <Separator />
             
-            <ScrollArea className="max-h-[600px] pr-4 w-full">
+            <div className="w-full">
               <div className="space-y-4 text-left w-full">
                 {Object.entries(beneficiosAgrupados).map(([tipo, beneficios]) => {
                   const beneficiosUnicos = [...new Set(beneficios)];
@@ -363,7 +378,7 @@ export default function ComparadorOfertaPage() {
                   );
                 })}
               </div>
-            </ScrollArea>
+            </div>
 
             {allFidelidade.length > 0 && (
               <div className="text-left pt-4">
