@@ -19,73 +19,71 @@ export const produtosOpcionais = [
     },
 
     // ==========================================
-    // PONTOS ADICIONAIS (tipo: "Ponto Adicional")
+    // PONTOS ADICIONAIS - AQUISIÇÃO (p.72)
     // ==========================================
     {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Ultra (Cabeado)",
-        precoMensal: 150.00, precoAnual: null,
-        beneficios: ["Cabo de rede passado pela tubulação interna", "Garante máxima velocidade no cômodo"],
-        observacoes: "(p.72) Valor único de instalação (em 12x R$ 12,50 ou à vista)"
-    },
-    {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional 4K",
-        precoMensal: 34.90, precoAnual: null,
-        beneficios: ["Ponto extra de TV 4K", "Acesso a todos os canais do pacote"],
-        observacoes: "(p.76) Mensalidade"
-    },
-    {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional Gravação",
-        precoMensal: 24.90, precoAnual: null,
-        beneficios: ["Ponto extra com Gravação", "Acesso ao DVR do pacote"],
-        observacoes: "(p.76) Mensalidade"
-    },
-    {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional HD",
-        precoMensal: 19.90, precoAnual: null,
-        beneficios: ["Ponto extra HD", "Acesso a todos os canais do pacote"],
-        observacoes: "Mensalidade"
-    },
-    {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Box Cabo 4K (Aquisição)",
-        precoMensal: 69.90, precoAnual: null,
-        beneficios: ["Ponto adicional Box Cabo 4K", "Qualidade 4K HDR", "Comando de voz"],
-        observacoes: "Preço de AQUISIÇÃO. Limite: 4 pontos."
-    },
-    {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Box Cabo 4K (Rentabilização)",
-        precoMensal: 39.90, precoAnual: null,
-        beneficios: ["Ponto adicional Box Cabo 4K", "Qualidade 4K HDR", "Comando de voz"],
-        observacoes: "Preço de RENTABILIZAÇÃO. Limite: 4 pontos."
-    },
-    {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Soundbox (Aquisição)",
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox Cabo (R$ 99,90)",
         precoMensal: 99.90, precoAnual: null,
-        beneficios: ["Ponto adicional Soundbox", "Áudio Dolby Atmos", "Qualidade 4K HDR"],
-        observacoes: "Preço de AQUISIÇÃO. Limite: 2 pontos."
+        beneficios: ["Aluguel de 1 equipamento Soundbox (Cabo) adicional", "Máximo de 2 pontos por contrato"],
+        observacoes: "Valor de aluguel mensal. Para planos de Aquisição (p.72)."
     },
     {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Soundbox (Rentabilização)",
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox Streaming (R$ 99,90)",
+        precoMensal: 99.90, precoAnual: null,
+        beneficios: ["Aluguel de 1 equipamento Soundbox (Streaming) adicional", "Máximo de 2 pontos por contrato"],
+        observacoes: "Valor de aluguel mensal. Para planos de Aquisição (p.72)."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box Cabo (R$ 69,90)",
         precoMensal: 69.90, precoAnual: null,
-        beneficios: ["Ponto adicional Soundbox", "Áudio Dolby Atmos", "Qualidade 4K HDR"],
-        observacoes: "Preço de RENTABILIZAÇÃO. Limite: 2 pontos."
+        beneficios: ["Aluguel de 1 equipamento Box Cabo adicional", "Máximo de 4 pontos por contrato"],
+        observacoes: "Valor de aluguel mensal. Para planos de Aquisição (p.72)."
     },
     {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Box Streaming (Aquisição)",
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box Streaming (R$ 69,90)",
         precoMensal: 69.90, precoAnual: null,
-        beneficios: ["Ponto adicional Box Streaming", "Qualidade 4K", "Comando de voz"],
-        observacoes: "Preço de AQUISIÇÃO. Limite: 2 pontos."
+        beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional", "Máximo de 2 pontos por contrato"],
+        observacoes: "Valor de aluguel mensal. Para planos de Aquisição (p.72)."
+    },
+
+    // ==========================================
+    // PONTOS ADICIONAIS - UPGRADE/RENTABILIZAÇÃO (p.71)
+    // ==========================================
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Soundbox (Upgrade R$ 69,90)",
+        precoMensal: 69.90, precoAnual: null,
+        beneficios: ["Aluguel de 1 equipamento Soundbox adicional"],
+        observacoes: "Valor de aluguel mensal. Para planos de Upgrade (p.71)."
     },
     {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Box Streaming (Rentabilização)",
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box Cabo (Upgrade R$ 39,90)",
         precoMensal: 39.90, precoAnual: null,
-        beneficios: ["Ponto adicional Box Streaming", "Qualidade 4K", "Comando de voz"],
-        observacoes: "Preço de RENTABILIZAÇÃO. Limite: 2 pontos."
+        beneficios: ["Aluguel de 1 equipamento Box Cabo adicional"],
+        observacoes: "Valor de aluguel mensal. Para planos de Upgrade (p.71)."
     },
     {
-        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA HD (Rentabilização)",
-        precoMensal: 29.90, precoAnual: null,
-        beneficios: ["Ponto adicional HD", "Acesso a todos os canais"],
-        observacoes: "Preço de RENTABILIZAÇÃO. Apenas upgrades de HD."
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - Box Streaming (Upgrade R$ 39,90)",
+        precoMensal: 39.90, precoAnual: null,
+        beneficios: ["Aluguel de 1 equipamento Box (Streaming) adicional"],
+        observacoes: "Valor de aluguel mensal. Para planos de Upgrade (p.71)."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (Upgrade TOP HD R$ 25,00)",
+        precoMensal: 25.00, precoAnual: null,
+        beneficios: ["Aluguel de 1 equipamento HD adicional"],
+        observacoes: "Valor de aluguel mensal. Para plano Upgrade TOP HD (p.71)."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (Upgrade INICIAL R$ 10,00)",
+        precoMensal: 10.00, precoAnual: null,
+        beneficios: ["Aluguel de 1 equipamento HD adicional"],
+        observacoes: "Valor de aluguel mensal. Para plano Upgrade INICIAL HD."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional - HD (Upgrade INICIAL TELECINE R$ 25,00)",
+        precoMensal: 25.00, precoAnual: null,
+        beneficios: ["Aluguel de 1 equipamento HD adicional"],
+        observacoes: "Valor de aluguel mensal. Para plano Upgrade INICIAL TELECINE."
     },
 
     // ==========================================
