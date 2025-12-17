@@ -114,6 +114,8 @@ export default function ComparadorOfertaPage() {
     try {
       const offerData = {
         usuarioId: user.uid,
+        email: user.email,
+        zLogin: user.email?.split('@')[0].replace('z', '') || 'Desconhecido',
         produtoIds: products.map(p => p.id),
         produtos: products,
         status,

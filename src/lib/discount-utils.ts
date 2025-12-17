@@ -13,8 +13,29 @@ export function extrairDependentesGratis(movelPrincipal: Produto | undefined): n
   if (!movelPrincipal || movelPrincipal.tipo !== 'Movel') {
     return 0;
   }
-  // Usa o campo dependentesGratis do Firestore (preenchido pelo seed-utils.ts)
-  return movelPrincipal.dependentesGratis ?? 0;
+
+  // 1. Tenta usar o campo direto do Firestore (prioridade)
+  if (movelPrincipal.dependentesGratis !== undefined) {
+    return movelPrincipal.dependentesGratis;
+  }
+
+  // 2. Fallback: Tenta extrair do texto dos benefícios (para dados legados ou seed incompleto)
+  if (movelPrincipal.beneficios) {
+    const beneficioDependentes = movelPrincipal.beneficios.find(b =>
+      b.toLowerCase().includes('dependentes inclusos') ||
+      b.toLowerCase().includes('dependentes grátis')
+    );
+
+    if (beneficioDependentes) {
+      // Busca um número seguido ou não por texto, ex: "Dependentes Inclusos (Grátis): 3"
+      const match = beneficioDependentes.match(/(\d+)/);
+      if (match && match[1]) {
+        return parseInt(match[1], 10);
+      }
+    }
+  }
+
+  return 0;
 }
 
 /**
@@ -99,7 +120,7 @@ export function obterDescricaoDependentes(
   dependentesAdicionados: Produto[]
 ): string[] {
   if (!movelPrincipal || movelPrincipal.tipo !== 'Movel') {
-    return dependentesAdicionados.map((dep, index) => 
+    return dependentesAdicionados.map((dep, index) =>
       `Dependente ${index + 1}: R$ ${dep.precoMensal.toFixed(2).replace('.', ',')}`
     );
   }

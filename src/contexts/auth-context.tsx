@@ -11,7 +11,7 @@ interface AuthContextType {
   user: AppUsuario | null;
   loading: boolean;
   login: (role: 'agente' | 'supervisor') => void; // Mantendo para compatibilidade se precisar
-  loginWithZ: (zLogin: string, pin: string, mode: 'login' | 'register') => Promise<void>;
+  loginWithZ: (zLogin: string, pin: string, mode: 'login' | 'register', role?: 'agente' | 'supervisor') => Promise<void>;
   logout: () => void;
 }
 
@@ -79,10 +79,11 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     }
   }, [appUser, loading, pathname, router]);
 
-  const loginWithZ = async (zLogin: string, pin: string, mode: 'login' | 'register') => {
+  const loginWithZ = async (zLogin: string, pin: string, mode: 'login' | 'register', roleArg: 'agente' | 'supervisor' = 'agente') => {
     if (!auth || !firestore) return;
     setLoading(true);
 
+    const role = roleArg; // Explicitly use the argument
     const email = `z${zLogin}${AUTH_DOMAIN}`;
     // A senha/PIN deve ter 6 caracteres no Firebase Auth no mínimo?
     // Firebase exige senha de 6 caracteres.
@@ -91,6 +92,8 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     // Ou simplesmente duplicar o pin? Não, inseguro.
     // Vamos usar um prefixo interno fixo: "SCApp-" + pin => "SCApp-1234" (10 chars).
     const firebasePassword = `SCApp-${pin}`;
+
+    console.log(`Tentativa de ${mode} como ${role}:`, { email, passwordLength: firebasePassword.length });
 
     try {
       let userCredential;
@@ -103,7 +106,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
         const newUser: AppUsuario = {
           uid: user.uid,
           email: email,
-          role: 'agente', // Padrão
+          role: role,
           // Podemos adicionar zLogin explícito no tipo AppUsuario depois se quiser
         };
 

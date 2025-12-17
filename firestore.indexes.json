@@ -1,0 +1,15 @@
+{
+    "indexes": [
+        {
+            "collectionGroup": "ofertas_salvas",
+            "queryScope": "COLLECTION_GROUP",
+            "fields": [
+                {
+                    "fieldPath": "timestamp",
+                    "order": "DESCENDING"
+                }
+            ]
+        }
+    ],
+    "fieldOverrides": []
+}

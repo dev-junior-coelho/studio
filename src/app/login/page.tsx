@@ -6,17 +6,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Zap, Loader2, Lock, User, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Zap, Loader2, Lock, User, AlertCircle, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
-  const { loginWithZ, loading } = useAuth();
+  const { loginWithZ, login, loading } = useAuth(); // login is legacy/test
   const [zNumber, setZNumber] = useState("");
   const [pin, setPin] = useState("");
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [error, setError] = useState<string | null>(null);
   const [showPin, setShowPin] = useState(false);
+  const [userRole, setUserRole] = useState<'agente' | 'supervisor'>('agente');
 
   const handleZChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Apenas números, máximo 6 dígitos
@@ -47,38 +49,73 @@ export default function LoginPage() {
     }
 
     try {
-      await loginWithZ(zNumber, pin, mode);
+      await loginWithZ(zNumber, pin, mode, userRole);
     } catch (err: any) {
-      if (mode === 'register' && err.code === 'auth/email-already-in-use') {
-        setError("Este login Z já está cadastrado. Tente fazer login.");
+      if (mode === 'register' && (err.code === 'auth/email-already-in-use' || err.code === 'auth/credential-already-in-use')) {
+        setError("Este login Z já possui cadastro. Tente fazer login.");
       } else if (mode === 'login' && (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')) {
-        setError("Login ou senha incorretos.");
-      } else if (mode === 'login' && err.code === 'auth/wrong-password') { // Firebase sometimes returns generic invalid-credential
+        setError("Usuário não encontrado. Crie sua conta.");
+      } else if (mode === 'login' && err.code === 'auth/wrong-password') {
         setError("Senha incorreta.");
       } else {
-        console.error(err);
-        setError("Ocorreu um erro. Tente novamente." + (err.message ? ` (${err.message})` : ""));
+        console.error("Login failed with error:", err);
+        setError(`Erro: ${err.code || "Desconhecido"} - ${err.message}`);
       }
     }
   };
 
+  const toggleRole = () => {
+    const newRole = userRole === 'agente' ? 'supervisor' : 'agente';
+    setUserRole(newRole);
+    // If switching to supervisor, force login mode. If switching back to agent, defaults to login too.
+    setMode('login');
+    setError(null);
+    setZNumber("");
+    setPin("");
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <Card className="w-full max-w-sm shadow-xl border-t-4 border-t-primary">
+      <Card className={cn(
+        "w-full max-w-sm shadow-xl border-t-4 transition-colors duration-500",
+        userRole === 'supervisor' ? "border-t-purple-600" : "border-t-primary"
+      )}>
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-fit mb-4 animate-in zoom-in duration-500">
-            <Zap className="h-8 w-8" />
+          <div className={cn(
+            "mx-auto rounded-full p-4 w-fit mb-4 animate-in zoom-in duration-500 transition-colors",
+            userRole === 'supervisor' ? "bg-purple-100 text-purple-600" : "bg-primary/10 text-primary"
+          )}>
+            {userRole === 'supervisor' ? <ShieldCheck className="h-8 w-8" /> : <Zap className="h-8 w-8" />}
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight">Studio Claro</CardTitle>
-          <CardDescription>Acesse sua conta para continuar</CardDescription>
+          <CardTitle className="text-2xl font-bold tracking-tight">
+            {userRole === 'supervisor' ? "Studio Claro - Supervisor" : "Studio Claro"}
+          </CardTitle>
+          <CardDescription>
+            {userRole === 'supervisor' ? "Bem vindo Super, acesse sua conta" : "Acesse sua conta para continuar"}
+          </CardDescription>
         </CardHeader>
 
-        <Tabs defaultValue="login" onValueChange={(v) => { setMode(v as any); setError(null); }} className="w-full">
+        <Tabs
+          value={mode} // Controlado pelo estado + lógica
+          onValueChange={(v) => {
+            // Se for supervisor, não permite mudar para register
+            if (userRole === 'supervisor' && v === 'register') return;
+            setMode(v as any);
+            setError(null);
+          }}
+          className="w-full"
+        >
           <div className="px-6">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="login">Entrar</TabsTrigger>
-              <TabsTrigger value="register">Criar Conta</TabsTrigger>
-            </TabsList>
+            {userRole === 'agente' ? (
+              <TabsList className="grid w-full grid-cols-2 mb-4">
+                <TabsTrigger value="login">Entrar</TabsTrigger>
+                <TabsTrigger value="register">Criar Conta</TabsTrigger>
+              </TabsList>
+            ) : (
+              <div className="mb-4 text-center pb-2 border-b">
+                <p className="text-sm font-medium text-purple-700">Acesso Administrativo</p>
+              </div>
+            )}
           </div>
 
           <CardContent className="space-y-4 pt-2">
@@ -140,18 +177,32 @@ export default function LoginPage() {
                 </p>
               </div>
 
-              <Button type="submit" className="w-full text-base font-semibold h-11 mt-2" disabled={loading}>
+              <Button
+                type="submit"
+                className={cn(
+                  "w-full text-base font-semibold h-11 mt-2 transition-colors",
+                  userRole === 'supervisor' ? "bg-purple-600 hover:bg-purple-700" : ""
+                )}
+                disabled={loading}
+              >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {mode === 'login' ? 'Acessar Sistema' : 'Cadastrar e Entrar'}
+                {mode === 'login'
+                  ? (userRole === 'supervisor' ? 'Acessar como Super' : 'Acessar Sistema')
+                  : 'Cadastrar e Entrar'
+                }
               </Button>
             </form>
           </CardContent>
 
           <CardFooter className="flex justify-center border-t py-4 bg-gray-50/50">
             <p className="text-xs text-muted-foreground text-center">
-              {mode === 'login'
-                ? "Primeira vez aqui? Selecione 'Criar Conta' acima."
-                : "Já possui cadastro? Volte para a aba 'Entrar'."}
+              {userRole === 'supervisor' ? (
+                <span className="text-purple-600/70">Cadastro de supervisor apenas por convite.</span>
+              ) : (
+                mode === 'login'
+                  ? "Primeira vez aqui? Selecione 'Criar Conta' acima."
+                  : "Já possui cadastro? Volte para a aba 'Entrar'."
+              )}
             </p>
           </CardFooter>
         </Tabs>
@@ -160,6 +211,21 @@ export default function LoginPage() {
       <div className="mt-8 text-center text-xs text-gray-400">
         <p>Studio Claro &copy; 2025</p>
         <p>Ambiente Seguro • Acesso Restrito</p>
+      </div>
+
+      <div className="mt-6 w-full max-w-sm">
+        <Button
+          variant="ghost"
+          className={cn(
+            "w-full text-xs font-medium uppercase tracking-wider py-6 border-2 transition-all hover:bg-transparent",
+            userRole === 'agente'
+              ? "text-purple-600 border-purple-100 hover:border-purple-300 bg-purple-50/50"
+              : "text-primary border-blue-100 hover:border-blue-300 bg-blue-50/50"
+          )}
+          onClick={toggleRole}
+        >
+          {userRole === 'agente' ? "Login Supervisor" : "Voltar para Login Agente"}
+        </Button>
       </div>
     </main>
   );
