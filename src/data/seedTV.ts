@@ -84,7 +84,7 @@ export const produtosTV = [
             observacoes: "Pacote Soundbox Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
         },
         {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "CTV+ TOP HD 4K MULTI", precoMensal: 104.90, precoAnual: null,
+            regiaoId: regiao, tipo: "TV Cabeada", nome: "CTV+ TOP HD 4K MULTI", precoMensal: 124.90, precoAnual: null,
             beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Cabo (Qualidade 4K)", "Benefício Multi: ChatGPT Plus (se Multi)"],
             observacoes: "Pacote Box Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
         },
@@ -100,7 +100,7 @@ export const produtosTV = [
             observacoes: "Pacote Soundbox Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
         },
         {
-            regiaoId: regiao, tipo: "TV Box", nome: "CLARO STREAMING HD TOP MULTI", precoMensal: 104.90, precoAnual: null,
+            regiaoId: regiao, tipo: "TV Box", nome: "CLARO STREAMING HD TOP MULTI", precoMensal: 124.90, precoAnual: null,
             beneficios: [...beneficiosTVComboCompleto, "Equipamento: Box Streaming", "Benefício Multi: ChatGPT Plus (se Multi)"],
             observacoes: "Pacote Box Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
         },
@@ -168,7 +168,7 @@ export const produtosTV = [
         observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m."
     },
     {
-        regiaoId: "nacional", tipo: "TV Cabeada", nome: "CTV+ TOP HD RET ANUNCIO FID", precoMensal: 124.90, precoAnual: null,
+        regiaoId: "nacional", tipo: "TV Cabeada", nome: "CTV+ TOP HD RET ANUNCIO FID", precoMensal: 104.90, precoAnual: null,
         beneficios: [...beneficiosTVComboUpgrade, "Equipamento: Decodificador HD"],
         observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m."
     },
