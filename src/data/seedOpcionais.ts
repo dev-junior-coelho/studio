@@ -3,19 +3,35 @@
 
 export const produtosOpcionais = [
     // ==========================================
-    // TELEFONE FIXO (tipo: "Fixo")
+    // FONE FIXO (p.81)
     // ==========================================
     {
-        regiaoId: "nacional", tipo: "Fixo", nome: "Fone Ilimitado Local",
-        precoMensal: 49.90, precoAnual: null,
-        beneficios: ["Ligações ilimitadas para fixos locais", "Identificador de chamadas"],
-        observacoes: "Telefone fixo residencial"
+        regiaoId: "nacional", tipo: "Fixo", nome: "FIXO ILIMITADO MUNDO FIBRA COM VAS", precoMensal: 35.00, precoAnual: null,
+        beneficios: [
+            "Ligações Nacionais Ilimitadas (Fixo e Celular de qualquer operadora)",
+            "Ligações Ilimitadas para Celulares dos EUA",
+            "Ligações Ilimitadas para Fixos de 35 países (lista completa de países)"
+        ],
+        observacoes: "Preço na combinação FONE+BL+TV ou FONE+BL+MOVEL. Equivalente ao 'FIXO ILIMITADO MUNDO CABO COM VAS'. Procedimento: FIXO ILIMITADO MUNDO FIBRA COM VAS"
     },
     {
-        regiaoId: "nacional", tipo: "Fixo", nome: "Fone Ilimitado Brasil",
-        precoMensal: 59.90, precoAnual: null,
-        beneficios: ["Ligações ilimitadas para fixos e celulares do Brasil", "Identificador de chamadas"],
-        observacoes: "Telefone fixo residencial"
+        regiaoId: "nacional", tipo: "Fixo", nome: "FIXO ILIMITADO MUNDO FIBRA SEM VAS", precoMensal: 65.00, precoAnual: null,
+        beneficios: [
+            "Ligações Nacionais Ilimitadas (Fixo e Celular de qualquer operadora)",
+            "Ligações Ilimitadas para Celulares dos EUA",
+            "Ligações Ilimitadas para Fixos de 35 países (lista completa de países)"
+        ],
+        observacoes: "Preço Single ou em combos 2P (ex: Fone+TV). Equivalente ao 'FIXO ILIMITADO MUNDO CABO SEM VAS'. Procedimento: FIXO ILIMITADO MUNDO CABO SEM VAS"
+    },
+    {
+        regiaoId: "nacional", tipo: "Fixo", nome: "FIXO ILIMITADO BRASIL FIBRA MULTI", precoMensal: 5.00, precoAnual: null,
+        beneficios: ["Ligações Nacionais Ilimitadas (Fixo e Celular de qualquer operadora)"],
+        observacoes: "Preço na combinação FONE+BL+MOVEL+TV. Procedimento: FIXO ILIMITADO BRASIL FIBRA MULTI"
+    },
+    {
+        regiaoId: "nacional", tipo: "Fixo", nome: "FIXO ILIMITADO BRASIL FIBRA COM VAS", precoMensal: 35.00, precoAnual: null,
+        beneficios: ["Ligações Nacionais Ilimitadas (Fixo e Celular de qualquer operadora)"],
+        observacoes: "Preço em qualquer combinação que não seja 4P. Procedimento: FIXO ILIMITADO BRASIL FIBRA COM VAS"
     },
 
     // ==========================================
