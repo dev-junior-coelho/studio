@@ -34,6 +34,7 @@ export interface SavedOffer {
     produtos: any[];
     debitoEmConta: boolean;
     zLogin?: string; // Optional for backward compatibility
+    nome?: string; // Nome do agente
     email?: string;
     usuarioId?: string;
 }
@@ -52,23 +53,57 @@ export function HistoryList() {
             setLoading(true);
             try {
                 let q;
+                let historyData: SavedOffer[] = [];
 
                 if (user.role === 'supervisor') {
                     // Supervisor sees all offers via collectionGroup
-                    q = query(collectionGroup(firestore, 'ofertas_salvas'), orderBy("timestamp", "desc"));
+                    try {
+                        q = query(collectionGroup(firestore, 'ofertas_salvas'), orderBy("timestamp", "desc"));
+                        const snapshot = await getDocs(q);
+                        historyData = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            usuarioId: doc.ref.parent.parent?.id,
+                            ...doc.data()
+                        })) as SavedOffer[];
+                    } catch (indexError: any) {
+                        // If collectionGroup index is missing, fallback to fetching from each user
+                        console.warn("CollectionGroup index not available, using fallback:", indexError.message);
+
+                        // Fetch all users and their offers
+                        const usersSnapshot = await getDocs(collection(firestore, 'users'));
+                        const allOffers: SavedOffer[] = [];
+
+                        for (const userDoc of usersSnapshot.docs) {
+                            const offersRef = collection(firestore, `users/${userDoc.id}/ofertas_salvas`);
+                            const offersSnapshot = await getDocs(query(offersRef, orderBy("timestamp", "desc")));
+
+                            offersSnapshot.docs.forEach(offerDoc => {
+                                allOffers.push({
+                                    id: offerDoc.id,
+                                    usuarioId: userDoc.id,
+                                    ...offerDoc.data()
+                                } as SavedOffer);
+                            });
+                        }
+
+                        // Sort by timestamp descending
+                        historyData = allOffers.sort((a, b) => {
+                            const timeA = a.timestamp?.toMillis() || 0;
+                            const timeB = b.timestamp?.toMillis() || 0;
+                            return timeB - timeA;
+                        });
+                    }
                 } else {
                     // Agent sees only their own offers
                     const historyRef = collection(firestore, `users/${user.uid}/ofertas_salvas`);
                     q = query(historyRef, orderBy("timestamp", "desc"));
+                    const snapshot = await getDocs(q);
+                    historyData = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        usuarioId: doc.ref.parent.parent?.id,
+                        ...doc.data()
+                    })) as SavedOffer[];
                 }
-
-                const snapshot = await getDocs(q);
-
-                const historyData = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    usuarioId: doc.ref.parent.parent?.id,
-                    ...doc.data()
-                })) as SavedOffer[];
 
                 setOffers(historyData);
             } catch (error: any) {
@@ -175,10 +210,10 @@ export function HistoryList() {
                                                 <CalendarDays className="h-3 w-3" />
                                                 {offer.timestamp ? format(offer.timestamp.toDate(), "d/MM 'às' HH:mm", { locale: ptBR }) : 'Data desconhecida'}
                                             </span>
-                                            {user?.role === 'supervisor' && offer.zLogin && (
+                                            {user?.role === 'supervisor' && (offer.zLogin || offer.nome) && (
                                                 <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200 flex gap-1">
                                                     <User className="h-3 w-3" />
-                                                    Z{offer.zLogin}
+                                                    {offer.zLogin && `Z${offer.zLogin}`}{offer.nome && ` - ${offer.nome}`}
                                                 </Badge>
                                             )}
                                         </div>
