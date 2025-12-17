@@ -36,10 +36,50 @@ interface OfferContextType {
 const OfferContext = createContext<OfferContextType | undefined>(undefined);
 
 export function OfferProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Produto[]>([]);
-  const [gastos, setGastos] = useState<Gastos>(initialGastos);
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [selectedTV, setSelectedTV] = useState<Produto | null>(null);
+  // Load initial state from localStorage if available
+  const [products, setProducts] = useState<Produto[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('products');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
+
+  const [gastos, setGastos] = useState<Gastos>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('gastos');
+      return saved ? JSON.parse(saved) : initialGastos;
+    }
+    return initialGastos;
+  });
+
+  const [selectedCity, setSelectedCity] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('selectedCity');
+    }
+    return null;
+  });
+
+  const [selectedTV, setSelectedTV] = useState<Produto | null>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('selectedTV');
+      return saved ? JSON.parse(saved) : null;
+    }
+    return null;
+  });
+
+  // Save to localStorage whenever state changes
+  React.useEffect(() => {
+    localStorage.setItem('products', JSON.stringify(products));
+    localStorage.setItem('gastos', JSON.stringify(gastos));
+    if (selectedCity) localStorage.setItem('selectedCity', selectedCity);
+    else localStorage.removeItem('selectedCity');
+
+    if (selectedTV) localStorage.setItem('selectedTV', JSON.stringify(selectedTV));
+    else localStorage.removeItem('selectedTV');
+
+  }, [products, gastos, selectedCity, selectedTV]);
+
   const { toast } = useToast();
 
   const addProduct = useCallback((product: Produto) => {
@@ -47,10 +87,10 @@ export function OfferProvider({ children }: { children: ReactNode }) {
       // Verificar se é algum tipo de TV (TV Cabeada, TV Box, Claro TV APP)
       // Apenas um tipo de TV pode ser adicionado por oferta
       const isTV = product.tipo === 'TV Cabeada' || product.tipo === 'TV Box' || product.tipo === 'Claro TV APP';
-      const hasTV = prevProducts.some(p => 
+      const hasTV = prevProducts.some(p =>
         p.tipo === 'TV Cabeada' || p.tipo === 'TV Box' || p.tipo === 'Claro TV APP'
       );
-      
+
       if (isTV && hasTV) {
         setTimeout(() => {
           toast({
@@ -61,18 +101,18 @@ export function OfferProvider({ children }: { children: ReactNode }) {
         }, 0);
         return prevProducts;
       }
-      
+
       // Se é TV, rastrear como selecionada
       if (isTV) {
         setSelectedTV(product);
       }
-      
+
       // Para outros produtos (Ponto Adicional, Fixo, Móvel, Banda Larga, Opcional),
       // criar um ID único para permitir múltiplas adições do mesmo produto
-      const newProduct = isTV 
-        ? product 
+      const newProduct = isTV
+        ? product
         : { ...product, id: `${product.id}-${Date.now()}-${Math.random()}` };
-      
+
       setTimeout(() => {
         toast({
           title: "Produto Adicionado!",
@@ -86,7 +126,7 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const addProductWithExtras = useCallback((mainProduct: Produto, extraProduct: Produto, quantity: number) => {
     setProducts(prevProducts => {
       const newProducts = [...prevProducts];
-      
+
       let extrasAdded = 0;
       // Add extra products with unique IDs
       for (let i = 0; i < quantity; i++) {
@@ -96,11 +136,11 @@ export function OfferProvider({ children }: { children: ReactNode }) {
       }
 
       setTimeout(() => {
-          toast({
-            title: "Pontos Adicionais!",
-            description: `${extrasAdded} Ponto(s) Adicional(is) de ${extraProduct.nome.replace('Ponto Adicional - ', '')} foram adicionados.`,
-          });
-        }, 0);
+        toast({
+          title: "Pontos Adicionais!",
+          description: `${extrasAdded} Ponto(s) Adicional(is) de ${extraProduct.nome.replace('Ponto Adicional - ', '')} foram adicionados.`,
+        });
+      }, 0);
 
       return newProducts;
     });
@@ -110,13 +150,13 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const removeProduct = useCallback((productId: string) => {
     setProducts((prevProducts) => {
       const productToRemove = prevProducts.find(p => p.id === productId);
-      
+
       // ✅ Sincronizar: Se removendo uma TV, limpar selectedTV
-      if (productToRemove && 
-          (productToRemove.tipo === 'TV Cabeada' || productToRemove.tipo === 'TV Box' || productToRemove.tipo === 'Claro TV APP')) {
+      if (productToRemove &&
+        (productToRemove.tipo === 'TV Cabeada' || productToRemove.tipo === 'TV Box' || productToRemove.tipo === 'Claro TV APP')) {
         setSelectedTV(null);
       }
-      
+
       return prevProducts.filter((p) => p.id !== productId);
     });
   }, []);
@@ -128,16 +168,16 @@ export function OfferProvider({ children }: { children: ReactNode }) {
     setSelectedTV(null); // Limpar TV selecionada
     setTimeout(() => {
       toast({
-          title: "Oferta Limpa",
-          description: "A oferta e a cidade foram reiniciadas.",
-        });
+        title: "Oferta Limpa",
+        description: "A oferta e a cidade foram reiniciadas.",
+      });
     }, 0);
   }, [toast]);
 
   // Calcular informações de dependentes com desconto
   const movelPrincipal = useMemo(() => products.find(p => p.tipo === 'Movel'), [products]);
   const dependentesAdicionados = useMemo(() => products.filter(p => p.tipo === 'Dependente Móvel'), [products]);
-  
+
   const dependentesInfo = useMemo(
     () => calcularDescontoDependentes(movelPrincipal, dependentesAdicionados),
     [movelPrincipal, dependentesAdicionados]
@@ -145,15 +185,15 @@ export function OfferProvider({ children }: { children: ReactNode }) {
 
   const totalMensal = useMemo(() => calcularTotalComDescontos(products), [products]);
 
-  const value = { 
-    products, 
+  const value = {
+    products,
     addProduct,
-    addProductWithExtras, 
-    removeProduct, 
-    clearOffer, 
-    gastos, 
-    setGastos, 
-    selectedCity, 
+    addProductWithExtras,
+    removeProduct,
+    clearOffer,
+    gastos,
+    setGastos,
+    selectedCity,
     setSelectedCity,
     totalMensal,
     dependentesInfo,
@@ -176,4 +216,4 @@ export function useOffer() {
   return context;
 }
 
-    
+

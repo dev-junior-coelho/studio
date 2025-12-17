@@ -45,6 +45,15 @@ type Gastos = {
   wifiMesh: number;
 };
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+
 export default function ComparadorOfertaPage() {
   const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct } = useOffer();
   const { user } = useAuth();
@@ -54,6 +63,88 @@ export default function ComparadorOfertaPage() {
   const [debitoEmConta, setDebitoEmConta] = useState(false);
   const [calculadoraValor, setCalculadoraValor] = useState('');
   const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Mesh' | 'AlaCarte' | null>(null);
+
+  // === Modal and Contract State ===
+  const [showContractModal, setShowContractModal] = useState(false);
+  const [contractNumber, setContractNumber] = useState('');
+  const [contractError, setContractError] = useState('');
+
+  // Format contract number as 000/123456789
+  const handleContractChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+
+    if (value.length > 12) value = value.slice(0, 12); // Max length
+
+    if (value.length > 3) {
+      value = value.slice(0, 3) + '/' + value.slice(3);
+    }
+
+    setContractNumber(value);
+    setContractError('');
+  };
+
+  const validateContract = () => {
+    // Regex for 000/123456789 (3 digits, slash, 9 digits)
+    const regex = /^\d{3}\/\d{9}$/;
+    if (!regex.test(contractNumber)) {
+      setContractError('Formato inválido. Use: 000/123456789');
+      return false;
+    }
+    return true;
+  };
+
+  const handleRecuseOffer = async () => {
+    await saveOfferToFirebase('Recusou', null);
+  };
+
+  const handleAcceptOffer = () => {
+    setShowContractModal(true);
+  };
+
+  const confirmAcceptOffer = async () => {
+    if (!validateContract()) return;
+    await saveOfferToFirebase('Aceitou', contractNumber);
+    setShowContractModal(false);
+    setContractNumber('');
+  };
+
+  const saveOfferToFirebase = async (status: 'Aceitou' | 'Recusou', contrato: string | null) => {
+    if (!user || !firestore) return;
+    setIsSaving(true);
+    try {
+      const offerData = {
+        usuarioId: user.uid,
+        produtoIds: products.map(p => p.id),
+        produtos: products,
+        status,
+        contrato: contrato || 'N/A', // Save contract number
+        timestamp: serverTimestamp(),
+        totalOferta: totalComDesconto,
+        economia: economiaMensal,
+        debitoEmConta,
+        descontoDCC,
+      };
+      const collectionPath = `users/${user.uid}/ofertas_salvas`;
+      await addDoc(collection(firestore, collectionPath), offerData);
+
+      clearOffer();
+      toast({
+        title: status === 'Aceitou' ? "Venda Registrada!" : "Oferta Recusada Salva",
+        description: status === 'Aceitou' ? `Contrato ${contrato} salvo com sucesso.` : "Registro salvo no histórico.",
+        variant: 'default',
+        ...(status !== 'Aceitou' && { className: 'bg-blue-50 border-blue-200 text-blue-800' })
+      });
+    } catch (error) {
+      console.error("Erro ao salvar oferta:", error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar a oferta. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -157,39 +248,7 @@ export default function ComparadorOfertaPage() {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   };
 
-  const handleSaveOffer = async (status: 'Aceitou' | 'Recusou') => {
-    if (!user || !firestore) return;
-    setIsSaving(true);
-    try {
-      const offerData = {
-        usuarioId: user.uid,
-        produtoIds: products.map(p => p.id),
-        produtos: products, // Saving full product info for easier display later
-        status,
-        timestamp: serverTimestamp(),
-        totalOferta: totalComDesconto,
-        economia: economiaMensal,
-        debitoEmConta,
-        descontoDCC,
-      };
-      const collectionPath = `users/${user.uid}/ofertas_salvas`;
-      await addDoc(collection(firestore, collectionPath), offerData);
-      clearOffer(); // This now clears products and gastos from context
-      toast({
-        title: "Sucesso!",
-        description: "Sua oferta foi salva com sucesso.",
-      });
-    } catch (error) {
-      console.error("Erro ao salvar oferta:", error);
-      toast({
-        title: "Erro ao salvar",
-        description: "Não foi possível salvar a oferta. Tente novamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
+
 
   const getIconForType = (type: string) => {
     switch (type.toLowerCase()) {
@@ -216,7 +275,7 @@ export default function ComparadorOfertaPage() {
                   <Wallet className="h-5 w-5 text-gray-500" />
                   <CardTitle className="text-xl">Gastos Atuais</CardTitle>
                 </div>
-                <CardDescription>Quanto o cliente paga hoje na concorrência ou plano atual.</CardDescription>
+                <CardDescription>Quanto o cliente paga hoje no plano atual.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -352,7 +411,7 @@ export default function ComparadorOfertaPage() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn("p-1.5 rounded-md",
                                     product.tipo === 'Movel' ? 'bg-purple-100 text-purple-700' :
-                                      product.tipo === 'Internet' ? 'bg-blue-100 text-blue-700' :
+                                      product.tipo === 'Banda Larga' ? 'bg-blue-100 text-blue-700' :
                                         'bg-gray-100 text-gray-700'
                                   )}>
                                     {getIconForType(product.tipo)}
@@ -517,7 +576,7 @@ export default function ComparadorOfertaPage() {
                 variant="outline"
                 size="lg"
                 className="w-full sm:w-auto border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800"
-                onClick={() => handleSaveOffer('Recusou')}
+                onClick={handleRecuseOffer}
                 disabled={isSaving}
               >
                 {isSaving ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <X className="mr-2 h-4 w-4" />}
@@ -526,7 +585,7 @@ export default function ComparadorOfertaPage() {
               <Button
                 size="lg"
                 className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-200"
-                onClick={() => handleSaveOffer('Aceitou')}
+                onClick={handleAcceptOffer}
                 disabled={isSaving}
               >
                 {isSaving ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Check className="mr-2 h-4 w-4" />}
@@ -535,6 +594,43 @@ export default function ComparadorOfertaPage() {
             </CardFooter>
           </Card>
         )}
+
+        {/* Modal de Contrato */}
+        <Dialog open={showContractModal} onOpenChange={setShowContractModal}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Finalizar Venda</DialogTitle>
+              <DialogDescription>
+                Insira o número de contrato gerado para o cliente para concluir o registro.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center space-x-2 py-4">
+              <div className="grid flex-1 gap-2">
+                <Label htmlFor="contrato" className="sr-only">
+                  Número do Contrato
+                </Label>
+                <Input
+                  id="contrato"
+                  placeholder="000/123456789"
+                  value={contractNumber}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleContractChange(e)}
+                  maxLength={13}
+                  className={cn("text-center text-lg tracking-widest", contractError && "border-red-500 focus-visible:ring-red-500")}
+                />
+                {contractError && <p className="text-xs text-red-500 text-center">{contractError}</p>}
+              </div>
+            </div>
+            <DialogFooter className="sm:justify-between">
+              <Button variant="secondary" onClick={() => setShowContractModal(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" onClick={confirmAcceptOffer} disabled={isSaving}>
+                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Confirmar Venda
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

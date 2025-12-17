@@ -5,16 +5,20 @@ import { getDoc, doc, setDoc } from 'firebase/firestore';
 import type { Usuario as AppUsuario } from '@/lib/types';
 import { useRouter, usePathname } from 'next/navigation';
 import { useUser as useFirebaseUser, useFirebase } from '@/firebase';
-import { signInAnonymously } from 'firebase/auth';
+import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 interface AuthContextType {
   user: AppUsuario | null;
   loading: boolean;
-  login: (role: 'agente' | 'supervisor') => void;
+  login: (role: 'agente' | 'supervisor') => void; // Mantendo para compatibilidade se precisar
+  loginWithZ: (zLogin: string, pin: string, mode: 'login' | 'register') => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Constante para o domínio fictício
+const AUTH_DOMAIN = "@interno.studioclaro.app";
 
 function AuthProviderContent({ children }: { children: ReactNode }) {
   const { user: firebaseUser, isUserLoading: firebaseLoading } = useFirebaseUser();
@@ -33,20 +37,19 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
           if (userDoc.exists()) {
             setAppUser(userDoc.data() as AppUsuario);
           } else {
-            // User is authenticated in Firebase Auth, but no user document in Firestore.
-            // This can happen during first login. Let's rely on localStorage for role.
-             const storedRole = localStorage.getItem('userRole') as 'agente' | 'supervisor';
-             if (storedRole) {
-                const newUser: AppUsuario = {
-                    uid: firebaseUser.uid,
-                    email: firebaseUser.email || `${storedRole}@claro.com.br`,
-                    role: storedRole,
-                };
-                await setDoc(userDocRef, newUser);
-                setAppUser(newUser);
-             } else {
-                setAppUser(null); // No role info, treat as logged out
-             }
+            // Fallback para login antigo anonimo (se ainda existir sessão)
+            const storedRole = localStorage.getItem('userRole') as 'agente' | 'supervisor';
+            if (storedRole) {
+              const newUser: AppUsuario = {
+                uid: firebaseUser.uid,
+                email: firebaseUser.email || `${storedRole}@claro.temp`,
+                role: storedRole,
+              };
+              await setDoc(userDocRef, newUser);
+              setAppUser(newUser);
+            } else {
+              setAppUser(null);
+            }
           }
         } else {
           setAppUser(null);
@@ -76,35 +79,70 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     }
   }, [appUser, loading, pathname, router]);
 
-  const login = async (role: 'agente' | 'supervisor') => {
+  const loginWithZ = async (zLogin: string, pin: string, mode: 'login' | 'register') => {
     if (!auth || !firestore) return;
     setLoading(true);
-    localStorage.setItem('userRole', role);
+
+    const email = `z${zLogin}${AUTH_DOMAIN}`;
+    // A senha/PIN deve ter 6 caracteres no Firebase Auth no mínimo?
+    // Firebase exige senha de 6 caracteres.
+    // O usuário pediu "senha numérica de 4 dígitos".
+    // SOLUÇÃO: Vamos adicionar um "sal fixo" ou prefixo interno para completar 6 chars se for < 6.
+    // Ou simplesmente duplicar o pin? Não, inseguro.
+    // Vamos usar um prefixo interno fixo: "SCApp-" + pin => "SCApp-1234" (10 chars).
+    const firebasePassword = `SCApp-${pin}`;
 
     try {
-        const userCredential = await signInAnonymously(auth);
-        const user = userCredential.user;
-        const userDocRef = doc(firestore, "usuarios", user.uid);
+      let userCredential;
 
+      if (mode === 'register') {
+        userCredential = await createUserWithEmailAndPassword(auth, email, firebasePassword);
+        const user = userCredential.user;
+
+        // Criar perfil no Firestore
         const newUser: AppUsuario = {
-            uid: user.uid,
-            email: user.email || `${role}@claro.com.br`,
-            role: role,
+          uid: user.uid,
+          email: email,
+          role: 'agente', // Padrão
+          // Podemos adicionar zLogin explícito no tipo AppUsuario depois se quiser
         };
 
-        await setDoc(userDocRef, newUser);
+        await setDoc(doc(firestore, "usuarios", user.uid), newUser);
         setAppUser(newUser);
-        
-        if (role === 'supervisor') {
-            router.push('/admin');
-        } else {
-            router.push('/');
-        }
+      } else {
+        userCredential = await signInWithEmailAndPassword(auth, email, firebasePassword);
+        // O useEffect syncUser vai buscar os dados do Firestore
+      }
+
+      router.push('/');
     } catch (error) {
-        console.error("Login failed:", error);
-        localStorage.removeItem('userRole');
+      console.error("Z-Login failed:", error);
+      throw error; // Re-throw para a UI mostrar o erro
     } finally {
-        setLoading(false);
+      setLoading(false);
+    }
+  };
+
+  // Mantido para compatibilidade ou uso de Supervisor (poderia ser adaptado)
+  const login = async (role: 'agente' | 'supervisor') => {
+    // Deprecated implementation for now, or fallback
+    if (!auth || !firestore) return;
+    setLoading(true);
+    try {
+      const userCredential = await signInAnonymously(auth);
+      const user = userCredential.user;
+      const newUser: AppUsuario = {
+        uid: user.uid,
+        email: `${role}@anon.com`,
+        role: role,
+      };
+      await setDoc(doc(firestore, "usuarios", user.uid), newUser);
+      setAppUser(newUser);
+      router.push(role === 'supervisor' ? '/admin' : '/');
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,7 +154,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     router.push('/login');
   };
 
-  const value = { user: appUser, loading, login, logout };
+  const value = { user: appUser, loading, login, loginWithZ, logout };
 
   return (
     <AuthContext.Provider value={value}>
@@ -126,7 +164,6 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // FirebaseClientProvider is already in the root layout, no need to wrap again.
   return <AuthProviderContent>{children}</AuthProviderContent>;
 }
 
