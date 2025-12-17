@@ -505,58 +505,99 @@ const produtosParaCadastrar = [
 ];
 
 // =============================================================================
-// 4. FUNÇÃO DE SEED (LIMPEZA E INSERÇÃO)
+// 4. FUNÇÃO PARA LIMPAR COLEÇÃO
+// =============================================================================
+async function clearCollection(collectionName: string) {
+  console.log(`Limpando coleção ${collectionName}...`);
+  const snapshot = await db.collection(collectionName).get();
+
+  if (snapshot.empty) {
+    console.log(`  Coleção ${collectionName} já está vazia.`);
+    return;
+  }
+
+  // Firestore batch tem limite de 500, então vamos deletar em lotes
+  const batchSize = 400;
+  let deleted = 0;
+
+  while (deleted < snapshot.docs.length) {
+    const batch = db.batch();
+    const chunk = snapshot.docs.slice(deleted, deleted + batchSize);
+
+    chunk.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+
+    deleted += chunk.length;
+    console.log(`  Deletados ${deleted}/${snapshot.docs.length} documentos de ${collectionName}`);
+  }
+
+  console.log(`  Coleção ${collectionName} limpa com sucesso!`);
+}
+
+// =============================================================================
+// 5. FUNÇÃO DE SEED (LIMPEZA E INSERÇÃO)
 // =============================================================================
 const seedDatabase = async () => {
   console.log("Iniciando seed do banco de dados...");
+  console.log("=".repeat(60));
+
   try {
-    const batch = db.batch();
+    // 1. LIMPAR COLEÇÕES EXISTENTES
+    await clearCollection("produtos");
+    await clearCollection("regioes");
 
-    // 1. Limpar coleções existentes (CUIDADO: Isso apaga tudo de produtos e regioes!)
-    // Para uma limpeza real, precisaríamos buscar os docs e deletar. 
-    // Como 'batch' tem limite de 500 ops, faremos um set overwrite nos IDs fixos ou deletar se necessário.
-    // Por simplificação neste seed, vamos apenas sobrescrever os IDs que estamos criando.
-    // Se quiser deletar tudo antes, seria necessário um 'getDocs' e loops de delete.
-    // Vamos assumir "Upsert" (sobrescrever se existir).
+    console.log("=".repeat(60));
+    console.log("Inserindo novos dados...");
 
+    // 2. INSERIR REGIÕES
     console.log("Preparando Regiões...");
+    const regioesBatch = db.batch();
     for (const regiao of regioesParaCadastrar) {
       const docRef = db.collection("regioes").doc(regiao.id);
-      batch.set(docRef, regiao);
+      regioesBatch.set(docRef, regiao);
     }
+    await regioesBatch.commit();
+    console.log(`  ${regioesParaCadastrar.length} regiões inseridas!`);
 
+    // 3. INSERIR PRODUTOS (em lotes de 400 para evitar limite)
     console.log("Preparando Produtos...");
-    // Para produtos, vamos gerar IDs automáticos ou baseados em um slug para evitar duplicação em re-runs se mudar o nome.
-    // Vamos usar coleção 'produtos'.
-    // Dica: Se quiser limpar produtos antigos que não existem mais, o ideal seria deletar a coleção antes.
-    // Aqui, vamos adicionar os novos. IDs serão gerados pelo Firestore ou determinísticos.
-    // Usaremos determinístico (slug) para facilitar updates.
+    const batchSize = 400;
+    let inserted = 0;
 
-    // ATENÇÃO: Firestore Admin Batch tem limite de 500 operações.
-    // Vamos dividir em chunks se necessário, mas por enquanto vamos commitar em loop se crescer muito.
-    // Como temos ~50 produtos, um batch só resolve.
+    while (inserted < produtosParaCadastrar.length) {
+      const batch = db.batch();
+      const chunk = produtosParaCadastrar.slice(inserted, inserted + batchSize);
 
-    for (const produto of produtosParaCadastrar) {
-      const slug = `${produto.regiaoId}-${produto.tipo}-${produto.nome}`
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '');
+      for (const produto of chunk) {
+        const slug = `${produto.regiaoId}-${produto.tipo}-${produto.nome}`
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)+/g, '');
 
-      const docRef = db.collection("produtos").doc(slug);
-      batch.set(docRef, {
-        ...produto,
-        atualizadoEm: new Date().toISOString()
-      });
+        const docRef = db.collection("produtos").doc(slug);
+        batch.set(docRef, {
+          ...produto,
+          atualizadoEm: new Date().toISOString()
+        });
+      }
+
+      await batch.commit();
+      inserted += chunk.length;
+      console.log(`  Inseridos ${inserted}/${produtosParaCadastrar.length} produtos`);
     }
 
-    console.log("Commitando alterações no Firestore...");
-    await batch.commit();
-    console.log("Seed concluído com sucesso!");
+    console.log("=".repeat(60));
+    console.log("✅ Seed concluído com sucesso!");
+    console.log(`   - ${regioesParaCadastrar.length} regiões`);
+    console.log(`   - ${produtosParaCadastrar.length} produtos`);
 
   } catch (error) {
-    console.error("Erro ao rodar seed:", error);
+    console.error("❌ Erro ao rodar seed:", error);
+  } finally {
+    process.exit(0);
   }
 };
 
 // Executar o seed
 seedDatabase();
+
