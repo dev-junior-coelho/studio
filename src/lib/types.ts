@@ -57,10 +57,12 @@ export interface Usuario {
   uid: string;
   email: string;
   role: UserRole;
+  nome?: string; // Nome completo do agente
+  zLogin?: string; // Número do Z (sem o prefixo)
 }
 
 export interface Regiao {
-    id: string;
-    nome: string;
-    cidades: string[];
+  id: string;
+  nome: string;
+  cidades: string[];
 }

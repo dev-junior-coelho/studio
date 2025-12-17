@@ -11,7 +11,7 @@ interface AuthContextType {
   user: AppUsuario | null;
   loading: boolean;
   login: (role: 'agente' | 'supervisor') => void; // Mantendo para compatibilidade se precisar
-  loginWithZ: (zLogin: string, pin: string, mode: 'login' | 'register', role?: 'agente' | 'supervisor') => Promise<void>;
+  loginWithZ: (zLogin: string, pin: string, mode: 'login' | 'register', role?: 'agente' | 'supervisor', nome?: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -79,7 +79,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     }
   }, [appUser, loading, pathname, router]);
 
-  const loginWithZ = async (zLogin: string, pin: string, mode: 'login' | 'register', roleArg: 'agente' | 'supervisor' = 'agente') => {
+  const loginWithZ = async (zLogin: string, pin: string, mode: 'login' | 'register', roleArg: 'agente' | 'supervisor' = 'agente', nome?: string) => {
     if (!auth || !firestore) return;
     setLoading(true);
 
@@ -107,7 +107,8 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
           uid: user.uid,
           email: email,
           role: role,
-          // Podemos adicionar zLogin explícito no tipo AppUsuario depois se quiser
+          nome: nome || '', // Nome completo do agente
+          zLogin: zLogin, // Número Z sem o prefixo
         };
 
         await setDoc(doc(firestore, "usuarios", user.uid), newUser);

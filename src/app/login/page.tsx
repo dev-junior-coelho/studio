@@ -15,6 +15,7 @@ export default function LoginPage() {
   const { loginWithZ, login, loading } = useAuth(); // login is legacy/test
   const [zNumber, setZNumber] = useState("");
   const [pin, setPin] = useState("");
+  const [nome, setNome] = useState("");
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [error, setError] = useState<string | null>(null);
   const [showPin, setShowPin] = useState(false);
@@ -47,9 +48,13 @@ export default function LoginPage() {
       setError("A senha deve ter exatamente 4 dígitos.");
       return;
     }
+    if (mode === 'register' && nome.trim().length < 3) {
+      setError("Informe seu nome completo (mínimo 3 caracteres).");
+      return;
+    }
 
     try {
-      await loginWithZ(zNumber, pin, mode, userRole);
+      await loginWithZ(zNumber, pin, mode, userRole, nome.trim());
     } catch (err: any) {
       if (mode === 'register' && (err.code === 'auth/email-already-in-use' || err.code === 'auth/credential-already-in-use')) {
         setError("Este login Z já possui cadastro. Tente fazer login.");
@@ -72,6 +77,7 @@ export default function LoginPage() {
     setError(null);
     setZNumber("");
     setPin("");
+    setNome("");
   };
 
   return (
@@ -176,6 +182,27 @@ export default function LoginPage() {
                   Senha de 4 dígitos para acesso rápido.
                 </p>
               </div>
+
+              {mode === 'register' && userRole === 'agente' && (
+                <div className="space-y-2">
+                  <Label htmlFor="nome" className="text-sm font-medium">Seu Nome Completo</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      id="nome"
+                      type="text"
+                      placeholder="Inclua seu nome com sobrenome"
+                      className="pl-10 h-12"
+                      value={nome}
+                      onChange={(e) => { setNome(e.target.value); setError(null); }}
+                      required
+                    />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground ml-1">
+                    Seu nome aparecerá nas ofertas do histórico.
+                  </p>
+                </div>
+              )}
 
               <Button
                 type="submit"
