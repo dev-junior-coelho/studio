@@ -1,33 +1,96 @@
 // data/seedOpcionais.ts (V11.0 - Preços e Regras Mantidas)
+// TIPOS CORRETOS: "Fixo", "Ponto Adicional", "Opcional"
 
 export const produtosOpcionais = [
-    // --- PONTOS ADICIONAIS ---
+    // ==========================================
+    // TELEFONE FIXO (tipo: "Fixo")
+    // ==========================================
     {
-        regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra (Cabeado)",
+        regiaoId: "nacional", tipo: "Fixo", nome: "Fone Ilimitado Local",
+        precoMensal: 49.90, precoAnual: null,
+        beneficios: ["Ligações ilimitadas para fixos locais", "Identificador de chamadas"],
+        observacoes: "Telefone fixo residencial"
+    },
+    {
+        regiaoId: "nacional", tipo: "Fixo", nome: "Fone Ilimitado Brasil",
+        precoMensal: 59.90, precoAnual: null,
+        beneficios: ["Ligações ilimitadas para fixos e celulares do Brasil", "Identificador de chamadas"],
+        observacoes: "Telefone fixo residencial"
+    },
+
+    // ==========================================
+    // PONTOS ADICIONAIS (tipo: "Ponto Adicional")
+    // ==========================================
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Ultra (Cabeado)",
         precoMensal: 150.00, precoAnual: null,
         beneficios: ["Cabo de rede passado pela tubulação interna", "Garante máxima velocidade no cômodo"],
         observacoes: "(p.72) Valor único de instalação (em 12x R$ 12,50 ou à vista)"
     },
     {
-        regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional 4K",
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional 4K",
         precoMensal: 34.90, precoAnual: null,
         beneficios: ["Ponto extra de TV 4K", "Acesso a todos os canais do pacote"],
         observacoes: "(p.76) Mensalidade"
     },
     {
-        regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional Gravação",
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional Gravação",
         precoMensal: 24.90, precoAnual: null,
         beneficios: ["Ponto extra com Gravação", "Acesso ao DVR do pacote"],
         observacoes: "(p.76) Mensalidade"
     },
     {
-        regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Adicional HD",
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional HD",
         precoMensal: 19.90, precoAnual: null,
         beneficios: ["Ponto extra HD", "Acesso a todos os canais do pacote"],
         observacoes: "Mensalidade"
     },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Box Cabo 4K (Aquisição)",
+        precoMensal: 69.90, precoAnual: null,
+        beneficios: ["Ponto adicional Box Cabo 4K", "Qualidade 4K HDR", "Comando de voz"],
+        observacoes: "Preço de AQUISIÇÃO. Limite: 4 pontos."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Box Cabo 4K (Rentabilização)",
+        precoMensal: 39.90, precoAnual: null,
+        beneficios: ["Ponto adicional Box Cabo 4K", "Qualidade 4K HDR", "Comando de voz"],
+        observacoes: "Preço de RENTABILIZAÇÃO. Limite: 4 pontos."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Soundbox (Aquisição)",
+        precoMensal: 99.90, precoAnual: null,
+        beneficios: ["Ponto adicional Soundbox", "Áudio Dolby Atmos", "Qualidade 4K HDR"],
+        observacoes: "Preço de AQUISIÇÃO. Limite: 2 pontos."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Soundbox (Rentabilização)",
+        precoMensal: 69.90, precoAnual: null,
+        beneficios: ["Ponto adicional Soundbox", "Áudio Dolby Atmos", "Qualidade 4K HDR"],
+        observacoes: "Preço de RENTABILIZAÇÃO. Limite: 2 pontos."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Box Streaming (Aquisição)",
+        precoMensal: 69.90, precoAnual: null,
+        beneficios: ["Ponto adicional Box Streaming", "Qualidade 4K", "Comando de voz"],
+        observacoes: "Preço de AQUISIÇÃO. Limite: 2 pontos."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA Box Streaming (Rentabilização)",
+        precoMensal: 39.90, precoAnual: null,
+        beneficios: ["Ponto adicional Box Streaming", "Qualidade 4K", "Comando de voz"],
+        observacoes: "Preço de RENTABILIZAÇÃO. Limite: 2 pontos."
+    },
+    {
+        regiaoId: "nacional", tipo: "Ponto Adicional", nome: "PA HD (Rentabilização)",
+        precoMensal: 29.90, precoAnual: null,
+        beneficios: ["Ponto adicional HD", "Acesso a todos os canais"],
+        observacoes: "Preço de RENTABILIZAÇÃO. Apenas upgrades de HD."
+    },
 
-    // --- SVAs DE STREAMING ---
+    // ==========================================
+    // SVAs DE STREAMING (tipo: "Opcional")
+    // ==========================================
     {
         regiaoId: "nacional", tipo: "Opcional", nome: "Netflix Padrão (Avulso)",
         precoMensal: 44.90, precoAnual: null,
@@ -65,7 +128,9 @@ export const produtosOpcionais = [
         observacoes: "SVA Avulso"
     },
 
-    // --- CANAIS E PACOTES DE TV ---
+    // ==========================================
+    // CANAIS E PACOTES DE TV (tipo: "Opcional")
+    // ==========================================
     {
         regiaoId: "nacional", tipo: "Opcional", nome: "Telecine (Mensal)",
         precoMensal: 29.90, precoAnual: null,
@@ -103,7 +168,9 @@ export const produtosOpcionais = [
         observacoes: "SVA Avulso"
     },
 
-    // --- COMBO DE SVAs ---
+    // ==========================================
+    // COMBO DE SVAs (tipo: "Opcional")
+    // ==========================================
     {
         regiaoId: "nacional", tipo: "Opcional", nome: "Combo Telecine + Universal+ (Mensal)",
         precoMensal: 34.90, precoAnual: null,
@@ -117,7 +184,9 @@ export const produtosOpcionais = [
         observacoes: "Valor total R$ 298,80"
     },
 
-    // --- OUTROS SVAs ---
+    // ==========================================
+    // OUTROS SVAs (tipo: "Opcional")
+    // ==========================================
     {
         regiaoId: "nacional", tipo: "Opcional", nome: "Belas Artes",
         precoMensal: 12.90, precoAnual: null,
@@ -143,21 +212,9 @@ export const produtosOpcionais = [
         observacoes: "SVA Avulso"
     },
 
-    // --- TELEFONE FIXO ---
-    {
-        regiaoId: "nacional", tipo: "Opcional", nome: "Fone Ilimitado Local",
-        precoMensal: 49.90, precoAnual: null,
-        beneficios: ["Ligações ilimitadas para fixos locais", "Identificador de chamadas"],
-        observacoes: "Telefone fixo residencial"
-    },
-    {
-        regiaoId: "nacional", tipo: "Opcional", nome: "Fone Ilimitado Brasil",
-        precoMensal: 59.90, precoAnual: null,
-        beneficios: ["Ligações ilimitadas para fixos e celulares do Brasil", "Identificador de chamadas"],
-        observacoes: "Telefone fixo residencial"
-    },
-
-    // --- PROTEÇÃO E SEGURANÇA ---
+    // ==========================================
+    // PROTEÇÃO E SEGURANÇA (tipo: "Opcional")
+    // ==========================================
     {
         regiaoId: "nacional", tipo: "Opcional", nome: "McAfee Multi Access (5 dispositivos)",
         precoMensal: 14.90, precoAnual: null,
@@ -171,7 +228,9 @@ export const produtosOpcionais = [
         observacoes: "Seguro"
     },
 
-    // --- CANAIS ADULTOS ---
+    // ==========================================
+    // CANAIS ADULTOS (tipo: "Opcional")
+    // ==========================================
     {
         regiaoId: "nacional", tipo: "Opcional", nome: "Playboy TV",
         precoMensal: 19.90, precoAnual: null,
