@@ -113,6 +113,24 @@ export default function ComparadorOfertaPage() {
 
   const saveOfferToFirebase = async (status: 'Aceitou' | 'Recusou', contrato: string | null) => {
     if (!user || !firestore) return;
+
+    // SIMULAÇÃO PARA AGENTE DE TESTE (Z000001)
+    const currentZLogin = user.email?.split('@')[0].replace('z', '') || '';
+    if (currentZLogin === '000001') {
+      setIsSaving(true);
+      // Simula um delay de rede
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      clearOffer();
+      toast({
+        title: "Modo Simulação",
+        description: "Venda simulada com sucesso! Nada foi salvo no banco.",
+        className: "bg-blue-50 border-blue-200 text-blue-800",
+      });
+      setIsSaving(false);
+      return true;
+    }
+
     setIsSaving(true);
     try {
       const offerData = {
@@ -120,7 +138,7 @@ export default function ComparadorOfertaPage() {
         email: user.email,
         nome: user.nome || '',
         supervisor: user.supervisor || 'N/A',
-        zLogin: user.email?.split('@')[0].replace('z', '') || 'Desconhecido',
+        zLogin: currentZLogin || 'Desconhecido',
         produtoIds: products.map(p => p.id),
         produtos: products,
         status,
