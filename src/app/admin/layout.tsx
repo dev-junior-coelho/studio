@@ -2,9 +2,9 @@
 
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut, ShieldCheck, LayoutDashboard, Activity, Database, BookOpen, Menu } from "lucide-react";
+import { LogOut, ShieldCheck, LayoutDashboard, Activity, Database, BookOpen, Menu, Users } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import {
@@ -23,6 +23,8 @@ export default function AdminLayout({
   const { user, loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!loading) {
@@ -49,14 +51,14 @@ export default function AdminLayout({
         <header className="h-16 border-b bg-white flex items-center justify-between px-6 sticky top-0 z-20 shadow-sm shadow-slate-100">
           <div className="flex items-center gap-2">
             <div className="md:hidden">
-              <Sheet>
+              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="mr-2">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="p-0 w-64 border-none shadow-2xl">
-                  <SidebarContent user={user} logout={logout} isMobile />
+                  <SidebarContent user={user} logout={logout} isMobile onLinkClick={() => setIsMenuOpen(false)} />
                 </SheetContent>
               </Sheet>
             </div>
@@ -90,7 +92,7 @@ export default function AdminLayout({
   );
 }
 
-function SidebarContent({ user, logout, isMobile }: { user: any; logout: any; isMobile?: boolean }) {
+function SidebarContent({ user, logout, isMobile, onLinkClick }: { user: any; logout: any; isMobile?: boolean; onLinkClick?: () => void }) {
   return (
     <>
       <div className="p-6 border-b flex items-center gap-3">
@@ -102,12 +104,13 @@ function SidebarContent({ user, logout, isMobile }: { user: any; logout: any; is
 
       <nav className="flex-1 p-4 space-y-2">
         <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-2 mb-2">Principal</div>
-        <SidebarLink href="/admin" icon={LayoutDashboard} label="Dashboard" />
-        <SidebarLink href="/admin/history" icon={Activity} label="Vendas em Tempo Real" />
+        <SidebarLink href="/admin" icon={LayoutDashboard} label="Dashboard" onClick={onLinkClick} />
+        <SidebarLink href="/admin/history" icon={Activity} label="Vendas em Tempo Real" onClick={onLinkClick} />
+        <SidebarLink href="/admin/agents" icon={Users} label="Gestão de Equipe" onClick={onLinkClick} />
 
         <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-2 mt-6 mb-2">Dados</div>
-        <SidebarLink href="/admin/products" icon={Database} label="Produtos" />
-        <SidebarLink href="/admin/procedures" icon={BookOpen} label="Procedimentos" />
+        <SidebarLink href="/admin/products" icon={Database} label="Produtos" onClick={onLinkClick} />
+        <SidebarLink href="/admin/procedures" icon={BookOpen} label="Procedimentos" onClick={onLinkClick} />
       </nav>
 
       <div className="p-4 border-t bg-slate-50/50">
@@ -120,7 +123,7 @@ function SidebarContent({ user, logout, isMobile }: { user: any; logout: any; is
             <p className="text-[10px] text-slate-500 font-medium">Conta Master</p>
           </div>
         </div>
-        <Button variant="outline" size="sm" onClick={logout} className="w-full text-xs h-8 border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all font-semibold">
+        <Button variant="outline" size="sm" onClick={() => { logout(); onLinkClick?.(); }} className="w-full text-xs h-8 border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all font-semibold">
           <LogOut className="h-3 w-3 mr-2" />
           Encerrar Sessão
         </Button>
@@ -129,13 +132,14 @@ function SidebarContent({ user, logout, isMobile }: { user: any; logout: any; is
   );
 }
 
-function SidebarLink({ href, icon: Icon, label }: { href: string; icon: any; label: string }) {
+function SidebarLink({ href, icon: Icon, label, onClick }: { href: string; icon: any; label: string; onClick?: () => void }) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200",
         isActive
