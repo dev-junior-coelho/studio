@@ -59,7 +59,12 @@ export interface Usuario {
   role: UserRole;
   nome?: string; // Nome completo do agente
   zLogin?: string; // Número do Z (sem o prefixo)
+  supervisor?: string; // Nome do supervisor responsável
   lastSeen?: string | null; // Data da última atividade
+  promotedBy?: string; // Quem promoveu
+  promotedAt?: string; // Quando promoveu
+  demotedBy?: string; // Quem rebaixou
+  demotedAt?: string; // Quando rebaixou
 }
 
 export interface Regiao {

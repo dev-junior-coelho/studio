@@ -119,6 +119,7 @@ export default function ComparadorOfertaPage() {
         usuarioId: user.uid,
         email: user.email,
         nome: user.nome || '',
+        supervisor: user.supervisor || 'N/A',
         zLogin: user.email?.split('@')[0].replace('z', '') || 'Desconhecido',
         produtoIds: products.map(p => p.id),
         produtos: products,

@@ -46,6 +46,7 @@ export interface SavedOffer {
     debitoEmConta: boolean;
     zLogin?: string; // Optional for backward compatibility
     nome?: string; // Nome do agente
+    supervisor?: string; // Supervisor do agente no momento da venda
     email?: string;
     usuarioId?: string;
 }
@@ -58,6 +59,7 @@ export function HistoryList() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState<string>("all");
     const [dateFilter, setDateFilter] = useState<string>("");
+    const [supervisorFilter, setSupervisorFilter] = useState<string>("all");
 
     useEffect(() => {
         async function fetchHistory() {
@@ -144,6 +146,9 @@ export function HistoryList() {
         // Status filter
         if (statusFilter !== "all" && offer.status !== statusFilter) return false;
 
+        // Supervisor filter
+        if (supervisorFilter !== "all" && offer.supervisor !== supervisorFilter) return false;
+
         // Date filter
         if (dateFilter) {
             const offerDate = offer.timestamp?.toDate() || new Date();
@@ -159,8 +164,9 @@ export function HistoryList() {
         const contrato = offer.contrato?.toLowerCase() || '';
         const email = offer.email?.toLowerCase() || '';
         const nome = offer.nome?.toLowerCase() || '';
+        const supervisor = offer.supervisor?.toLowerCase() || '';
 
-        return zLogin.includes(term) || contrato.includes(term) || email.includes(term) || nome.includes(term);
+        return zLogin.includes(term) || contrato.includes(term) || email.includes(term) || nome.includes(term) || supervisor.includes(term);
     });
 
     if (loading) {
@@ -245,13 +251,32 @@ export function HistoryList() {
                             />
                         </div>
 
-                        {(statusFilter !== "all" || dateFilter !== "") && (
+                        {/* Filtro de Supervisor (Apenas para Admin/Supervisor) */}
+                        {user?.role === 'supervisor' && (
+                            <div className="min-w-[140px]">
+                                <Select value={supervisorFilter} onValueChange={setSupervisorFilter}>
+                                    <SelectTrigger className="h-9 bg-white text-xs">
+                                        <SelectValue placeholder="Supervisor" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">Todas as Equipes</SelectItem>
+                                        <SelectItem value="GILVAN">Equipe GILVAN</SelectItem>
+                                        <SelectItem value="HELIO">Equipe HELIO</SelectItem>
+                                        <SelectItem value="MARIANA PAIXÃO">Equipe MARIANA</SelectItem>
+                                        <SelectItem value="N/A">Sem Supervisor</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
+
+                        {(statusFilter !== "all" || dateFilter !== "" || supervisorFilter !== "all") && (
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => {
                                     setStatusFilter("all");
                                     setDateFilter("");
+                                    setSupervisorFilter("all");
                                 }}
                                 className="h-9 text-xs text-red-500 hover:text-red-600 hover:bg-red-50 px-2"
                             >

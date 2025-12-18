@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/auth-context";
 import { useFirebase } from "@/firebase/provider";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
@@ -29,11 +30,13 @@ import { useToast } from "@/hooks/use-toast";
 import { ShieldAlert, ShieldCheck as ShieldIcon } from "lucide-react";
 
 export default function AdminAgentsPage() {
+    const { user } = useAuth();
     const { firestore } = useFirebase();
     const { toast } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [promoteTarget, setPromoteTarget] = useState<any>(null);
-    const [isPromoting, setIsPromoting] = useState(false);
+    const [demoteTarget, setDemoteTarget] = useState<any>(null);
+    const [isUpdatingRole, setIsUpdatingRole] = useState(false);
     const [data, setData] = useState({
         agents: [] as any[],
         activeCount: 0,
@@ -76,15 +79,18 @@ export default function AdminAgentsPage() {
     const filteredAgents = data.agents.filter(agent =>
         (agent.nome || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         (agent.zLogin || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (agent.role || '').toLowerCase().includes(searchTerm.toLowerCase())
+        (agent.role || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (agent.supervisor || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handlePromoteAgent = async () => {
-        if (!promoteTarget || !firestore) return;
-        setIsPromoting(true);
+        if (!promoteTarget || !firestore || !user) return;
+        setIsUpdatingRole(true);
         try {
             await updateDoc(doc(firestore, "usuarios", promoteTarget.uid), {
-                role: 'supervisor'
+                role: 'supervisor',
+                promotedBy: user.nome || user.email,
+                promotedAt: new Date().toISOString()
             });
             toast({
                 title: "🛡️ Promoção Realizada!",
@@ -99,7 +105,33 @@ export default function AdminAgentsPage() {
                 variant: "destructive"
             });
         } finally {
-            setIsPromoting(false);
+            setIsUpdatingRole(false);
+        }
+    };
+
+    const handleDemoteAgent = async () => {
+        if (!demoteTarget || !firestore || !user) return;
+        setIsUpdatingRole(true);
+        try {
+            await updateDoc(doc(firestore, "usuarios", demoteTarget.uid), {
+                role: 'agente',
+                demotedBy: user.nome || user.email,
+                demotedAt: new Date().toISOString()
+            });
+            toast({
+                title: "⚠️ Permissão Removida",
+                description: `${demoteTarget.nome} agora é novamente um Agente.`,
+            });
+            setDemoteTarget(null);
+        } catch (error) {
+            console.error("Error demoting supervisor:", error);
+            toast({
+                title: "Erro ao aplicar",
+                description: "Não foi possível alterar as permissões.",
+                variant: "destructive"
+            });
+        } finally {
+            setIsUpdatingRole(false);
         }
     };
 
@@ -157,6 +189,7 @@ export default function AdminAgentsPage() {
                                 <tr className="bg-slate-50/50 border-b border-slate-100">
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Agente</th>
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Identificação</th>
+                                    <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Supervisor</th>
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Status</th>
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Monitoramento</th>
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Ações</th>
@@ -194,6 +227,18 @@ export default function AdminAgentsPage() {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5">
+                                                {agent.role === 'supervisor' ? (
+                                                    <span className="text-xs font-bold text-slate-300 italic">Próprio</span>
+                                                ) : (
+                                                    <Badge variant="secondary" className={cn(
+                                                        "font-black text-[10px] px-2 py-0.5 border-none",
+                                                        agent.supervisor ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
+                                                    )}>
+                                                        {agent.supervisor || "NÃO DEFINIDO"}
+                                                    </Badge>
+                                                )}
+                                            </td>
+                                            <td className="px-8 py-5">
                                                 <div className="flex items-center gap-3">
                                                     <div className={cn(
                                                         "h-2.5 w-2.5 rounded-full ring-4",
@@ -216,7 +261,7 @@ export default function AdminAgentsPage() {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5 text-right">
-                                                {agent.role !== 'supervisor' && (
+                                                {agent.role !== 'supervisor' ? (
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
@@ -225,6 +270,16 @@ export default function AdminAgentsPage() {
                                                         title="Promover a Supervisor"
                                                     >
                                                         <ShieldIcon className="h-4 w-4" />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg group-hover:visible"
+                                                        onClick={() => setDemoteTarget(agent)}
+                                                        title="Remover Permissão de Supervisor"
+                                                    >
+                                                        <ShieldAlert className="h-4 w-4" />
                                                     </Button>
                                                 )}
                                             </td>
@@ -261,12 +316,36 @@ export default function AdminAgentsPage() {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="flex sm:justify-between gap-3">
-                        <Button variant="secondary" onClick={() => setPromoteTarget(null)} disabled={isPromoting}>
+                        <Button variant="secondary" onClick={() => setPromoteTarget(null)} disabled={isUpdatingRole}>
                             Cancelar
                         </Button>
-                        <Button onClick={handlePromoteAgent} disabled={isPromoting} className="bg-purple-600 hover:bg-purple-700">
-                            {isPromoting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        <Button onClick={handlePromoteAgent} className="bg-purple-600 hover:bg-purple-700 text-white font-bold" disabled={isUpdatingRole}>
+                            {isUpdatingRole && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Confirmar Promoção
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Modal de Confirmação de Rebaixamento */}
+            <Dialog open={!!demoteTarget} onOpenChange={(open) => !open && setDemoteTarget(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-red-600">
+                            <ShieldAlert className="h-5 w-5" /> Remover Permissão
+                        </DialogTitle>
+                        <DialogDescription>
+                            Você tem certeza que deseja remover as permissões de supervisor de <strong>{demoteTarget?.nome}</strong>?
+                            Ele voltará a ter acesso limitado como agente.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDemoteTarget(null)} disabled={isUpdatingRole}>
+                            Cancelar
+                        </Button>
+                        <Button variant="destructive" onClick={handleDemoteAgent} disabled={isUpdatingRole}>
+                            {isUpdatingRole && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Confirmar Rebaixamento
                         </Button>
                     </DialogFooter>
                 </DialogContent>

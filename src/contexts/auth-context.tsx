@@ -110,7 +110,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     }
   }, [appUser, loading, pathname, router]);
 
-  const loginWithZ = async (zLogin: string, pin: string, mode: 'login' | 'register', roleArg: 'agente' | 'supervisor' = 'agente', nome?: string) => {
+  const loginWithZ = async (zLogin: string, pin: string, mode: 'login' | 'register', roleArg: 'agente' | 'supervisor' = 'agente', nome?: string, supervisor?: string) => {
     if (!auth || !firestore) return;
     setLoading(true);
 
@@ -140,6 +140,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
           role: role,
           nome: nome || '', // Nome completo do agente
           zLogin: zLogin, // Número Z sem o prefixo
+          supervisor: supervisor, // Supervisor (GILVAN, HELIO, MARIANA PAIXÃO)
           lastSeen: new Date().toISOString()
         };
 

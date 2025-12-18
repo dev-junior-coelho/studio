@@ -10,12 +10,20 @@ import { Zap, Loader2, Lock, User, AlertCircle, Eye, EyeOff, ShieldCheck } from 
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 export default function LoginPage() {
   const { loginWithZ, login, loading } = useAuth(); // login is legacy/test
   const [zNumber, setZNumber] = useState("");
   const [pin, setPin] = useState("");
   const [nome, setNome] = useState("");
+  const [supervisor, setSupervisor] = useState("");
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [error, setError] = useState<string | null>(null);
   const [showPin, setShowPin] = useState(false);
@@ -48,13 +56,19 @@ export default function LoginPage() {
       setError("A senha deve ter exatamente 4 dígitos.");
       return;
     }
-    if (mode === 'register' && nome.trim().length < 3) {
-      setError("Informe seu nome completo (mínimo 3 caracteres).");
-      return;
+    if (mode === 'register' && userRole === 'agente') {
+      if (nome.trim().length < 3) {
+        setError("Informe seu nome completo (mínimo 3 caracteres).");
+        return;
+      }
+      if (!supervisor) {
+        setError("Selecione seu supervisor responsável.");
+        return;
+      }
     }
 
     try {
-      await loginWithZ(zNumber, pin, mode, userRole, nome.trim());
+      await loginWithZ(zNumber, pin, mode, userRole, nome.trim(), supervisor);
     } catch (err: any) {
       if (mode === 'register' && (err.code === 'auth/email-already-in-use' || err.code === 'auth/credential-already-in-use')) {
         setError("Este login Z já possui cadastro. Tente fazer login.");
@@ -184,24 +198,40 @@ export default function LoginPage() {
               </div>
 
               {mode === 'register' && userRole === 'agente' && (
-                <div className="space-y-2">
-                  <Label htmlFor="nome" className="text-sm font-medium">Seu Nome Completo</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      id="nome"
-                      type="text"
-                      placeholder="Inclua seu nome com sobrenome"
-                      className="pl-10 h-12"
-                      value={nome}
-                      onChange={(e) => { setNome(e.target.value); setError(null); }}
-                      required
-                    />
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="nome" className="text-sm font-medium">Seu Nome Completo</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                      <Input
+                        id="nome"
+                        type="text"
+                        placeholder="Inclua seu nome com sobrenome"
+                        className="pl-10 h-12"
+                        value={nome}
+                        onChange={(e) => { setNome(e.target.value); setError(null); }}
+                        required
+                      />
+                    </div>
                   </div>
-                  <p className="text-[10px] text-muted-foreground ml-1">
-                    Seu nome aparecerá nas ofertas do histórico.
-                  </p>
-                </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Seu Supervisor Responsável</Label>
+                    <Select value={supervisor} onValueChange={(v) => { setSupervisor(v); setError(null); }}>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Selecione seu supervisor" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="GILVAN">GILVAN</SelectItem>
+                        <SelectItem value="HELIO">HELIO</SelectItem>
+                        <SelectItem value="MARIANA PAIXÃO">MARIANA PAIXÃO</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-[10px] text-muted-foreground ml-1">
+                      Obrigatório para acompanhamento de vendas.
+                    </p>
+                  </div>
+                </>
               )}
 
               <Button

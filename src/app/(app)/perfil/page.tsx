@@ -42,9 +42,17 @@ export default function ProfilePage() {
                                     </Badge>
                                 )}
                             </div>
-                            <p className="text-gray-300">
-                                {isSupervisor ? "Gestão e Acompanhamento" : "Consultor de Vendas"}
-                            </p>
+                            <div className="flex flex-col gap-1">
+                                <p className="text-gray-300">
+                                    {isSupervisor ? "Gestão e Acompanhamento" : "Consultor de Vendas"}
+                                </p>
+                                {user.supervisor && !isSupervisor && (
+                                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                                        <ShieldCheck className="w-3 h-3" />
+                                        Sup: {user.supervisor}
+                                    </div>
+                                )}
+                            </div>
 
                             <Button
                                 variant="destructive"
@@ -63,8 +71,7 @@ export default function ProfilePage() {
             <Tabs defaultValue="history" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
                     <TabsTrigger value="history">Histórico de Ofertas</TabsTrigger>
-                    {/* Add more tabs here in the future, e.g. "Equipe" for supervisors */}
-                    <TabsTrigger value="settings" disabled>Configurações</TabsTrigger>
+                    <TabsTrigger value="settings">Configurações</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="history" className="mt-6 space-y-4">
@@ -72,17 +79,87 @@ export default function ProfilePage() {
                 </TabsContent>
 
                 <TabsContent value="settings">
-                    <Card>
+                    <Card className="border-none shadow-sm">
                         <CardHeader>
-                            <CardTitle>Configurações</CardTitle>
-                            <CardDescription>Gerencie suas preferências.</CardDescription>
+                            <CardTitle className="text-lg font-bold">Configurações do Perfil</CardTitle>
+                            <CardDescription>Gerencie suas informações básicas.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <p className="text-sm text-muted-foreground">Em breve...</p>
+                        <CardContent className="space-y-6">
+                            {!isSupervisor && (
+                                <div className="space-y-3">
+                                    <label className="text-sm font-bold text-slate-700">Alterar Supervisor Responsável</label>
+                                    <SupervisorSelector />
+                                </div>
+                            )}
+                            <div className="pt-4 border-t border-slate-100">
+                                <p className="text-xs text-slate-400 font-medium italic">Mais configurações estarão disponíveis em breve.</p>
+                            </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
             </Tabs>
+        </div>
+    );
+}
+
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
+import { useFirebase } from "@/firebase/provider";
+import { doc, updateDoc } from "firebase/firestore";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+
+function SupervisorSelector() {
+    const { user } = useAuth();
+    const { firestore } = useFirebase();
+    const { toast } = useToast();
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    const handleUpdate = async (value: string) => {
+        if (!firestore || !user) return;
+        setIsUpdating(true);
+        try {
+            await updateDoc(doc(firestore, "usuarios", user.uid), {
+                supervisor: value
+            });
+            toast({
+                title: "Supervisor Alterado",
+                description: `Sua conta agora está vinculada ao supervisor ${value}.`,
+            });
+        } catch (error) {
+            toast({
+                title: "Erro ao atualizar",
+                description: "Tente novamente mais tarde.",
+                variant: "destructive"
+            });
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    return (
+        <div className="relative">
+            <Select defaultValue={user?.supervisor} onValueChange={handleUpdate} disabled={isUpdating}>
+                <SelectTrigger className="h-12 bg-slate-50 border-slate-200">
+                    <SelectValue placeholder="Selecione um supervisor" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="GILVAN">GILVAN</SelectItem>
+                    <SelectItem value="HELIO">HELIO</SelectItem>
+                    <SelectItem value="MARIANA PAIXÃO">MARIANA PAIXÃO</SelectItem>
+                </SelectContent>
+            </Select>
+            {isUpdating && (
+                <div className="absolute right-10 top-1/2 -translate-y-1/2">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                </div>
+            )}
         </div>
     );
 }

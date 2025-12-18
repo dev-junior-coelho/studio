@@ -5,6 +5,8 @@ import { OfferSummaryBar } from "@/components/offer-summary-bar";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+import { SupervisorGuard } from "@/components/supervisor-guard";
+
 export default function AppLayout({
   children,
 }: {
@@ -28,13 +30,14 @@ export default function AppLayout({
   }
 
   return (
-    <div className="relative mx-auto flex w-full max-w-lg flex-col bg-background min-h-screen">
-      <OfferSummaryBar />
-      <main className="flex-1 pb-20">
-        {children}
-      </main>
-      <BottomNavigation />
-    </div>
-
+    <SupervisorGuard>
+      <div className="relative mx-auto flex w-full max-w-lg flex-col bg-background min-h-screen">
+        <OfferSummaryBar />
+        <main className="flex-1 pb-20">
+          {children}
+        </main>
+        <BottomNavigation />
+      </div>
+    </SupervisorGuard>
   );
 }
