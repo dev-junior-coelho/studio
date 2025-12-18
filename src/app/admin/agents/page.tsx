@@ -7,14 +7,18 @@ import {
     Users,
     Zap,
     ChevronLeft,
-    Search
+    Search,
+    Loader2,
+    RefreshCcw,
+    FileSpreadsheet,
+    ShieldAlert,
+    ShieldCheck as ShieldIcon
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { useFirebase } from "@/firebase/provider";
 import { collection, onSnapshot, query } from "firebase/firestore";
-import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,7 +31,7 @@ import {
 } from "@/components/ui/dialog";
 import { doc, updateDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
-import { ShieldAlert, ShieldCheck as ShieldIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 export default function AdminAgentsPage() {
     const { user } = useAuth();
@@ -35,7 +39,10 @@ export default function AdminAgentsPage() {
     const { toast } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [promoteTarget, setPromoteTarget] = useState<any>(null);
-    const [demoteTarget, setDemoteTarget] = useState<any>(null);
+    const [demoteTarget, setDemoteTarget] = useState<Usuario | null>(null);
+    const [showSyncModal, setShowSyncModal] = useState(false);
+    const [sheetUrl, setSheetUrl] = useState("");
+    const [isSyncing, setIsSyncing] = useState(false);
     const [isUpdatingRole, setIsUpdatingRole] = useState(false);
     const [data, setData] = useState({
         agents: [] as any[],
@@ -135,6 +142,70 @@ export default function AdminAgentsPage() {
         }
     };
 
+    const handleSyncSheet = async () => {
+        if (!sheetUrl) {
+            toast({ title: "Erro", description: "Por favor, insira a URL do Script do Google.", variant: "destructive" });
+            return;
+        }
+
+        setIsSyncing(true);
+        try {
+            // 1. Buscar dados da planilha
+            const response = await fetch(sheetUrl);
+            if (!response.ok) throw new Error("Falha ao conectar com a planilha");
+
+            const sheetData = await response.json();
+            // Esperado: [{ zLogin: "Z12345", nome: "Fulano", supervisor: "Gilvan", ... }]
+
+            let updatedCount = 0;
+            let notFoundCount = 0;
+
+            // 2. Para cada linha da planilha, atualizar o usuário no banco
+            for (const row of sheetData) {
+                // Normalização robusta do Z (remove Z, z e espaços)
+                const cleanZSheet = row.zLogin ? row.zLogin.toString().toUpperCase().replace(/Z/g, '').trim() : '';
+
+                if (!cleanZSheet) continue;
+
+                // Buscar usuário pelo zLogin no Firestore (memória)
+                const targetUser = data.agents.find(u => {
+                    // Normaliza o email/login do banco também
+                    const userZ = u.email?.split('@')[0].toUpperCase().replace(/Z/g, '').trim();
+                    return userZ === cleanZSheet;
+                });
+
+                if (targetUser) {
+                    // Atualizar Supervisor
+                    const novoSupervisor = row.supervisor ? row.supervisor.toUpperCase().trim() : '';
+
+                    if (novoSupervisor && targetUser.supervisor !== novoSupervisor) {
+                        const userRef = doc(firestore!, "usuarios", targetUser.uid);
+                        await updateDoc(userRef, {
+                            supervisor: novoSupervisor
+                        });
+                        updatedCount++;
+                    }
+                } else {
+                    notFoundCount++;
+                }
+            }
+
+            toast({
+                title: "Sincronização Concluída",
+                description: `${updatedCount} agentes atualizados. ${notFoundCount} não encontrados no sistema.`,
+                className: "bg-green-50 border-green-200 text-green-800"
+            });
+            setShowSyncModal(false);
+            setSheetUrl(""); // Limpar para segurança
+
+        } catch (error) {
+            console.error("Erro no sync:", error);
+            toast({ title: "Erro na Exportação", description: "Verifique a URL e se o script está publicado como 'Web App' público.", variant: "destructive" });
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+
     if (data.isLoading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
@@ -170,14 +241,24 @@ export default function AdminAgentsPage() {
             </div>
 
             {/* Barra de Busca e Filtros */}
-            <div className="relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
-                <Input
-                    placeholder="Buscar por nome ou Z-Login..."
-                    className="pl-12 h-14 bg-white border-none shadow-sm text-lg font-medium focus-visible:ring-2 focus-visible:ring-indigo-500"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            <div className="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
+                <Button
+                    variant="outline"
+                    className="w-full sm:w-auto gap-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                    onClick={() => setShowSyncModal(true)}
+                >
+                    <RefreshCcw className="h-4 w-4" />
+                    Sincronizar RH
+                </Button>
+                <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+                    <Input
+                        placeholder="Buscar por nome ou Z-Login..."
+                        className="pl-12 h-14 bg-white border-none shadow-sm text-lg font-medium focus-visible:ring-2 focus-visible:ring-indigo-500"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
             </div>
 
             {/* Lista de Agentes */}
@@ -346,6 +427,40 @@ export default function AdminAgentsPage() {
                         <Button variant="destructive" onClick={handleDemoteAgent} disabled={isUpdatingRole}>
                             {isUpdatingRole && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Confirmar Rebaixamento
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            {/* Modal de Sincronização */}
+            <Dialog open={showSyncModal} onOpenChange={setShowSyncModal}>
+                <DialogContent className="sm:max-w-md" onOpenAutoFocus={(e) => e.preventDefault()}>
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-emerald-700">
+                            <FileSpreadsheet className="h-6 w-6" /> Sincronizar com Planilha
+                        </DialogTitle>
+                        <DialogDescription>
+                            Cole a URL do <strong>Web App</strong> do seu Script Google. Isso irá atualizar os supervisores de todos os agentes automaticamente com base no Login Z.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="sheetUrl">URL do Script (Web App)</Label>
+                            <Input
+                                id="sheetUrl"
+                                placeholder="https://script.google.com/macros/s/..."
+                                value={sheetUrl}
+                                onChange={(e) => setSheetUrl(e.target.value)}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                Certifique-se de que o script foi implantado como "Web App" e acessível a "Qualquer pessoa".
+                            </p>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowSyncModal(false)} disabled={isSyncing}>Cancelar</Button>
+                        <Button onClick={handleSyncSheet} className="bg-emerald-600 hover:bg-emerald-700 text-white" disabled={isSyncing}>
+                            {isSyncing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
+                            Iniciar Sincronização
                         </Button>
                     </DialogFooter>
                 </DialogContent>
