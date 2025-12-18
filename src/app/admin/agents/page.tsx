@@ -16,10 +16,24 @@ import { collection, onSnapshot, query } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
+import { doc, updateDoc } from "firebase/firestore";
+import { useToast } from "@/hooks/use-toast";
+import { ShieldAlert, ShieldCheck as ShieldIcon } from "lucide-react";
 
 export default function AdminAgentsPage() {
     const { firestore } = useFirebase();
+    const { toast } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
+    const [promoteTarget, setPromoteTarget] = useState<any>(null);
+    const [isPromoting, setIsPromoting] = useState(false);
     const [data, setData] = useState({
         agents: [] as any[],
         activeCount: 0,
@@ -34,9 +48,8 @@ export default function AdminAgentsPage() {
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const users = snapshot.docs.map(doc => doc.data() as any);
 
-            // FILTRO: Apenas agentes com Z-Login válido e que não sejam a conta genérica 'agente'
+            // FILTRO: Agentes e Supervisores com Z-Login válido e que não sejam a conta genérica 'agente'
             const validAgents = users.filter((u: any) =>
-                u.role === 'agente' &&
                 u.zLogin &&
                 u.zLogin.toLowerCase() !== 'agente' &&
                 !u.nome?.toLowerCase().includes('agente')
@@ -62,8 +75,33 @@ export default function AdminAgentsPage() {
 
     const filteredAgents = data.agents.filter(agent =>
         (agent.nome || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (agent.zLogin || '').toLowerCase().includes(searchTerm.toLowerCase())
+        (agent.zLogin || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (agent.role || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handlePromoteAgent = async () => {
+        if (!promoteTarget || !firestore) return;
+        setIsPromoting(true);
+        try {
+            await updateDoc(doc(firestore, "usuarios", promoteTarget.uid), {
+                role: 'supervisor'
+            });
+            toast({
+                title: "🛡️ Promoção Realizada!",
+                description: `${promoteTarget.nome} agora é Supervisor.`,
+            });
+            setPromoteTarget(null);
+        } catch (error) {
+            console.error("Error promoting agent:", error);
+            toast({
+                title: "Erro ao promover",
+                description: "Não foi possível alterar as permissões.",
+                variant: "destructive"
+            });
+        } finally {
+            setIsPromoting(false);
+        }
+    };
 
     if (data.isLoading) {
         return (
@@ -120,7 +158,8 @@ export default function AdminAgentsPage() {
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Agente</th>
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Identificação</th>
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Status</th>
-                                    <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Monitoramento</th>
+                                    <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Monitoramento</th>
+                                    <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Ações</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -143,9 +182,16 @@ export default function AdminAgentsPage() {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5">
-                                                <Badge variant="outline" className="font-mono text-sm px-3 py-1 bg-slate-50 border-slate-200 text-slate-600 font-black">
-                                                    Z{agent.zLogin}
-                                                </Badge>
+                                                <div className="flex flex-col gap-1">
+                                                    <Badge variant="outline" className="w-fit font-mono text-xs px-2 py-0.5 bg-slate-50 border-slate-200 text-slate-600 font-black">
+                                                        Z{agent.zLogin}
+                                                    </Badge>
+                                                    {agent.role === 'supervisor' && (
+                                                        <Badge className="w-fit bg-purple-500 text-[9px] h-4 px-1 uppercase font-black border-none">
+                                                            Super
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-8 py-5">
                                                 <div className="flex items-center gap-3">
@@ -161,13 +207,26 @@ export default function AdminAgentsPage() {
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-5 text-right">
-                                                <div className="flex flex-col items-end">
+                                            <td className="px-8 py-5">
+                                                <div className="flex flex-col items-start">
                                                     <span className="text-sm font-black text-slate-700">
                                                         {agent.lastSeen ? new Date(agent.lastSeen).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '---'}
                                                     </span>
                                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Último Sinal</span>
                                                 </div>
+                                            </td>
+                                            <td className="px-8 py-5 text-right">
+                                                {agent.role !== 'supervisor' && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg group-hover:visible"
+                                                        onClick={() => setPromoteTarget(agent)}
+                                                        title="Promover a Supervisor"
+                                                    >
+                                                        <ShieldIcon className="h-4 w-4" />
+                                                    </Button>
+                                                )}
                                             </td>
                                         </tr>
                                     );
@@ -184,6 +243,34 @@ export default function AdminAgentsPage() {
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Modal de Promoção */}
+            <Dialog open={!!promoteTarget} onOpenChange={(open) => !open && setPromoteTarget(null)}>
+                <DialogContent className="sm:max-w-md border-t-4 border-t-purple-600">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-xl font-black text-slate-800">
+                            <ShieldAlert className="h-6 w-6 text-purple-600" /> Confirmar Promoção
+                        </DialogTitle>
+                        <DialogDescription className="py-4 text-slate-600 space-y-4">
+                            <p className="font-bold">
+                                Você está prestes a promover <span className="text-slate-900 underline">{promoteTarget?.nome}</span> (Z{promoteTarget?.zLogin}) ao cargo de <span className="text-purple-600">Supervisor</span>.
+                            </p>
+                            <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg text-xs leading-relaxed text-amber-800">
+                                <strong>Aviso:</strong> Esta ação concederá acesso total ao painel administrativo, controle de produtos e monitoramento de equipe para este usuário.
+                            </div>
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex sm:justify-between gap-3">
+                        <Button variant="secondary" onClick={() => setPromoteTarget(null)} disabled={isPromoting}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={handlePromoteAgent} disabled={isPromoting} className="bg-purple-600 hover:bg-purple-700">
+                            {isPromoting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Confirmar Promoção
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

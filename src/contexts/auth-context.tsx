@@ -97,8 +97,15 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
       if (isAuthRoute) {
         router.push(appUser.role === 'supervisor' ? '/admin' : '/');
       }
+
+      // Se for agente tentando entrar no admin, volta para a home dos agentes
       if (isAdminRoute && appUser.role !== 'supervisor') {
         router.push('/');
+      }
+
+      // Se for supervisor fora do admin e não estiver no login, vai para o admin
+      if (!isAdminRoute && !isAuthRoute && appUser.role === 'supervisor') {
+        router.push('/admin');
       }
     }
   }, [appUser, loading, pathname, router]);
@@ -143,7 +150,14 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
         // lastSeen will be updated by the syncUser useEffect
       }
 
-      router.push('/');
+      // REDIRECIONAMENTO CORRETO:
+      // Se o syncUser ainda não terminou, usamos o role argument ou esperamos
+      // Mas para garantir o fluxo imediato:
+      if (role === 'supervisor') {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
     } catch (error) {
       console.error("Z-Login failed:", error);
       throw error; // Re-throw para a UI mostrar o erro

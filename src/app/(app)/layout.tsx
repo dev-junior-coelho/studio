@@ -14,8 +14,12 @@ export default function AppLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
+    if (!loading) {
+      if (!user) {
+        router.push('/login');
+      } else if (user.role === 'supervisor') {
+        router.push('/admin');
+      }
     }
   }, [user, loading, router]);
 
