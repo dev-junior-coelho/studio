@@ -71,7 +71,7 @@ function ProductForm({ product, onSave, onDone }: { product?: Produto, onSave: (
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="tipo">Tipo</Label>
-          <Select name="tipo" value={formData.tipo} onValueChange={(value: ProductType) => setFormData(p => ({...p, tipo: value}))}>
+          <Select name="tipo" value={formData.tipo} onValueChange={(value: ProductType) => setFormData(p => ({ ...p, tipo: value }))}>
             <SelectTrigger id="tipo">
               <SelectValue placeholder="Selecione o tipo" />
             </SelectTrigger>
@@ -87,13 +87,13 @@ function ProductForm({ product, onSave, onDone }: { product?: Produto, onSave: (
       </div>
       <div className="space-y-2">
         <Label htmlFor="beneficios">Benefícios (separados por vírgula)</Label>
-        <Input id="beneficios" name="beneficios" value={Array.isArray(formData.beneficios) ? formData.beneficios.join(', ') : ''} onChange={(e) => setFormData(p => ({...p, beneficios: e.target.value.split(',').map(b => b.trim())}))} />
+        <Input id="beneficios" name="beneficios" value={Array.isArray(formData.beneficios) ? formData.beneficios.join(', ') : ''} onChange={(e) => setFormData(p => ({ ...p, beneficios: e.target.value.split(',').map(b => b.trim()) }))} />
       </div>
       <div className="space-y-2">
         <Label htmlFor="fidelidade">Fidelidade</Label>
         <Input id="fidelidade" name="fidelidade" value={formData.fidelidade} onChange={handleChange} />
       </div>
-       <div className="space-y-2">
+      <div className="space-y-2">
         <Label htmlFor="observacoes">Observações</Label>
         <Textarea id="observacoes" name="observacoes" value={formData.observacoes} onChange={handleChange} />
       </div>
@@ -118,7 +118,7 @@ export default function AdminProductsPage() {
       setProducts(products.map(p => p.id === product.id ? product : p));
       toast({ title: "Produto atualizado!", description: `${product.nome} foi atualizado com sucesso.` });
     } else {
-      const newProduct = { ...product, id: `prod${Date.now()}`};
+      const newProduct = { ...product, id: `prod${Date.now()}` };
       setProducts([...products, newProduct]);
       toast({ title: "Produto criado!", description: `${product.nome} foi adicionado com sucesso.` });
     }
@@ -129,11 +129,11 @@ export default function AdminProductsPage() {
     setProducts(products.filter(p => p.id !== productId));
     toast({ title: "Produto removido!", variant: "destructive" });
   };
-  
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-         <div>
+        <div>
           <h2 className="text-2xl font-bold">Gerenciar Produtos</h2>
           <Link href="/admin" className="text-sm text-primary hover:underline">&larr; Voltar ao Painel</Link>
         </div>
@@ -143,7 +143,7 @@ export default function AdminProductsPage() {
               <PlusCircle className="mr-2 h-4 w-4" /> Novo Produto
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>{editingProduct ? "Editar Produto" : "Novo Produto"}</DialogTitle>
             </DialogHeader>
@@ -169,7 +169,7 @@ export default function AdminProductsPage() {
                 <TableCell>{product.tipo}</TableCell>
                 <TableCell>{product.precoMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
                 <TableCell className="text-right space-x-2">
-                  <Button variant="outline" size="icon" onClick={() => { setEditingProduct(product); setFormOpen(true);}}>
+                  <Button variant="outline" size="icon" onClick={() => { setEditingProduct(product); setFormOpen(true); }}>
                     <Edit className="h-4 w-4" />
                   </Button>
                   <AlertDialog>
@@ -178,7 +178,7 @@ export default function AdminProductsPage() {
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
                         <AlertDialogDescription>
@@ -201,4 +201,3 @@ export default function AdminProductsPage() {
   );
 }
 
-    

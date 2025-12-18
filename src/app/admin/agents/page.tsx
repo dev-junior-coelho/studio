@@ -301,7 +301,7 @@ export default function AdminAgentsPage() {
 
             {/* Modal de Promoção */}
             <Dialog open={!!promoteTarget} onOpenChange={(open) => !open && setPromoteTarget(null)}>
-                <DialogContent className="sm:max-w-md border-t-4 border-t-purple-600">
+                <DialogContent className="sm:max-w-md border-t-4 border-t-purple-600" onOpenAutoFocus={(e) => e.preventDefault()}>
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-xl font-black text-slate-800">
                             <ShieldAlert className="h-6 w-6 text-purple-600" /> Confirmar Promoção
@@ -329,7 +329,7 @@ export default function AdminAgentsPage() {
 
             {/* Modal de Confirmação de Rebaixamento */}
             <Dialog open={!!demoteTarget} onOpenChange={(open) => !open && setDemoteTarget(null)}>
-                <DialogContent>
+                <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-red-600">
                             <ShieldAlert className="h-5 w-5" /> Remover Permissão

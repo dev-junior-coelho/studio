@@ -57,7 +57,7 @@ export default function AdminLayout({
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="p-0 w-64 border-none shadow-2xl">
+                <SheetContent side="left" className="p-0 w-64 border-none shadow-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
                   <SidebarContent user={user} logout={logout} isMobile onLinkClick={() => setIsMenuOpen(false)} />
                 </SheetContent>
               </Sheet>

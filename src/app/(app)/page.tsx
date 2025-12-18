@@ -607,7 +607,7 @@ export default function ComparadorOfertaPage() {
 
         {/* Modal de Contrato */}
         <Dialog open={showContractModal} onOpenChange={setShowContractModal}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md" onOpenAutoFocus={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>Finalizar Venda</DialogTitle>
               <DialogDescription>
@@ -644,7 +644,7 @@ export default function ComparadorOfertaPage() {
 
         {/* Modal de Instruções de Ativação */}
         <Dialog open={showActivationInfo} onOpenChange={setShowActivationInfo}>
-          <DialogContent className="sm:max-w-lg border-2 border-emerald-500">
+          <DialogContent className="sm:max-w-lg border-2 border-emerald-500" onOpenAutoFocus={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-emerald-600 text-xl font-black">
                 <Check className="h-6 w-6" /> VENDA FINALIZADA COM SUCESSO!

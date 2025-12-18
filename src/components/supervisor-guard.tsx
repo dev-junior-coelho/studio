@@ -65,6 +65,7 @@ export function SupervisorGuard({ children }: { children: React.ReactNode }) {
                     className="sm:max-w-md border-t-8 border-t-primary shadow-2xl p-0 overflow-hidden"
                     onPointerDownOutside={(e) => e.preventDefault()}
                     onEscapeKeyDown={(e) => e.preventDefault()}
+                    onOpenAutoFocus={(e) => e.preventDefault()}
                 >
                     <div className="bg-gradient-to-b from-primary/5 to-transparent p-6 pt-8 text-center">
                         <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">

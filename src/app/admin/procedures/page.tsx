@@ -70,7 +70,7 @@ function ProcedureForm({ procedure, onSave, onDone }: { procedure?: Procedimento
       </div>
       <div className="space-y-2">
         <Label htmlFor="categoria">Categoria</Label>
-        <Select name="categoria" value={formData.categoria} onValueChange={(value: ProcedureCategory) => setFormData(p => ({...p, categoria: value}))}>
+        <Select name="categoria" value={formData.categoria} onValueChange={(value: ProcedureCategory) => setFormData(p => ({ ...p, categoria: value }))}>
           <SelectTrigger id="categoria">
             <SelectValue placeholder="Selecione a categoria" />
           </SelectTrigger>
@@ -81,11 +81,11 @@ function ProcedureForm({ procedure, onSave, onDone }: { procedure?: Procedimento
       </div>
       <div className="space-y-2">
         <Label htmlFor="tags">Tags (separadas por vírgula)</Label>
-        <Input id="tags" name="tags" value={Array.isArray(formData.tags) ? formData.tags.join(', ') : ''} onChange={(e) => setFormData(p => ({...p, tags: e.target.value.split(',').map(b => b.trim())}))} />
+        <Input id="tags" name="tags" value={Array.isArray(formData.tags) ? formData.tags.join(', ') : ''} onChange={(e) => setFormData(p => ({ ...p, tags: e.target.value.split(',').map(b => b.trim()) }))} />
       </div>
       <div className="space-y-2">
         <Label htmlFor="conteudo">Conteúdo (Passo-a-passo)</Label>
-        <Textarea id="conteudo" name="conteudo" value={formData.conteudo} onChange={handleChange} required rows={6}/>
+        <Textarea id="conteudo" name="conteudo" value={formData.conteudo} onChange={handleChange} required rows={6} />
       </div>
       <DialogFooter>
         <DialogClose asChild>
@@ -108,7 +108,7 @@ export default function AdminProceduresPage() {
       setProcedures(procedures.map(p => p.id === procedure.id ? procedure : p));
       toast({ title: "Procedimento atualizado!", description: `"${procedure.titulo}" foi atualizado.` });
     } else {
-      const newProcedure = { ...procedure, id: `proc${Date.now()}`};
+      const newProcedure = { ...procedure, id: `proc${Date.now()}` };
       setProcedures([...procedures, newProcedure]);
       toast({ title: "Procedimento criado!", description: `"${procedure.titulo}" foi adicionado.` });
     }
@@ -119,7 +119,7 @@ export default function AdminProceduresPage() {
     setProcedures(procedures.filter(p => p.id !== procedureId));
     toast({ title: "Procedimento removido!", variant: "destructive" });
   };
-  
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -133,7 +133,7 @@ export default function AdminProceduresPage() {
               <PlusCircle className="mr-2 h-4 w-4" /> Novo Procedimento
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>{editingProcedure ? "Editar Procedimento" : "Novo Procedimento"}</DialogTitle>
             </DialogHeader>
@@ -157,16 +157,16 @@ export default function AdminProceduresPage() {
                 <TableCell className="font-medium">{procedure.titulo}</TableCell>
                 <TableCell>{procedure.categoria}</TableCell>
                 <TableCell className="text-right space-x-2">
-                  <Button variant="outline" size="icon" onClick={() => { setEditingProcedure(procedure); setFormOpen(true);}}>
+                  <Button variant="outline" size="icon" onClick={() => { setEditingProcedure(procedure); setFormOpen(true); }}>
                     <Edit className="h-4 w-4" />
                   </Button>
-                   <AlertDialog>
+                  <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive" size="icon">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
                         <AlertDialogDescription>
