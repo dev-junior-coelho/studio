@@ -66,6 +66,7 @@ export default function ComparadorOfertaPage() {
 
   // === Modal and Contract State ===
   const [showContractModal, setShowContractModal] = useState(false);
+  const [showActivationInfo, setShowActivationInfo] = useState(false);
   const [contractNumber, setContractNumber] = useState('');
   const [contractError, setContractError] = useState('');
 
@@ -103,9 +104,11 @@ export default function ComparadorOfertaPage() {
 
   const confirmAcceptOffer = async () => {
     if (!validateContract()) return;
-    await saveOfferToFirebase('Aceitou', contractNumber);
-    setShowContractModal(false);
-    setContractNumber('');
+    const success = await saveOfferToFirebase('Aceitou', contractNumber);
+    if (success) {
+      setShowContractModal(false);
+      setShowActivationInfo(true);
+    }
   };
 
   const saveOfferToFirebase = async (status: 'Aceitou' | 'Recusou', contrato: string | null) => {
@@ -115,6 +118,7 @@ export default function ComparadorOfertaPage() {
       const offerData = {
         usuarioId: user.uid,
         email: user.email,
+        nome: user.nome || '',
         zLogin: user.email?.split('@')[0].replace('z', '') || 'Desconhecido',
         produtoIds: products.map(p => p.id),
         produtos: products,
@@ -126,7 +130,7 @@ export default function ComparadorOfertaPage() {
         debitoEmConta,
         descontoDCC,
       };
-      const collectionPath = `users/${user.uid}/ofertas_salvas`;
+      const collectionPath = `usuarios/${user.uid}/ofertas_salvas`;
       await addDoc(collection(firestore, collectionPath), offerData);
 
       clearOffer();
@@ -136,6 +140,8 @@ export default function ComparadorOfertaPage() {
         variant: 'default',
         ...(status !== 'Aceitou' && { className: 'bg-blue-50 border-blue-200 text-blue-800' })
       });
+      setContractNumber('');
+      return true;
     } catch (error) {
       console.error("Erro ao salvar oferta:", error);
       toast({
@@ -143,6 +149,7 @@ export default function ComparadorOfertaPage() {
         description: "Não foi possível salvar a oferta. Tente novamente.",
         variant: "destructive",
       });
+      return false;
     } finally {
       setIsSaving(false);
     }
@@ -629,6 +636,29 @@ export default function ComparadorOfertaPage() {
               <Button type="submit" onClick={confirmAcceptOffer} disabled={isSaving}>
                 {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Confirmar Venda
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Modal de Instruções de Ativação */}
+        <Dialog open={showActivationInfo} onOpenChange={setShowActivationInfo}>
+          <DialogContent className="sm:max-w-lg border-2 border-emerald-500">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-emerald-600 text-xl font-black">
+                <Check className="h-6 w-6" /> VENDA FINALIZADA COM SUCESSO!
+              </DialogTitle>
+              <DialogDescription className="text-slate-900 font-bold text-base bg-slate-50 p-4 rounded-lg border border-slate-200 mt-4 leading-relaxed">
+                Repasse as seguintes orientações ao cliente:
+                <br /><br />
+                "Senhor, assim que o seu novo chip chegar, é necessário entrar em contato com o número <span className="text-emerald-700">0800 723 6626</span> para realizar a ativação. Este número agora também será sua nova central de atendimento, mais exclusiva e rápida para o seu perfil, que agora é <span className="text-emerald-700 font-black">Claro Multi</span>.
+                <br /><br />
+                Após ativar o chip, recomendamos que teste a internet do celular para garantir que esteja tudo ok. Esse teste pode ser feito em sites como o YouTube, por exemplo; de 1 a 2 minutos de navegação já são suficientes para garantir o pleno funcionamento dos dados móveis com qualidade."
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button className="w-full bg-emerald-600 hover:bg-emerald-700 h-12 text-lg font-bold" onClick={() => setShowActivationInfo(false)}>
+                Entendido, Finalizar Atendimento
               </Button>
             </DialogFooter>
           </DialogContent>

@@ -28,28 +28,52 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Periodic lastSeen update for active monitoring
+  useEffect(() => {
+    if (!appUser || appUser.role !== 'agente' || !firestore) return;
+
+    const updateLastSeen = async () => {
+      try {
+        await setDoc(doc(firestore, "usuarios", appUser.uid), {
+          lastSeen: new Date().toISOString()
+        }, { merge: true });
+      } catch (err) {
+        console.error("Error updating heart-beat:", err);
+      }
+    };
+
+    updateLastSeen(); // Initial update
+    const interval = setInterval(updateLastSeen, 5 * 60 * 1000); // Every 5 mins
+    return () => clearInterval(interval);
+  }, [appUser?.uid, appUser?.role, firestore]);
+
   useEffect(() => {
     const syncUser = async () => {
       if (!firebaseLoading) {
         if (firebaseUser && firestore) {
           const userDocRef = doc(firestore, "usuarios", firebaseUser.uid);
           const userDoc = await getDoc(userDocRef);
+
           if (userDoc.exists()) {
-            setAppUser(userDoc.data() as AppUsuario);
-          } else {
-            // Fallback para login antigo anonimo (se ainda existir sessão)
-            const storedRole = localStorage.getItem('userRole') as 'agente' | 'supervisor';
-            if (storedRole) {
-              const newUser: AppUsuario = {
-                uid: firebaseUser.uid,
-                email: firebaseUser.email || `${storedRole}@claro.temp`,
-                role: storedRole,
-              };
-              await setDoc(userDocRef, newUser);
-              setAppUser(newUser);
-            } else {
+            const userData = userDoc.data() as AppUsuario;
+
+            // SEGURANÇA: Se for agente e não tiver Z-Login, força o logout automático
+            if (userData.role === 'agente' && !userData.zLogin) {
+              console.warn("Usuário sem Z-Login detectado. Forçando logout por segurança.");
+              await auth?.signOut();
               setAppUser(null);
+            } else {
+              setAppUser(userData);
+              // Update lastSeen on sync if agent
+              if (userData.role === 'agente') {
+                await setDoc(userDocRef, { lastSeen: new Date().toISOString() }, { merge: true });
+              }
             }
+          } else {
+            // Se o usuário está no Auth mas não no Firestore com Z-Login, desloga
+            console.warn("Perfil não encontrado no Firestore. Forçando logout.");
+            await auth?.signOut();
+            setAppUser(null);
           }
         } else {
           setAppUser(null);
@@ -59,7 +83,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     };
 
     syncUser();
-  }, [firebaseUser, firebaseLoading, firestore]);
+  }, [firebaseUser, firebaseLoading, firestore, auth]);
 
   useEffect(() => {
     if (loading) return;
@@ -109,13 +133,14 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
           role: role,
           nome: nome || '', // Nome completo do agente
           zLogin: zLogin, // Número Z sem o prefixo
+          lastSeen: new Date().toISOString()
         };
 
         await setDoc(doc(firestore, "usuarios", user.uid), newUser);
         setAppUser(newUser);
       } else {
         userCredential = await signInWithEmailAndPassword(auth, email, firebasePassword);
-        // O useEffect syncUser vai buscar os dados do Firestore
+        // lastSeen will be updated by the syncUser useEffect
       }
 
       router.push('/');
@@ -139,6 +164,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
         uid: user.uid,
         email: `${role}@anon.com`,
         role: role,
+        lastSeen: new Date().toISOString()
       };
       await setDoc(doc(firestore, "usuarios", user.uid), newUser);
       setAppUser(newUser);
@@ -151,7 +177,15 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    if (!auth) return;
+    if (!auth || !firestore || !appUser) return;
+
+    // Set lastSeen to null/old to signal offline
+    try {
+      await setDoc(doc(firestore, "usuarios", appUser.uid), {
+        lastSeen: null
+      }, { merge: true });
+    } catch (e) { }
+
     await auth.signOut();
     setAppUser(null);
     localStorage.removeItem('userRole');

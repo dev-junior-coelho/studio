@@ -37,48 +37,61 @@ const OfferContext = createContext<OfferContextType | undefined>(undefined);
 
 export function OfferProvider({ children }: { children: ReactNode }) {
   // Load initial state from localStorage if available
-  const [products, setProducts] = useState<Produto[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('products');
-      return saved ? JSON.parse(saved) : [];
-    }
-    return [];
-  });
+  const [products, setProducts] = useState<Produto[]>([]);
+  const [gastos, setGastos] = useState<Gastos>(initialGastos);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedTV, setSelectedTV] = useState<Produto | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  const [gastos, setGastos] = useState<Gastos>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('gastos');
-      return saved ? JSON.parse(saved) : initialGastos;
-    }
-    return initialGastos;
-  });
-
-  const [selectedCity, setSelectedCity] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('selectedCity');
-    }
-    return null;
-  });
-
-  const [selectedTV, setSelectedTV] = useState<Produto | null>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('selectedTV');
-      return saved ? JSON.parse(saved) : null;
-    }
-    return null;
-  });
-
-  // Save to localStorage whenever state changes
+  // Load from localStorage on mount
   React.useEffect(() => {
+    const savedProducts = localStorage.getItem('products');
+    if (savedProducts) {
+      try {
+        setProducts(JSON.parse(savedProducts));
+      } catch (e) {
+        console.error("Error parsing products from localStorage", e);
+      }
+    }
+
+    const savedGastos = localStorage.getItem('gastos');
+    if (savedGastos) {
+      try {
+        setGastos(JSON.parse(savedGastos));
+      } catch (e) {
+        console.error("Error parsing gastos from localStorage", e);
+      }
+    }
+
+    const savedCity = localStorage.getItem('selectedCity');
+    if (savedCity) setSelectedCity(savedCity);
+
+    const savedTV = localStorage.getItem('selectedTV');
+    if (savedTV) {
+      try {
+        setSelectedTV(JSON.parse(savedTV));
+      } catch (e) {
+        console.error("Error parsing selectedTV from localStorage", e);
+      }
+    }
+
+    setIsHydrated(true);
+  }, []);
+
+  // Save to localStorage whenever state changes, but ONLY AFTER hydration
+  React.useEffect(() => {
+    if (!isHydrated) return;
+
     localStorage.setItem('products', JSON.stringify(products));
     localStorage.setItem('gastos', JSON.stringify(gastos));
+
     if (selectedCity) localStorage.setItem('selectedCity', selectedCity);
     else localStorage.removeItem('selectedCity');
 
     if (selectedTV) localStorage.setItem('selectedTV', JSON.stringify(selectedTV));
     else localStorage.removeItem('selectedTV');
 
-  }, [products, gastos, selectedCity, selectedTV]);
+  }, [products, gastos, selectedCity, selectedTV, isHydrated]);
 
   const { toast } = useToast();
 

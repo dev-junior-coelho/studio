@@ -70,28 +70,28 @@ service cloud.firestore {
      * @principle Enforces user-ownership for profile data; restricts listing and deletion.
      */
     match /usuarios/{usuarioId} {
-      allow get: if isSignedIn() && isOwner(usuarioId);
-      allow list: if false;
+      allow get: if isSignedIn() && (isOwner(usuarioId) || isSupervisor());
+      allow list: if isSignedIn() && isSupervisor();
       allow create: if isSignedIn() && isOwner(usuarioId);
       allow update: if isSignedIn() && isOwner(usuarioId);
       allow delete: if false;
     }
 
     /**
-     * @description Allows the owner to manage their saved offers.
-     * @path /users/{userId}/ofertas_salvas/{ofertaSalvaId}
-     * @allow get, list: The user can retrieve and list their own saved offers.
-     * @allow create: The user can create new saved offers under their user ID.
-     * @allow update, delete: The user can update or delete their own saved offers.
-     * @deny create: The user cannot create a saved offer under another user's ID.
-     * @deny update, delete: The user cannot update or delete offers if the document doesn't exist.
-     * @principle Enforces strict user-ownership for saved offers.
+     * @description Allows the owner or a supervisor to manage saved offers.
+     * @path /usuarios/{userId}/ofertas_salvas/{ofertaSalvaId}
      */
-    match /users/{userId}/ofertas_salvas/{ofertaSalvaId} {
-      allow get, list: if isSignedIn() && isOwner(userId);
-      allow create: if isSignedIn() && request.resource.data.usuarioId == request.auth.uid;
-      allow update: if isSignedIn() && isOwner(userId) && resource != null;
-      allow delete: if isSignedIn() && isOwner(userId) && resource != null;
+    match /usuarios/{userId}/ofertas_salvas/{ofertaSalvaId} {
+      allow read: if isSignedIn() && (isOwner(userId) || isSupervisor());
+      allow create: if isSignedIn() && (isOwner(userId) || isSupervisor());
+      allow update, delete: if isSignedIn() && (isOwner(userId) || isSupervisor());
+    }
+
+    /**
+     * @description Collection Group helper for supervisors to see everything.
+     */
+    match /{path=**}/ofertas_salvas/{ofertaSalvaId} {
+      allow read: if isSignedIn() && isSupervisor();
     }
   }
 
@@ -102,5 +102,11 @@ service cloud.firestore {
 
   function isOwner(userId) {
     return request.auth.uid == userId;
+  }
+
+  function isSupervisor() {
+    return isSignedIn() && 
+           exists(/databases/$(database)/documents/usuarios/$(request.auth.uid)) &&
+           get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == 'supervisor';
   }
 }

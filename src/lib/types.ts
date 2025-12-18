@@ -59,6 +59,7 @@ export interface Usuario {
   role: UserRole;
   nome?: string; // Nome completo do agente
   zLogin?: string; // Número do Z (sem o prefixo)
+  lastSeen?: string | null; // Data da última atividade
 }
 
 export interface Regiao {
