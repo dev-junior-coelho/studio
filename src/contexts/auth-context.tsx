@@ -11,7 +11,7 @@ interface AuthContextType {
   user: AppUsuario | null;
   loading: boolean;
   login: (role: 'agente' | 'supervisor') => void; // Mantendo para compatibilidade se precisar
-  loginWithZ: (zLogin: string, pin: string, mode: 'login' | 'register', role?: 'agente' | 'supervisor', nome?: string) => Promise<void>;
+  loginWithZ: (zLogin: string, pin: string, mode: 'login' | 'register', role?: 'agente' | 'supervisor', nome?: string, supervisor?: string) => Promise<void>;
   logout: () => void;
 }
 

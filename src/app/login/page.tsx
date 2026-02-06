@@ -61,10 +61,7 @@ export default function LoginPage() {
         setError("Informe seu nome completo (mínimo 3 caracteres).");
         return;
       }
-      if (!supervisor) {
-        setError("Selecione seu supervisor responsável.");
-        return;
-      }
+      // Supervisor não é mais obrigatório
     }
 
     try {
@@ -216,10 +213,10 @@ export default function LoginPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Seu Supervisor Responsável</Label>
+                    <Label className="text-sm font-medium">Seu Supervisor Responsável (Opcional)</Label>
                     <Select value={supervisor} onValueChange={(v) => { setSupervisor(v); setError(null); }}>
                       <SelectTrigger className="h-12">
-                        <SelectValue placeholder="Selecione seu supervisor" />
+                        <SelectValue placeholder="Selecione seu supervisor (opcional)" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="GILVAN">GILVAN</SelectItem>
@@ -228,7 +225,7 @@ export default function LoginPage() {
                       </SelectContent>
                     </Select>
                     <p className="text-[10px] text-muted-foreground ml-1">
-                      Obrigatório para acompanhamento de vendas.
+                      Pode ser definido posteriormente pelo administrador.
                     </p>
                   </div>
                 </>
