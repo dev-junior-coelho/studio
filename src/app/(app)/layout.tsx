@@ -7,6 +7,8 @@ import { useEffect } from "react";
 
 import { SupervisorGuard } from "@/components/supervisor-guard";
 
+import { DesktopNavbar } from "@/components/desktop-navbar";
+
 export default function AppLayout({
   children,
 }: {
@@ -31,12 +33,26 @@ export default function AppLayout({
 
   return (
     <SupervisorGuard>
-      <div className="relative mx-auto flex w-full max-w-lg flex-col bg-background min-h-screen">
-        <OfferSummaryBar />
-        <main className="flex-1 pb-20">
-          {children}
-        </main>
-        <BottomNavigation />
+      <div className="flex w-full min-h-screen bg-background flex-col">
+        {/* Navbar for Desktop (Sticky Top) */}
+        <DesktopNavbar />
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col relative w-full min-w-0">
+          {/* Mobile Header (Hidden on Desktop) */}
+          <div className="lg:hidden">
+            <OfferSummaryBar />
+          </div>
+
+          <main className="flex-1 pb-20 lg:pb-8 lg:px-0">
+            {children}
+          </main>
+
+          {/* Mobile Bottom Nav */}
+          <div className="lg:hidden">
+            <BottomNavigation />
+          </div>
+        </div>
       </div>
     </SupervisorGuard>
   );
