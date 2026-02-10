@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   TrendingDown,
   TrendingUp,
@@ -25,8 +26,10 @@ import {
   Wifi,
   Phone,
   Smartphone,
-  Plus
+  Plus,
+  LayoutGrid
 } from 'lucide-react';
+import { BuilderView } from "@/components/app/builder-view";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/contexts/auth-context';
 import { useFirebase } from '@/firebase/provider';
@@ -34,6 +37,7 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { DependentesDescontoInfo } from '@/components/dependentes-desconto-info';
 import { useToast } from '@/hooks/use-toast';
 import type { ProductType, Produto } from '@/lib/types';
+import { NovaOfertaCard } from '@/components/nova-oferta-card';
 import { cn } from '@/lib/utils';
 
 type Gastos = {
@@ -292,336 +296,249 @@ export default function ComparadorOfertaPage() {
 
   return (
     <div className="min-h-screen bg-transparent pb-4">
-      <main className="max-w-7xl mx-auto px-4 space-y-6 pt-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-          {/* Coluna Esquerda: Gastos Atuais */}
-          <div className="space-y-6">
-            <Card className="border-t-4 border-t-gray-400 shadow-md">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <Wallet className="h-5 w-5 text-gray-500" />
-                  <CardTitle className="text-xl">Gastos Atuais</CardTitle>
-                </div>
-                <CardDescription>Quanto o cliente paga hoje no plano atual.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {Object.keys(gastos).map((key) => {
-                    const labelMap: Record<string, string> = {
-                      'tv': 'TV',
-                      'internet': 'Internet',
-                      'fixo': 'Fixo',
-                      'movel': 'Móvel',
-                      'outros': 'A la carte',
-                      'wifiMesh': 'WiFi Mesh'
-                    };
-                    const label = labelMap[key] || key;
-                    const icon = getIconForType(key);
-
-                    return (
-                      <div key={key} className="space-y-1.5 group">
-                        <Label htmlFor={key} className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
-                          {icon} {label}
-                        </Label>
-                        <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
-                          <Input
-                            type="number"
-                            id={key}
-                            name={key}
-                            value={gastos[key as keyof Gastos] === 0 ? '' : gastos[key as keyof Gastos]}
-                            onChange={handleGastoChange}
-                            placeholder="0,00"
-                            className="pl-8 text-right font-medium transition-all focus:border-primary"
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-
-              {/* Seção Calculadora Integration */}
-              <div className="border-t bg-gray-50/50 p-5 space-y-4">
-                <div className="flex items-center gap-2 text-primary font-medium">
-                  <Calculator className="h-4 w-4" />
-                  <span className="text-sm">Manter valor atual na oferta</span>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex flex-wrap gap-2">
-                    {['TV', 'Internet', 'Fixo', 'Mesh', 'AlaCarte'].map((tipo) => (
-                      <button
-                        key={tipo}
-                        onClick={() => handleSelecionarTipo(tipo as any)}
-                        className={cn(
-                          "px-3 py-1.5 rounded-full text-xs font-medium border transition-all flex items-center gap-1",
-                          calculadoraTipo === tipo
-                            ? 'border-primary bg-primary text-primary-foreground shadow-sm'
-                            : 'border-gray-200 bg-white text-gray-600 hover:border-primary/50'
-                        )}
-                      >
-                        {getIconForType(tipo)}
-                        {tipo === 'Mesh' ? 'WiFi Mesh' : (tipo === 'AlaCarte' ? 'A la carte' : tipo)}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="flex gap-2 items-end">
-                    <div className="flex-1 space-y-1.5">
-                      <Label className="text-xs text-muted-foreground">Valor a manter (R$)</Label>
-                      <Input
-                        type="number"
-                        value={calculadoraValor}
-                        onChange={(e) => setCalculadoraValor(e.target.value)}
-                        placeholder="0,00"
-                        className="h-9"
-                      />
-                    </div>
-                    <Button
-                      onClick={handleAdicionarCalculadora}
-                      className="h-9 px-4 shrink-0 bg-primary hover:bg-primary/90"
-                      disabled={!calculadoraValor || Number(calculadoraValor) <= 0 || !calculadoraTipo}
-                      size="sm"
-                    >
-                      <Plus className="h-3.5 w-3.5 mr-1.5" /> Adicionar
-                    </Button>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">
-                    *Isso adiciona um item personalizado na lista de produtos da oferta.
-                  </p>
-                </div>
-              </div>
-            </Card>
+      <main className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 space-y-6 pt-6">
+        {/* Header da Dashboard */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
+              {user && 'nome' in user ? `Olá, ${(user as any).nome.split(' ')[0]}` : 'Olá, Agente'}
+              <span className="text-xl">👋</span>
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Vamos superar as metas hoje?
+            </p>
           </div>
-
-          {/* Coluna Direita: Nova Oferta */}
-          <div className="space-y-6">
-            <Card className="border-t-4 border-t-primary shadow-md h-full flex flex-col">
-              <CardHeader className="pb-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="flex items-center gap-2">
-                    <ShoppingCart className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-xl">Nova Oferta Claro</CardTitle>
-                  </div>
-
-                  <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border">
-                    <Switch
-                      id="debitoConta"
-                      checked={debitoEmConta}
-                      onCheckedChange={setDebitoEmConta}
-                      className="data-[state=checked]:bg-green-600"
-                    />
-                    <Label htmlFor="debitoConta" className="text-xs font-medium cursor-pointer select-none grid">
-                      <span>Débito em Conta</span>
-                      <span className="text-[10px] text-muted-foreground">+ Fatura Digital</span>
-                    </Label>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="flex-1 min-h-[300px] flex flex-col">
-                {products.length === 0 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center text-muted-foreground border-2 border-dashed rounded-lg m-2">
-                    <ShoppingCart className="h-10 w-10 mb-2 opacity-20" />
-                    <p>Nenhum produto selecionado.</p>
-                    <p className="text-sm">Utilize o Montador para adicionar itens.</p>
-                  </div>
-                ) : (
-                  <ScrollArea className="flex-1 h-[300px] pr-4 -mr-4">
-                    <ul className="space-y-3 pb-4">
-                      {products.map(product => (
-                        <Fragment key={product.id}>
-                          <li className="group bg-white border rounded-lg p-3 hover:shadow-sm transition-shadow relative">
-                            <div className="flex justify-between items-start gap-4">
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <div className={cn("p-1.5 rounded-md",
-                                    product.tipo === 'Movel' ? 'bg-purple-100 text-purple-700' :
-                                      product.tipo === 'Banda Larga' ? 'bg-blue-100 text-blue-700' :
-                                        'bg-gray-100 text-gray-700'
-                                  )}>
-                                    {getIconForType(product.tipo)}
-                                  </div>
-                                  <span className="font-semibold text-sm">{product.nome}</span>
-                                </div>
-                                <div className="text-xs text-muted-foreground pl-9">
-                                  {product.fidelidade && product.fidelidade !== 'Sem fidelidade' && (
-                                    <span className="inline-block mr-2 text-orange-600">• {product.fidelidade}</span>
-                                  )}
-                                  {product.tipo}
-                                </div>
-                              </div>
-
-                              <div className="text-right">
-                                <span className="font-bold text-primary block">
-                                  {formatCurrency(product.precoMensal)}
-                                </span>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-6 w-6 mt-1 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity absolute top-2 right-2"
-                                  onClick={() => removeProduct(product.id)}
-                                >
-                                  <X className="h-3.5 w-3.5" />
-                                </Button>
-                              </div>
-                            </div>
-                          </li>
-                        </Fragment>
-                      ))}
-                    </ul>
-                  </ScrollArea>
-                )}
-
-                {/* Desconto DCC Info */}
-                {debitoEmConta && descontoDCC > 0 && (
-                  <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-3 flex items-start gap-3 animate-in fade-in slide-in-from-bottom-2">
-                    <div className="bg-green-200 p-1.5 rounded-full mt-0.5">
-                      <CreditCard className="h-4 w-4 text-green-700" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-green-800">Desconto aplicado!</p>
-                      <p className="text-xs text-green-700">
-                        O cliente economiza <span className="font-bold">{formatCurrency(descontoDCC)}</span> mensais optando por Débito em Conta.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <DependentesDescontoInfo />
-              </CardContent>
-
-              <CardFooter className="bg-gray-50 border-t p-4 rounded-b-lg flex flex-col gap-2">
-                {debitoEmConta && descontoDCC > 0 && (
-                  <div className="flex justify-between items-center w-full text-sm text-muted-foreground">
-                    <span>Valor sem desconto</span>
-                    <span className="line-through">{formatCurrency(totalMensal)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between items-end w-full">
-                  <span className="font-semibold text-gray-700">Total Mensal</span>
-                  <div className="text-right leading-none">
-                    <span className="text-2xl font-bold text-primary">{formatCurrency(totalComDesconto)}</span>
-                    <p className="text-[10px] text-muted-foreground mt-1">valor final com descontos</p>
-                  </div>
-                </div>
-              </CardFooter>
-            </Card>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="px-3 py-1">
+              <Check className="mr-1 h-3 w-3" />
+              Sistema Ativo
+            </Badge>
           </div>
         </div>
 
-        {/* Argumento de Venda - Full Width */}
-        {products.length > 0 && (
-          <Card className={cn(
-            "border overflow-hidden shadow-lg transition-all",
-            economiaMensal >= 0 ? "border-green-500 shadow-green-100" : "border-red-500 shadow-red-100"
-          )}>
-            <div className={cn(
-              "p-1 w-full",
-              economiaMensal >= 0 ? "bg-green-500" : "bg-red-500"
-            )} />
+        {/* Layout Principal Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
 
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Check className="h-6 w-6 text-primary" />
-                Argumento de Venda
-              </CardTitle>
-            </CardHeader>
+          {/* Coluna Esquerda: Principal (Gastos + Builder + Argumento) */}
+          <div className="col-span-12 xl:col-span-9 space-y-6">
 
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Summary Block */}
-                <div className="bg-gray-50 rounded-xl p-6 text-center flex flex-col items-center justify-center border">
-                  {economiaMensal >= 0 ? (
-                    <>
-                      <div className="bg-green-100 p-3 rounded-full mb-3">
-                        <TrendingDown className="h-8 w-8 text-green-600" />
+            {/* Desktop Top Row: Gastos + Carrinho (Side by Side) */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              {/* 1. Gastos Atuais */}
+              <Card className="shadow-sm border-slate-200 h-full flex flex-col lg:col-span-3">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Wallet className="h-5 w-5 text-gray-500" />
+                    <CardTitle className="text-xl">Gastos Atuais</CardTitle>
+                  </div>
+                  <CardDescription>Quanto o cliente paga hoje no plano atual.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6 flex-1">
+                  <div className="flex flex-col gap-4">
+                    {Object.keys(gastos).map((key) => {
+                      const labelMap: Record<string, string> = {
+                        'tv': 'TV',
+                        'internet': 'Internet',
+                        'fixo': 'Fixo',
+                        'movel': 'Móvel',
+                        'outros': 'A la carte',
+                        'wifiMesh': 'WiFi Mesh'
+                      };
+                      const label = labelMap[key] || key;
+                      const icon = getIconForType(key);
+
+                      return (
+                        <div key={key} className="space-y-1.5 group">
+                          <Label htmlFor={key} className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
+                            {icon} {label}
+                          </Label>
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
+                            <Input
+                              type="number"
+                              id={key}
+                              name={key}
+                              value={gastos[key as keyof Gastos] === 0 ? '' : gastos[key as keyof Gastos]}
+                              onChange={handleGastoChange}
+                              placeholder="0,00"
+                              className="pl-8 text-right font-medium transition-all focus:border-primary"
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+
+                {/* Seção Calculadora Integration */}
+                <div className="border-t bg-gray-50/50 p-5 space-y-4 rounded-b-lg">
+                  <div className="flex items-center gap-2 text-primary font-medium">
+                    <Calculator className="h-4 w-4" />
+                    <span className="text-sm">Manter valor atual na oferta</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      {['TV', 'Internet', 'Fixo', 'Mesh', 'AlaCarte'].map((tipo) => (
+                        <button
+                          key={tipo}
+                          onClick={() => handleSelecionarTipo(tipo as any)}
+                          className={cn(
+                            "px-3 py-1.5 rounded-full text-xs font-medium border transition-all flex items-center gap-1",
+                            calculadoraTipo === tipo
+                              ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                              : 'border-gray-200 bg-white text-gray-600 hover:border-primary/50'
+                          )}
+                        >
+                          {getIconForType(tipo)}
+                          {tipo === 'Mesh' ? 'WiFi Mesh' : (tipo === 'AlaCarte' ? 'A la carte' : tipo)}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-2 items-end">
+                      <div className="flex-1 space-y-1.5">
+                        <Label className="text-xs text-muted-foreground">Valor a manter (R$)</Label>
+                        <Input
+                          type="number"
+                          value={calculadoraValor}
+                          onChange={(e) => setCalculadoraValor(e.target.value)}
+                          placeholder="0,00"
+                          className="h-9"
+                        />
                       </div>
-                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Economia Mensal para o Cliente</p>
-                      <p className="text-3xl font-bold text-green-600 my-2">{formatCurrency(economiaMensal)}</p>
-                      <p className="text-sm text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200 font-semibold">
-                        Economia Anual: {formatCurrency(economiaMensal * 12)}
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <div className="bg-red-100 p-3 rounded-full mb-3">
-                        <TrendingUp className="h-8 w-8 text-red-600" />
-                      </div>
-                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Investimento Mensal Adicional</p>
-                      <p className="text-3xl font-bold text-red-600 my-2">{formatCurrency(Math.abs(economiaMensal))}</p>
-                      <p className="text-xs text-muted-foreground italic max-w-[240px]">
-                        "Por apenas {formatCurrency(Math.abs(economiaMensal))} mensais a mais, o cliente leva todos estes benefícios."
-                      </p>
-                    </>
-                  )}
+                      <Button
+                        onClick={handleAdicionarCalculadora}
+                        className="h-9 px-4 shrink-0 bg-primary hover:bg-primary/90"
+                        disabled={!calculadoraValor || Number(calculadoraValor) <= 0 || !calculadoraTipo}
+                        size="sm"
+                      >
+                        <Plus className="h-3.5 w-3.5 mr-1.5" /> Adicionar
+                      </Button>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      *Isso adiciona um item personalizado na lista de produtos.
+                    </p>
+                  </div>
                 </div>
+              </Card>
 
-                {/* Benefits List */}
-                <div className="md:col-span-2 space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+              {/* 2. Desktop Cart (Placed here to sit next to Expenses) */}
+              <div className="hidden lg:flex flex-col h-full lg:col-span-2">
+                <NovaOfertaCard
+                  products={products}
+                  debitoEmConta={debitoEmConta}
+                  setDebitoEmConta={setDebitoEmConta}
+                  descontoDCC={descontoDCC}
+                  totalMensal={totalMensal}
+                  totalComDesconto={totalComDesconto}
+                  removeProduct={removeProduct}
+                  handleRecuseOffer={handleRecuseOffer}
+                  handleAcceptOffer={handleAcceptOffer}
+                  isSaving={isSaving}
+                  formatCurrency={formatCurrency}
+                  getIconForType={getIconForType}
+                />
+              </div>
+            </div>
+
+            {/* 3. Builder View (Desktop Only) */}
+            <div className="hidden lg:block space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <LayoutGrid className="h-5 w-5 text-primary" />
+                  Catálogo de Produtos
+                </h2>
+              </div>
+              <BuilderView hideHeader className="bg-transparent" />
+            </div>
+
+          </div>
+
+          {/* Coluna Direita: Sidebar (Mobile: Cart + Argumento / Desktop: Argumento) */}
+          <div className="space-y-6 col-span-12 xl:col-span-3 xl:sticky xl:top-[6.5rem] max-h-[calc(100vh-7rem)] overflow-y-auto pb-4 pr-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 transition-colors">
+
+            {/* Mobile Cart (Hidden on Desktop) */}
+            <div className="lg:hidden">
+              <NovaOfertaCard
+                products={products}
+                debitoEmConta={debitoEmConta}
+                setDebitoEmConta={setDebitoEmConta}
+                descontoDCC={descontoDCC}
+                totalMensal={totalMensal}
+                totalComDesconto={totalComDesconto}
+                removeProduct={removeProduct}
+                handleRecuseOffer={handleRecuseOffer}
+                handleAcceptOffer={handleAcceptOffer}
+                isSaving={isSaving}
+                formatCurrency={formatCurrency}
+                getIconForType={getIconForType}
+              />
+            </div>
+
+            {/* CARD: Argumento de Venda (Full Benefits) */}
+            {products.length > 0 && (
+              <Card className={cn(
+                "shadow-sm shrink-0 border transition-all",
+                economiaMensal >= 0 ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"
+              )}>
+                <CardHeader className="pb-4 pt-6">
+                  <CardTitle className="text-xl font-bold uppercase tracking-wider flex items-center gap-3 text-muted-foreground">
+                    <Check className="h-6 w-6" /> Argumento Final
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pb-6">
+                  {/* Economy Highlight */}
+                  <div className="mb-6">
+                    <div className="flex items-baseline justify-between mb-3">
+                      <span className="font-semibold text-base text-muted-foreground">
+                        {economiaMensal >= 0 ? "Economia Mensal" : "Diferença Mensal"}
+                      </span>
+                      <span className={cn(
+                        "font-black text-4xl",
+                        economiaMensal >= 0 ? "text-green-600" : "text-red-600"
+                      )}>
+                        {formatCurrency(Math.abs(economiaMensal))}
+                      </span>
+                    </div>
+                    {economiaMensal >= 0 && (
+                      <div className="text-base bg-white/60 rounded-md px-4 py-3 text-green-700 border border-green-100 flex justify-between items-center shadow-sm">
+                        <span className="font-medium">Economia Anual</span>
+                        <strong className="text-xl">{formatCurrency(economiaMensal * 12)}</strong>
+                      </div>
+                    )}
+                  </div>
+
+                  <Separator className="my-6 bg-black/5" />
+
+                  {/* Benefits List (Detailed) */}
+                  <div className="space-y-6">
                     {Object.entries(beneficiosAgrupados).map(([tipo, beneficios]) => {
                       const beneficiosUnicos = [...new Set(beneficios)];
                       if (beneficiosUnicos.length === 0) return null;
-
                       return (
-                        <div key={tipo} className="space-y-3">
-                          <h4 className="font-bold flex items-center gap-2 text-primary border-b pb-1">
-                            {getIconForType(tipo)}
+                        <div key={tipo}>
+                          <h5 className="font-bold text-sm text-gray-500 uppercase mb-3 bg-white/50 p-2 rounded w-fit">
                             {tipo}
-                          </h4>
-                          <ul className="space-y-2">
+                          </h5>
+                          <ul className="space-y-3">
+                            {/* SHOW ALL BENEFITS - NO SLICE */}
                             {beneficiosUnicos.map((b, i) => (
-                              <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                                <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                              <li key={i} className="flex items-start gap-3 text-base text-gray-800 leading-relaxed">
+                                <Check className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                                 <span>{b}</span>
                               </li>
                             ))}
                           </ul>
                         </div>
-                      );
+                      )
                     })}
                   </div>
-
-                  {allFidelidade.length > 0 && (
-                    <div className="mt-4 pt-4 border-t flex flex-wrap gap-2 items-center">
-                      <span className="text-sm font-bold text-muted-foreground">Fidelidade:</span>
-                      {allFidelidade.map((fid, idx) => (
-                        <Badge key={idx} variant="outline" className="text-orange-600 border-orange-200 bg-orange-50">
-                          {fid}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-
-            <CardFooter className="bg-gray-50 p-6 flex flex-col sm:flex-row gap-4 justify-end border-t">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800"
-                onClick={handleRecuseOffer}
-                disabled={isSaving}
-              >
-                {isSaving ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <X className="mr-2 h-4 w-4" />}
-                Cliente Recusou
-              </Button>
-              <Button
-                size="lg"
-                className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-200"
-                onClick={handleAcceptOffer}
-                disabled={isSaving}
-              >
-                {isSaving ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Check className="mr-2 h-4 w-4" />}
-                Cliente Aceitou Oferta
-              </Button>
-            </CardFooter>
-          </Card>
-        )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
 
         {/* Modal de Contrato */}
         <Dialog open={showContractModal} onOpenChange={setShowContractModal}>
