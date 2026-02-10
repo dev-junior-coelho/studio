@@ -296,7 +296,7 @@ export default function ComparadorOfertaPage() {
 
   return (
     <div className="min-h-screen bg-transparent pb-4">
-      <main className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 space-y-6 pt-6">
+      <main className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 space-y-6 pt-6" style={{ maxWidth: '1920px', width: '100%' }}>
         {/* Header da Dashboard */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
           <div>
