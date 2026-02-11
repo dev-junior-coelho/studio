@@ -48,4 +48,6 @@ check-data.js
 
 # firebase
 firebase-debug.log
-firestore-debug.logservice-account.json
+firestore-debug.log
+service-account.json
+.firebase/

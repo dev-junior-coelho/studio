@@ -31,6 +31,9 @@ const typeDisplayNames: Record<ProductType, string> = {
     "Fixo": "Fixo",
     "Serviços Avançados": "Serviços Avançados",
     "Ponto Adicional": "Ponto Adicional",
+    "Opcional": "A La Carte",
+    "Serviços Avançados": "Serviços Avançados",
+    "Ponto Adicional": "Ponto Adicional",
     "Opcional": "A La Carte"
 };
 
@@ -52,6 +55,8 @@ function ProductCard({ product }: { product: Produto }) {
         'Fixo': 'fixo',
         'Opcional': 'fixo',
         'Ponto Adicional': 'tv',
+        'Dependente Móvel': 'movel',
+        'Serviços Avançados': 'banda-larga',
         'Dependente Móvel': 'movel',
         'Serviços Avançados': 'banda-larga'
     }
@@ -146,7 +151,17 @@ function ProductCard({ product }: { product: Produto }) {
                             <p className="text-sm font-medium">Benefícios:</p>
                             <ScrollArea className="max-h-36 mt-1 pr-2">
                                 <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
-                                    {product.beneficios.map((b, i) => <li key={i}>{b}</li>)}
+                                    {product.beneficios.map((b, i) => {
+                                        const parts = b.split(': ');
+                                        if (parts.length > 1 && parts[0].length < 60) {
+                                            return (
+                                                <li key={i}>
+                                                    <span className="font-bold text-gray-700">{parts[0]}:</span> {parts.slice(1).join(': ')}
+                                                </li>
+                                            );
+                                        }
+                                        return <li key={i}>{b}</li>;
+                                    })}
                                 </ul>
                             </ScrollArea>
                         </div>
@@ -241,11 +256,22 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
 
                     // Filtrar PA baseado nos tipos permitidos
                     filtered = filtered.filter(p => {
-                        // Verificar se o PA contém um dos tipos permitidos em seu nome
-                        if (tiposPermitidos.includes("boxCabo") && p.nome.includes("Box Cabo")) return true;
-                        if (tiposPermitidos.includes("boxStreaming") && p.nome.includes("Box Streaming")) return true;
-                        if (tiposPermitidos.includes("soundbox") && p.nome.includes("Soundbox")) return true;
-                        if (tiposPermitidos.includes("hd") && p.nome.includes("PA - HD")) return true;
+                        const nomePA = p.nome;
+
+                        // CABO 4K (Box Cabo)
+                        if (tiposPermitidos.includes("boxCabo") && nomePA.includes("4K") && nomePA.includes("Cabo")) return true;
+
+                        // STREAMING BOX
+                        if (tiposPermitidos.includes("boxStreaming") && nomePA.includes("Box") && nomePA.includes("Streaming")) return true;
+
+                        // SOUNDBOX CABO
+                        if (tiposPermitidos.includes("soundboxCabo") && nomePA.includes("Soundbox") && nomePA.includes("Cabo")) return true;
+
+                        // SOUNDBOX STREAMING
+                        if (tiposPermitidos.includes("soundboxStreaming") && nomePA.includes("Soundbox") && nomePA.includes("Streaming")) return true;
+
+                        // HD
+                        if (tiposPermitidos.includes("hd") && nomePA.includes("HD")) return true;
 
                         return false;
                     });
@@ -339,13 +365,21 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
         return grouped;
     }, [filteredAndSortedProducts]);
 
-    // Get types that have products to display
+    // Tipos que possuem produtos disponíveis no geral (para os botões de filtro)
+    const availableTypes = useMemo(() => {
+        if (!productsData) return [];
+        const types = new Set<ProductType>();
+        productsData.forEach(p => types.add(p.tipo));
+        return productTypes.filter(t => types.has(t));
+    }, [productsData]);
+
+    // Get types that have products to display (para renderização das seções)
     const typesWithProducts = useMemo(() => {
         if (selectedType === 'Todos') {
-            return productTypes.filter(type => groupedByType[type].length > 0);
+            return availableTypes; // Mostra todos os disponíveis
         }
-        return groupedByType[selectedType].length > 0 ? [selectedType] : [];
-    }, [selectedType, groupedByType]);
+        return [selectedType]; // Mostra apenas o selecionado
+    }, [selectedType, availableTypes]);
 
     return (
         <div className={cn("space-y-4", className)}>
@@ -422,7 +456,7 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                         Limpar Seleção ({selectedCity})
                     </Button>
 
-                    {/* Category Filter */}
+                    {/* Category Filter - Mostra apenas categorias com produtos */}
                     <div className="flex flex-wrap gap-2">
                         <Button
                             variant={selectedType === 'Todos' ? 'default' : 'outline'}
@@ -431,12 +465,13 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                         >
                             Todos
                         </Button>
-                        {productTypes.map(type => (
+                        {availableTypes.map((type) => (
                             <Button
                                 key={type}
                                 variant={selectedType === type ? 'default' : 'outline'}
                                 onClick={() => handleTypeChange(type)}
                                 size="sm"
+                                className={cn(selectedType === type && "font-bold")}
                             >
                                 {typeDisplayNames[type]}
                             </Button>

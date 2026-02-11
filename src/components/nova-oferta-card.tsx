@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ShoppingCart, X, CreditCard, Loader2, Check } from 'lucide-react';
+import { ShoppingCart, X, CreditCard, Loader2, Check, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DependentesDescontoInfo } from '@/components/dependentes-desconto-info';
 import type { ProductType, Produto } from '@/lib/types';
@@ -97,17 +97,18 @@ export function NovaOfertaCard({
                                                 </div>
                                             </div>
 
-                                            <div className="text-right shrink-0">
+                                            <div className="text-right shrink-0 flex flex-col items-end gap-1">
                                                 <span className="font-bold text-primary block text-sm">
                                                     {formatCurrency(product.precoMensal)}
                                                 </span>
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="h-4 w-4 mt-1 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1"
+                                                    className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-red-50"
                                                     onClick={() => removeProduct(product.id)}
+                                                    title="Remover item"
                                                 >
-                                                    <X className="h-3 w-3" />
+                                                    <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>
                                         </div>

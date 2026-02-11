@@ -25,6 +25,7 @@ export function DesktopNavbar() {
 
     const navItems = [
         { href: "/", label: "Dashboard", icon: LayoutDashboard },
+        { href: "/builder", label: "Montador", icon: ShoppingBag },
         { href: "/historico", label: "Histórico", icon: History },
         { href: "/channels", label: "Canais", icon: Tv },
         { href: "/perfil", label: "Perfil", icon: User },

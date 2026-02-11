@@ -27,9 +27,10 @@ import {
   Phone,
   Smartphone,
   Plus,
-  LayoutGrid
+  LayoutGrid,
+  ShoppingBag
 } from 'lucide-react';
-import { BuilderView } from "@/components/app/builder-view";
+// import { BuilderView } from "@/components/app/builder-view"; // REMOVED
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/contexts/auth-context';
 import { useFirebase } from '@/firebase/provider';
@@ -39,6 +40,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { ProductType, Produto } from '@/lib/types';
 import { NovaOfertaCard } from '@/components/nova-oferta-card';
 import { cn } from '@/lib/utils';
+import Link from 'next/link'; // ADDED
 
 type Gastos = {
   tv: number;
@@ -58,7 +60,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-export default function ComparadorOfertaPage() {
+export default function DashboardPage() {
   const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct } = useOffer();
   const { user } = useAuth();
   const { firestore } = useFirebase();
@@ -320,12 +322,12 @@ export default function ComparadorOfertaPage() {
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
 
           {/* Coluna Esquerda: Principal (Gastos + Builder + Argumento) */}
-          <div className="col-span-12 xl:col-span-9 space-y-6">
+          <div className="col-span-12 xl:col-span-8 space-y-6">
 
             {/* Desktop Top Row: Gastos + Carrinho (Side by Side) */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 1. Gastos Atuais */}
-              <Card className="shadow-sm border-slate-200 h-full flex flex-col lg:col-span-3">
+              <Card className="shadow-sm border-slate-200 h-full flex flex-col">
                 <CardHeader className="pb-4">
                   <div className="flex items-center gap-2 mb-1">
                     <Wallet className="h-5 w-5 text-gray-500" />
@@ -424,7 +426,7 @@ export default function ComparadorOfertaPage() {
               </Card>
 
               {/* 2. Desktop Cart (Placed here to sit next to Expenses) */}
-              <div className="hidden lg:flex flex-col h-full lg:col-span-2">
+              <div className="hidden lg:flex flex-col h-full">
                 <NovaOfertaCard
                   products={products}
                   debitoEmConta={debitoEmConta}
@@ -442,21 +444,33 @@ export default function ComparadorOfertaPage() {
               </div>
             </div>
 
-            {/* 3. Builder View (Desktop Only) */}
+            {/* 3. CTA do Builder (REPLACES BuilderView) */}
             <div className="hidden lg:block space-y-4">
-              <div className="flex items-center gap-2 pb-2 border-b">
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <LayoutGrid className="h-5 w-5 text-primary" />
-                  Catálogo de Produtos
-                </h2>
-              </div>
-              <BuilderView hideHeader className="bg-transparent" />
+              <Card className="bg-gradient-to-tr from-primary/10 to-transparent border-primary/20">
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center gap-4">
+                  <div className="bg-white p-3 rounded-full shadow-sm">
+                    <LayoutGrid className="h-8 w-8 text-primary" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-bold text-gray-900">Catálogo de Produtos</h3>
+                    <p className="text-muted-foreground max-w-md mx-auto">
+                      Acesse o Montador de Ofertas para visualizar todos os produtos disponíveis e montar propostas personalizadas.
+                    </p>
+                  </div>
+                  <Link href="/builder">
+                    <Button size="lg" className="gap-2 font-semibold shadow-lg shadow-primary/25">
+                      <ShoppingBag className="h-5 w-5" />
+                      Ir para o Montador
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
             </div>
 
           </div>
 
           {/* Coluna Direita: Sidebar (Mobile: Cart + Argumento / Desktop: Argumento) */}
-          <div className="space-y-6 col-span-12 xl:col-span-3 xl:sticky xl:top-[6.5rem] max-h-[calc(100vh-7rem)] overflow-y-auto pb-4 pr-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 transition-colors">
+          <div className="space-y-6 col-span-12 xl:col-span-4 xl:sticky xl:top-[6.5rem] max-h-[calc(100vh-7rem)] overflow-y-auto pb-4 pr-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 transition-colors">
 
             {/* Mobile Cart (Hidden on Desktop) */}
             <div className="lg:hidden">
@@ -501,10 +515,13 @@ export default function ComparadorOfertaPage() {
                         {formatCurrency(Math.abs(economiaMensal))}
                       </span>
                     </div>
-                    {economiaMensal >= 0 && (
-                      <div className="text-base bg-white/60 rounded-md px-4 py-3 text-green-700 border border-green-100 flex justify-between items-center shadow-sm">
-                        <span className="font-medium">Economia Anual</span>
-                        <strong className="text-xl">{formatCurrency(economiaMensal * 12)}</strong>
+                    {economiaMensal > 0 && (
+                      <div className="mt-4 p-4 bg-emerald-600 text-white rounded-lg flex items-center justify-between shadow-lg transform hover:scale-105 transition-transform animate-in fade-in zoom-in duration-300">
+                        <div className="flex flex-col text-left">
+                          <span className="text-emerald-100 font-bold text-xs uppercase tracking-wider">Economia Anual</span>
+                          <span className="font-extrabold text-xl leading-none">GARANTIDA</span>
+                        </div>
+                        <strong className="text-3xl font-black tracking-tight">{formatCurrency(economiaMensal * 12)}</strong>
                       </div>
                     )}
                   </div>
