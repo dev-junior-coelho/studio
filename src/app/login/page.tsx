@@ -7,6 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Zap, Loader2, Lock, User, AlertCircle, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
@@ -28,6 +37,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [showPin, setShowPin] = useState(false);
   const [userRole, setUserRole] = useState<'agente' | 'supervisor'>('agente');
+  const [showForgotPassword, setShowForgotPassword] = useState(false); // State for the forgot password dialog
 
   const handleZChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Apenas números, máximo 6 dígitos
@@ -192,6 +202,16 @@ export default function LoginPage() {
                 <p className="text-[10px] text-muted-foreground ml-1">
                   Senha de 4 dígitos para acesso rápido.
                 </p>
+                <div className="flex justify-end">
+                  <Button
+                    variant="link"
+                    className="px-0 text-xs text-purple-600 h-auto font-normal"
+                    onClick={() => setShowForgotPassword(true)}
+                    type="button"
+                  >
+                    Esqueci minha senha
+                  </Button>
+                </div>
               </div>
 
               {mode === 'register' && userRole === 'agente' && (
@@ -281,6 +301,31 @@ export default function LoginPage() {
           {userRole === 'agente' ? "Login Supervisor" : "Voltar para Login Agente"}
         </Button>
       </div>
-    </main>
+      <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Recuperação de Senha</DialogTitle>
+            <DialogDescription className="space-y-4 pt-4">
+              <p>
+                Para redefinir sua senha (PIN), entre em contato com seu <strong>Supervisor</strong>.
+              </p>
+              <div className="bg-slate-100 p-4 rounded-md text-sm text-slate-700">
+                <p className="font-semibold mb-1">Informe ao supervisor:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Seu nome completo</li>
+                  <li>Seu Login Z ({zNumber || "..."})</li>
+                </ul>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Por questões de segurança, apenas supervisores podem redefinir as senhas dos agentes diretamente no painel administrativo.
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setShowForgotPassword(false)}>Entendi</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </main >
   );
 }

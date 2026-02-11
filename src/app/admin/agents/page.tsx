@@ -13,7 +13,8 @@ import {
     RefreshCcw,
     FileSpreadsheet,
     ShieldAlert,
-    ShieldCheck as ShieldIcon
+    ShieldCheck as ShieldIcon,
+    KeyRound
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -41,6 +42,8 @@ export default function AdminAgentsPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [promoteTarget, setPromoteTarget] = useState<any>(null);
     const [demoteTarget, setDemoteTarget] = useState<Usuario | null>(null);
+    const [resetPasswordTarget, setResetPasswordTarget] = useState<Usuario | null>(null);
+    const [newPin, setNewPin] = useState("");
     const [showSyncModal, setShowSyncModal] = useState(false);
     const [sheetUrl, setSheetUrl] = useState("");
     const [isSyncing, setIsSyncing] = useState(false);
@@ -110,6 +113,63 @@ export default function AdminAgentsPage() {
             toast({
                 title: "Erro ao promover",
                 description: "Não foi possível alterar as permissões.",
+                variant: "destructive"
+            });
+        } finally {
+            setIsUpdatingRole(false);
+        }
+    };
+
+    const handleResetPassword = async () => {
+        if (!resetPasswordTarget || !newPin) return;
+        setIsUpdatingRole(true);
+        try {
+            // Get current user token
+            if (!user) {
+                throw new Error("User not authenticated");
+            }
+
+            // We need the ID token, which we can get from the auth context or firebase directly.
+            // Since we don't have direct access to the token string in the user object usually, 
+            // we should get it from the current user.
+            const { auth } = useFirebase();
+            const token = await auth?.currentUser?.getIdToken();
+
+            if (!token) {
+                throw new Error("Could not retrieve authentication token");
+            }
+
+            const response = await fetch('/api/admin/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    targetUid: resetPasswordTarget.uid,
+                    newPin: newPin
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Failed to reset password");
+            }
+
+            toast({
+                title: "Senha Redefinida",
+                description: `O PIN de ${resetPasswordTarget.nome} foi atualizado com sucesso.`,
+                className: "bg-green-50 border-green-200 text-green-800"
+            });
+            setResetPasswordTarget(null);
+            setNewPin("");
+
+        } catch (error: any) {
+            console.error("Error resetting password:", error);
+            toast({
+                title: "Erro ao redefinir",
+                description: error.message,
                 variant: "destructive"
             });
         } finally {
@@ -344,15 +404,29 @@ export default function AdminAgentsPage() {
                                             </td>
                                             <td className="px-8 py-5 text-right">
                                                 {agent.role !== 'supervisor' ? (
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-8 w-8 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg group-hover:visible"
-                                                        onClick={() => setPromoteTarget(agent)}
-                                                        title="Promover a Supervisor"
-                                                    >
-                                                        <ShieldIcon className="h-4 w-4" />
-                                                    </Button>
+                                                    <div className="flex justify-end gap-1">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="h-8 w-8 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg group-hover:visible"
+                                                            onClick={() => setPromoteTarget(agent)}
+                                                            title="Promover a Supervisor"
+                                                        >
+                                                            <ShieldIcon className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg group-hover:visible"
+                                                            onClick={() => {
+                                                                setResetPasswordTarget(agent);
+                                                                setNewPin("");
+                                                            }}
+                                                            title="Redefinir Senha (PIN)"
+                                                        >
+                                                            <KeyRound className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
                                                 ) : (
                                                     <Button
                                                         variant="ghost"
@@ -432,6 +506,46 @@ export default function AdminAgentsPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* Modal de Reset de Senha */}
+            <Dialog open={!!resetPasswordTarget} onOpenChange={(open) => !open && setResetPasswordTarget(null)}>
+                <DialogContent className="sm:max-w-md" onOpenAutoFocus={(e) => e.preventDefault()}>
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-slate-800">
+                            <KeyRound className="h-5 w-5 text-blue-600" /> Redefinir Senha (PIN)
+                        </DialogTitle>
+                        <DialogDescription>
+                            Defina um novo PIN de 4 dígitos para <strong>{resetPasswordTarget?.nome}</strong>.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="newPin">Novo PIN</Label>
+                            <Input
+                                id="newPin"
+                                placeholder="Ex: 1234"
+                                value={newPin}
+                                onChange={(e) => setNewPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                                maxLength={4}
+                                className="font-mono text-center tracking-widest text-lg"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                O agente deverá usar este novo PIN para acessar o sistema.
+                            </p>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setResetPasswordTarget(null)} disabled={isUpdatingRole}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={handleResetPassword} className="bg-blue-600 hover:bg-blue-700 text-white" disabled={isUpdatingRole || newPin.length !== 4}>
+                            {isUpdatingRole && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Redefinir Senha
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog >
+
             {/* Modal de Sincronização */}
             <Dialog open={showSyncModal} onOpenChange={setShowSyncModal}>
                 <DialogContent className="sm:max-w-md" onOpenAutoFocus={(e) => e.preventDefault()}>
