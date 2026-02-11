@@ -24,7 +24,10 @@ export const regioes: Regiao[] = [
             "São Paulo", "Rio de Janeiro", "Belo Horizonte", "Brasília", "Curitiba",
             "Porto Alegre", "Salvador", "Fortaleza", "Recife", "Goiânia",
             "Manaus", "Belém", "Campinas", "São Bernardo do Campo", "Guarulhos",
-            "Santo André", "Osasco", "Sorocaba", "Santos", "São José dos Campos"
+            "Santo André", "Osasco", "Sorocaba", "Santos", "São José dos Campos",
+            "São José do Rio Preto", "Vitória da Conquista", "Campina Grande", "Caruaru",
+            "Petrolina", "Juazeiro do Norte", "Mossoró", "Imperatriz", "Anápolis",
+            "Campos dos Goytacazes", "Volta Redonda", "Petrópolis"
         ]
     },
     // Região Especial (p.19)
@@ -44,7 +47,7 @@ export const regioes: Regiao[] = [
         descricao: "Regiões com promoção de 6 meses no combo.",
         cidades: [
             "Uberlândia", "Juiz de Fora", "Ribeirão Preto", "Aracaju", "Natal",
-            "João Pessoa", "Maceió", "Teresina", "São Luís"
+            "João Pessoa", "Maceió", "Teresina", "São Luís", "Feira de Santana"
         ]
     },
     // Região Especial Promo 3M (p.21)
