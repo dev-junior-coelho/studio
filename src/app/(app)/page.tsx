@@ -2,6 +2,7 @@
 
 import { useState, useMemo, Fragment, useCallback } from 'react';
 import { useOffer } from '@/contexts/offer-context';
+import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -44,11 +45,13 @@ import {
   RotateCcw,
   Archive,
   ArrowRightLeft,
-  Calculator
+
+  Calculator,
+  Lock
 } from 'lucide-react';
 // import { BuilderView } from "@/components/app/builder-view"; // REMOVED
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useAuth } from '@/contexts/auth-context';
+
 import { useFirebase } from '@/firebase/provider';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { DependentesDescontoInfo } from '@/components/dependentes-desconto-info';
@@ -88,8 +91,8 @@ import {
 import { Check as CheckIcon, ChevronsUpDown } from "lucide-react"
 
 export default function DashboardPage() {
-  const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct, debitoEmConta, setDebitoEmConta, totalComDesconto, descontoDCC, selectedCity, setSelectedCity } = useOffer();
   const { user } = useAuth();
+  const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct, debitoEmConta, setDebitoEmConta, totalComDesconto, descontoDCC, selectedCity, setSelectedCity } = useOffer();
   const { firestore } = useFirebase();
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
@@ -549,9 +552,29 @@ export default function DashboardPage() {
                 {/* Auto-Generate Offer Button */}
                 <div className="px-4 pb-4">
                   <Button
-                    onClick={handleGerarOferta}
-                    disabled={isGenerating || !selectedCity || products.length > 0}
-                    className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold shadow-lg transform transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => {
+                      // VERIFICAÇÃO PREMIUM: Apenas Z000001 tem acesso
+                      const isPremiumUser = user?.zLogin === '000001';
+
+                      if (!isPremiumUser) {
+                        toast({
+                          title: "Funcionalidade Premium 💎",
+                          description: "A geração automática de ofertas está disponível apenas na versão Premium.",
+                          className: "bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-none shadow-lg",
+                          duration: 4000
+                        });
+                        return;
+                      }
+
+                      handleGerarOferta();
+                    }}
+                    disabled={isGenerating || (user?.zLogin === '000001' && (!selectedCity || products.length > 0))}
+                    className={cn(
+                      "w-full font-bold shadow-lg transform transition-all hover:scale-[1.02]",
+                      user?.zLogin === '000001'
+                        ? "bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white"
+                        : "bg-slate-100 text-slate-500 hover:bg-slate-200 border-2 border-dashed border-slate-300"
+                    )}
                     size="lg"
                   >
                     {isGenerating ? (
@@ -561,8 +584,15 @@ export default function DashboardPage() {
                       </>
                     ) : (
                       <>
-                        <Zap className="mr-2 h-5 w-5" />
-                        Gerar Oferta Automaticamente
+                        {user?.zLogin !== '000001' && <Lock className="mr-2 h-4 w-4" />}
+                        {user?.zLogin === '000001' ? (
+                          <>
+                            <Zap className="mr-2 h-5 w-5" />
+                            Gerar Oferta Automaticamente
+                          </>
+                        ) : (
+                          "Gerar Oferta (Premium)"
+                        )}
                       </>
                     )}
                   </Button>

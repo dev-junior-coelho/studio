@@ -37,6 +37,9 @@ const getFirebaseAdminApp = (): App => {
     return initializeApp();
 };
 
+import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
+
 export const adminApp = getFirebaseAdminApp();
-export const adminAuth = admin.auth(adminApp);
-export const adminDb = admin.firestore(adminApp);
+export const adminAuth = getAuth(adminApp);
+export const adminDb = getFirestore(adminApp);
