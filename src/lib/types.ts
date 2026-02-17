@@ -72,3 +72,12 @@ export interface Regiao {
   nome: string;
   cidades: string[];
 }
+
+export type Gastos = {
+  tv: number;
+  internet: number;
+  fixo: number;
+  movel: number;
+  outros: { id: string; name: string; value: number }[];
+  wifiMesh: number;
+};

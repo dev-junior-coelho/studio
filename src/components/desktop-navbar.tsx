@@ -13,7 +13,8 @@ export function DesktopNavbar() {
     const { logout } = useAuth();
     const pathname = usePathname();
 
-    const totalGastoAtual = Object.values(gastos).reduce((acc, val) => acc + val, 0);
+    const alaCarteTotal = gastos.outros.reduce((acc, item) => acc + (Number(item.value) || 0), 0);
+    const totalGastoAtual = gastos.tv + gastos.internet + gastos.fixo + gastos.movel + gastos.wifiMesh + alaCarteTotal;
     const novaOfertaTotal = totalMensal;
     const economiaMensal = totalGastoAtual - novaOfertaTotal;
 

@@ -2,20 +2,13 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useCallback, useMemo } from 'react';
-import type { Produto } from '@/lib/types';
+import type { Produto, Gastos } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { calcularTotalComDescontos, calcularDescontoDependentes } from '@/lib/discount-utils';
 
-type Gastos = {
-  tv: number;
-  internet: number;
-  fixo: number;
-  movel: number;
-  outros: number;
-  wifiMesh: number;
-};
 
-const initialGastos: Gastos = { tv: 0, internet: 0, fixo: 0, movel: 0, outros: 0, wifiMesh: 0 };
+
+const initialGastos: Gastos = { tv: 0, internet: 0, fixo: 0, movel: 0, outros: [], wifiMesh: 0 };
 
 interface OfferContextType {
   products: Produto[];
@@ -57,9 +50,26 @@ export function OfferProvider({ children }: { children: ReactNode }) {
     const savedGastos = localStorage.getItem('gastos');
     if (savedGastos) {
       try {
-        setGastos(JSON.parse(savedGastos));
+        const parsedGastos = JSON.parse(savedGastos);
+
+        // MIGRATION: Check if 'outros' is a number (legacy format) or missing
+        if (typeof parsedGastos.outros === 'number') {
+          const legacyValue = parsedGastos.outros;
+          parsedGastos.outros = legacyValue > 0
+            ? [{ id: 'legacy-migrated', name: 'A la carte (Antigo)', value: legacyValue }]
+            : [];
+        } else if (!Array.isArray(parsedGastos.outros)) {
+          parsedGastos.outros = [];
+        }
+
+        // Ensure wifiMesh exists
+        if (parsedGastos.wifiMesh === undefined) parsedGastos.wifiMesh = 0;
+
+        setGastos(parsedGastos);
       } catch (e) {
         console.error("Error parsing gastos from localStorage", e);
+        // If error, reset to initial to avoid crash
+        setGastos(initialGastos);
       }
     }
 

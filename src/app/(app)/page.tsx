@@ -37,19 +37,13 @@ import { useFirebase } from '@/firebase/provider';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { DependentesDescontoInfo } from '@/components/dependentes-desconto-info';
 import { useToast } from '@/hooks/use-toast';
-import type { ProductType, Produto } from '@/lib/types';
+import type { ProductType, Produto, Gastos } from '@/lib/types';
 import { NovaOfertaCard } from '@/components/nova-oferta-card';
 import { cn } from '@/lib/utils';
 import Link from 'next/link'; // ADDED
+import { produtosOpcionais } from '@/data/seedOpcionais'; // Import optional products data
 
-type Gastos = {
-  tv: number;
-  internet: number;
-  fixo: number;
-  movel: number;
-  outros: number;
-  wifiMesh: number;
-};
+
 
 import {
   Dialog,
@@ -59,6 +53,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Check as CheckIcon, ChevronsUpDown } from "lucide-react"
 
 export default function DashboardPage() {
   const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct } = useOffer();
@@ -180,9 +189,35 @@ export default function DashboardPage() {
     }
   };
 
+  // Handle changes for standard numeric fields
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setGastos((prev) => ({ ...prev, [name]: Number(value) || 0 }));
+    // Ensure we are only updating numeric fields, not 'outros' array
+    if (name !== 'outros') {
+      setGastos((prev) => ({ ...prev, [name]: Number(value) || 0 }));
+    }
+  };
+
+  // Handle changes for dynamic AlaCarte fields
+  const handleAlaCarteChange = (id: string, field: 'name' | 'value', value: string | number) => {
+    setGastos((prev) => ({
+      ...prev,
+      outros: prev.outros.map(item => item.id === id ? { ...item, [field]: value } : item)
+    }));
+  };
+
+  const addAlaCarteItem = () => {
+    setGastos((prev) => ({
+      ...prev,
+      outros: [...prev.outros, { id: `ala-${Date.now()}`, name: '', value: 0 }]
+    }));
+  };
+
+  const removeAlaCarteItem = (id: string) => {
+    setGastos((prev) => ({
+      ...prev,
+      outros: prev.outros.filter(item => item.id !== id)
+    }));
   };
 
   const handleSelecionarTipo = (tipo: 'TV' | 'Internet' | 'Fixo' | 'Mesh' | 'AlaCarte') => {
@@ -199,7 +234,16 @@ export default function DashboardPage() {
 
     // Auto-preencher com o valor atual de gastos
     const chave = tipoMap[tipo];
-    const valorAtual = gastos[chave];
+    let valorAtual = 0;
+
+    if (chave === 'outros') {
+      // Se for AlaCarte (outros), somar os valores do array
+      valorAtual = gastos.outros.reduce((acc, item) => acc + (Number(item.value) || 0), 0);
+    } else {
+      // Para outros tipos, pegar o valor direto
+      valorAtual = gastos[chave as keyof Omit<Gastos, 'outros'>] || 0;
+    }
+
     setCalculadoraValor(valorAtual > 0 ? valorAtual.toString() : '');
   };
 
@@ -262,7 +306,12 @@ export default function DashboardPage() {
 
   const totalComDesconto = useMemo(() => totalMensal - descontoDCC, [totalMensal, descontoDCC]);
 
-  const totalGastoAtual = useMemo(() => Object.values(gastos).reduce((acc, val) => acc + val, 0), [gastos]);
+  const alaCarteTotal = useMemo(() => gastos.outros.reduce((acc, item) => acc + (Number(item.value) || 0), 0), [gastos.outros]);
+
+  const totalGastoAtual = useMemo(() => {
+    const fixedGastos = gastos.tv + gastos.internet + gastos.fixo + gastos.movel + gastos.wifiMesh;
+    return fixedGastos + alaCarteTotal;
+  }, [gastos, alaCarteTotal]);
   const economiaMensal = useMemo(() => totalGastoAtual - totalComDesconto, [totalGastoAtual, totalComDesconto]);
 
   const beneficiosAgrupados = useMemo(() => {
@@ -329,21 +378,29 @@ export default function DashboardPage() {
               {/* 1. Gastos Atuais */}
               <Card className="shadow-sm border-slate-200 h-full flex flex-col">
                 <CardHeader className="pb-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Wallet className="h-5 w-5 text-gray-500" />
-                    <CardTitle className="text-xl">Gastos Atuais</CardTitle>
+                  <div className="flex flex-row items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Wallet className="h-5 w-5 text-gray-500" />
+                        <CardTitle className="text-xl">Gastos Atuais</CardTitle>
+                      </div>
+                      <CardDescription>Quanto o cliente paga hoje.</CardDescription>
+                    </div>
+                    <div className="text-right bg-gray-50 px-3 py-1 rounded-lg border">
+                      <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider block">Total Atual</span>
+                      <span className="text-lg font-black text-gray-800">{formatCurrency(totalGastoAtual)}</span>
+                    </div>
                   </div>
-                  <CardDescription>Quanto o cliente paga hoje no plano atual.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6 flex-1">
                   <div className="flex flex-col gap-4">
-                    {Object.keys(gastos).map((key) => {
+                    {/* Fixed Fields */}
+                    {['tv', 'internet', 'fixo', 'movel', 'wifiMesh'].map((key) => {
                       const labelMap: Record<string, string> = {
                         'tv': 'TV',
                         'internet': 'Internet',
                         'fixo': 'Fixo',
                         'movel': 'Móvel',
-                        'outros': 'A la carte',
                         'wifiMesh': 'WiFi Mesh'
                       };
                       const label = labelMap[key] || key;
@@ -360,7 +417,7 @@ export default function DashboardPage() {
                               type="number"
                               id={key}
                               name={key}
-                              value={gastos[key as keyof Gastos] === 0 ? '' : gastos[key as keyof Gastos]}
+                              value={gastos[key as keyof Omit<Gastos, 'outros'>] === 0 ? '' : gastos[key as keyof Omit<Gastos, 'outros'>]}
                               onChange={handleGastoChange}
                               placeholder="0,00"
                               className="pl-8 text-right font-medium transition-all focus:border-primary"
@@ -369,6 +426,36 @@ export default function DashboardPage() {
                         </div>
                       );
                     })}
+
+                    {/* Dynamic Ala Carte Fields */}
+                    <div className="space-y-3 pt-2 border-t border-dashed">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
+                          {getIconForType('AlaCarte')} A la carte (Outros)
+                        </Label>
+                        <Button variant="ghost" size="sm" onClick={addAlaCarteItem} className="h-6 px-2 text-xs">
+                          <Plus className="h-3 w-3 mr-1" /> Adicionar
+                        </Button>
+                      </div>
+
+                      {gastos.outros.map((item, index) => (
+                        <AlaCarteRow
+                          key={item.id}
+                          item={item}
+                          onChange={handleAlaCarteChange}
+                          onRemove={removeAlaCarteItem}
+                        />
+                      ))}
+
+
+                      {/* Discrete Total for A la carte */}
+                      {gastos.outros.length > 0 && (
+                        <div className="flex justify-end items-center pt-2 border-t border-dashed mt-1">
+                          <span className="text-[10px] text-muted-foreground mr-2">Total A la carte:</span>
+                          <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">{formatCurrency(alaCarteTotal)}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
 
@@ -617,6 +704,122 @@ export default function DashboardPage() {
           </DialogContent>
         </Dialog>
       </main>
+    </div>
+  );
+}
+
+function AlaCarteRow({ item, onChange, onRemove }: {
+  item: { id: string, name: string, value: number },
+  onChange: (id: string, field: 'name' | 'value', value: string | number) => void,
+  onRemove: (id: string) => void
+}) {
+  const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  return (
+    <div className="flex gap-2 items-center animate-in fade-in slide-in-from-top-1">
+      <div className="flex-1 min-w-0">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className={cn(
+                "w-full justify-between h-9 text-xs font-normal",
+                !item.name && "text-muted-foreground"
+              )}
+            >
+              {item.name || "Selecionar ou digitar..."}
+              <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[300px] p-0" align="start">
+            <Command>
+              <CommandInput
+                placeholder="Buscar serviço..."
+                className="h-9 text-xs"
+                value={searchValue}
+                onValueChange={setSearchValue}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchValue) {
+                    onChange(item.id, 'name', searchValue);
+                    setOpen(false);
+                  }
+                }}
+              />
+              <CommandList>
+                <CommandEmpty>
+                  <div className="p-2 text-xs">
+                    <p className="text-muted-foreground">Não encontrado.</p>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-xs h-8 px-2 mt-1 font-bold text-primary truncate"
+                      onClick={() => {
+                        onChange(item.id, 'name', searchValue);
+                        setOpen(false);
+                      }}
+                    >
+                      Usar "{searchValue}"
+                    </Button>
+                  </div>
+                </CommandEmpty>
+                <CommandGroup heading="Sugestões" className="max-h-[200px] overflow-auto">
+                  {produtosOpcionais
+                    .filter(p => !searchValue || p.nome.toLowerCase().includes(searchValue.toLowerCase()))
+                    .map((prod) => (
+                      <CommandItem
+                        key={`${prod.nome}-${prod.precoMensal}`}
+                        value={prod.nome}
+                        onSelect={(currentValue) => {
+                          onChange(item.id, 'name', prod.nome);
+                          // User requested NOT TO set the value automatically
+                          // if (prod.precoMensal) { onChange(item.id, 'value', prod.precoMensal); }
+                          setOpen(false);
+                          setSearchValue("");
+                        }}
+                        className="text-xs"
+                      >
+                        <div className="flex justify-between w-full items-center gap-2">
+                          <span className="truncate">{prod.nome}</span>
+                          <span className="text-muted-foreground font-mono shrink-0">
+                            {prod.precoMensal ? `R$ ${prod.precoMensal.toFixed(2)}` : 'R$ --'}
+                          </span>
+                        </div>
+                        <CheckIcon
+                          className={cn(
+                            "ml-auto h-3 w-3 shrink-0",
+                            item.name === prod.nome ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      <div className="relative w-24 shrink-0">
+        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">R$</span>
+        <Input
+          type="number"
+          placeholder="0,00"
+          className="h-9 pl-6 text-right text-xs font-medium"
+          value={item.value === 0 ? '' : item.value}
+          onChange={(e) => onChange(item.id, 'value', Number(e.target.value))}
+        />
+      </div>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50"
+        onClick={() => onRemove(item.id)}
+      >
+        <X className="h-3.5 w-3.5" />
+      </Button>
     </div>
   );
 }

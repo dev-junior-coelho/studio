@@ -7,7 +7,7 @@ import type { ProductType, Produto, Regiao } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check, Search } from 'lucide-react';
+import { PlusCircle, Loader2, XCircle, ChevronsUpDown, Check, Search, ChevronDown, ChevronUp } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { useCollection } from '@/firebase/firestore/use-collection';
@@ -40,6 +40,7 @@ const typeDisplayNames: Record<ProductType, string> = {
 function ProductCard({ product }: { product: Produto }) {
     const { addProduct } = useOffer();
     const [dependentesQty, setDependentesQty] = useState(1);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const price = product.precoMensal;
     const isPriceValid = typeof price === 'number' && price > 0;
@@ -149,21 +150,37 @@ function ProductCard({ product }: { product: Produto }) {
                     {product.beneficios?.length > 0 && (
                         <div>
                             <p className="text-sm font-medium">Benefícios:</p>
-                            <ScrollArea className="max-h-36 mt-1 pr-2">
-                                <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
-                                    {product.beneficios.map((b, i) => {
-                                        const parts = b.split(': ');
-                                        if (parts.length > 1 && parts[0].length < 60) {
-                                            return (
-                                                <li key={i}>
-                                                    <span className="font-bold text-gray-700">{parts[0]}:</span> {parts.slice(1).join(': ')}
-                                                </li>
-                                            );
-                                        }
-                                        return <li key={i}>{b}</li>;
-                                    })}
-                                </ul>
-                            </ScrollArea>
+
+                            {/* Benefits List */}
+                            <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1 mt-1 transition-all duration-300">
+                                {(isExpanded ? product.beneficios : product.beneficios.slice(0, 3)).map((b, i) => {
+                                    const parts = b.split(': ');
+                                    if (parts.length > 1 && parts[0].length < 60) {
+                                        return (
+                                            <li key={i}>
+                                                <span className="font-bold text-gray-700">{parts[0]}:</span> {parts.slice(1).join(': ')}
+                                            </li>
+                                        );
+                                    }
+                                    return <li key={i}>{b}</li>;
+                                })}
+                            </ul>
+
+                            {/* "See More" Button */}
+                            {product.beneficios.length > 3 && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setIsExpanded(!isExpanded)}
+                                    className="w-full mt-2 h-auto py-1 text-xs text-primary hover:text-primary/80 hover:bg-transparent p-0 justify-start font-medium"
+                                >
+                                    {isExpanded ? (
+                                        <span className="flex items-center gap-1">Ver menos <ChevronUp className="h-3 w-3" /></span>
+                                    ) : (
+                                        <span className="flex items-center gap-1">Ver mais ({product.beneficios.length - 3}) <ChevronDown className="h-3 w-3" /></span>
+                                    )}
+                                </Button>
+                            )}
                         </div>
                     )}
                 </CardContent>
