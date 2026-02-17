@@ -7,12 +7,12 @@ import { Zap, TrendingDown, TrendingUp, LogOut, Wallet, ShoppingBag } from 'luci
 import { cn } from '@/lib/utils';
 
 export function OfferSummaryBar() {
-    const { products, gastos, totalMensal } = useOffer();
+    const { products, gastos, totalMensal, totalComDesconto } = useOffer();
     const { logout } = useAuth();
 
     const alaCarteTotal = gastos.outros.reduce((acc, item) => acc + (Number(item.value) || 0), 0);
     const totalGastoAtual = gastos.tv + gastos.internet + gastos.fixo + gastos.movel + gastos.wifiMesh + alaCarteTotal;
-    const novaOfertaTotal = totalMensal;
+    const novaOfertaTotal = totalComDesconto;
     const economiaMensal = totalGastoAtual - novaOfertaTotal;
 
     const formatCurrency = (value: number) => {

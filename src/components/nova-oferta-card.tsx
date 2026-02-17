@@ -73,7 +73,7 @@ export function NovaOfertaCard({
                     </div>
                 ) : (
                     <>
-                        <ScrollArea className="flex-1 max-h-[30vh] -mx-2 px-2">
+                        <div className="flex-1 -mx-2 px-2">
                             <ul className="space-y-2 pb-2">
                                 {products.map(product => (
                                     <li key={product.id} className="group bg-white border rounded-lg p-2 hover:shadow-sm transition-shadow relative">
@@ -115,7 +115,7 @@ export function NovaOfertaCard({
                                     </li>
                                 ))}
                             </ul>
-                        </ScrollArea>
+                        </div>
 
                         {/* DCC Info */}
                         {debitoEmConta && descontoDCC > 0 && (

@@ -8,7 +8,7 @@ import { calcularTotalComDescontos, calcularDescontoDependentes } from '@/lib/di
 
 
 
-const initialGastos: Gastos = { tv: 0, internet: 0, fixo: 0, movel: 0, outros: [], wifiMesh: 0 };
+const initialGastos: Gastos = { tv: 0, internet: 0, fixo: 0, movel: 0, outros: [{ id: `ala-${Date.now()}`, name: '', value: 0 }], wifiMesh: 0 };
 
 interface OfferContextType {
   products: Produto[];
@@ -21,6 +21,10 @@ interface OfferContextType {
   selectedCity: string | null;
   setSelectedCity: (city: string | null) => void;
   totalMensal: number;
+  totalComDesconto: number;
+  descontoDCC: number;
+  debitoEmConta: boolean;
+  setDebitoEmConta: React.Dispatch<React.SetStateAction<boolean>>;
   dependentesInfo: Array<{ index: number; dependente: Produto; precoAplicado: number; isGratis: boolean; descricao: string }>;
   selectedTV: Produto | null; // TV selecionada para filtrar PA compatíveis
   setSelectedTV: (tv: Produto | null) => void;
@@ -34,6 +38,7 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const [gastos, setGastos] = useState<Gastos>(initialGastos);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedTV, setSelectedTV] = useState<Produto | null>(null);
+  const [debitoEmConta, setDebitoEmConta] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Load from localStorage on mount
@@ -53,13 +58,11 @@ export function OfferProvider({ children }: { children: ReactNode }) {
         const parsedGastos = JSON.parse(savedGastos);
 
         // MIGRATION: Check if 'outros' is a number (legacy format) or missing
-        if (typeof parsedGastos.outros === 'number') {
-          const legacyValue = parsedGastos.outros;
-          parsedGastos.outros = legacyValue > 0
-            ? [{ id: 'legacy-migrated', name: 'A la carte (Antigo)', value: legacyValue }]
-            : [];
-        } else if (!Array.isArray(parsedGastos.outros)) {
-          parsedGastos.outros = [];
+        if (typeof parsedGastos.outros === 'number' || !parsedGastos.outros) {
+          parsedGastos.outros = [{ id: `ala-${Date.now()}`, name: '', value: 0 }];
+        } else if (Array.isArray(parsedGastos.outros) && parsedGastos.outros.length === 0) {
+          // Se é array vazio, adicionar 1 item
+          parsedGastos.outros = [{ id: `ala-${Date.now()}`, name: '', value: 0 }];
         }
 
         // Ensure wifiMesh exists
@@ -119,6 +122,21 @@ export function OfferProvider({ children }: { children: ReactNode }) {
           toast({
             title: "TV já adicionada",
             description: `Você já possui um produto de TV na oferta. Remova-o para adicionar outro.`,
+            variant: 'destructive',
+          });
+        }, 0);
+        return prevProducts;
+      }
+
+      // Verificar se é plano Móvel - apenas UM plano móvel permitido
+      const isMovel = product.tipo === 'Movel';
+      const hasMovel = prevProducts.some(p => p.tipo === 'Movel');
+
+      if (isMovel && hasMovel) {
+        setTimeout(() => {
+          toast({
+            title: "Plano Móvel já adicionado",
+            description: `Apenas um plano móvel titular pode ser adicionado. Use dependentes para linhas adicionais.`,
             variant: 'destructive',
           });
         }, 0);
@@ -208,6 +226,34 @@ export function OfferProvider({ children }: { children: ReactNode }) {
 
   const totalMensal = useMemo(() => calcularTotalComDescontos(products), [products]);
 
+  const descontoDCC = useMemo(() => {
+    if (!debitoEmConta) return 0;
+
+    let desconto = 0;
+    products.forEach(product => {
+      // Móvel Pós-Pago: R$ 10,00 de desconto
+      if (product.tipo === 'Movel' && product.nome.includes('Pós')) {
+        desconto += 10;
+      }
+      // Móvel Controle: R$ 5,00 de desconto
+      else if (product.tipo === 'Movel' && product.nome.includes('Controle')) {
+        desconto += 5;
+      }
+      // Banda Larga: R$ 5,00 de desconto
+      else if (product.tipo === 'Banda Larga') {
+        desconto += 5;
+      }
+      // TV: R$ 5,00 de desconto
+      else if (product.tipo === 'TV Cabeada' || product.tipo === 'TV Box' || product.tipo === 'Claro TV APP') {
+        desconto += 5;
+      }
+    });
+
+    return desconto;
+  }, [debitoEmConta, products]);
+
+  const totalComDesconto = useMemo(() => totalMensal - descontoDCC, [totalMensal, descontoDCC]);
+
   const value = {
     products,
     addProduct,
@@ -219,6 +265,10 @@ export function OfferProvider({ children }: { children: ReactNode }) {
     selectedCity,
     setSelectedCity,
     totalMensal,
+    totalComDesconto,
+    descontoDCC,
+    debitoEmConta,
+    setDebitoEmConta,
     dependentesInfo,
     selectedTV,
     setSelectedTV

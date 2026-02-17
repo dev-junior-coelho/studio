@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, Fragment } from 'react';
+import { useState, useMemo, Fragment, useCallback } from 'react';
 import { useOffer } from '@/contexts/offer-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
@@ -11,24 +11,40 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  TrendingDown,
-  TrendingUp,
-  X,
-  Loader2,
-  Wallet,
+  Users,
+  Search,
+  Filter,
+  MapPin,
+  MoreVertical,
+  Plus,
+  Minus,
+  Trash2,
   ShoppingCart,
-  Calculator,
-  ArrowRight,
+  FileText,
+  ClipboardList,
+  Wallet,
+  TrendingDown,
+  AlertTriangle,
   Check,
-  Zap,
-  CreditCard,
+  X,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  Loader2,
+  ArrowRight,
   Tv,
   Wifi,
   Phone,
   Smartphone,
-  Plus,
+  Zap,
+  ShoppingBag,
   LayoutGrid,
-  ShoppingBag
+  TrendingUp,
+  CreditCard,
+  RotateCcw,
+  Archive,
+  ArrowRightLeft,
+  Calculator
 } from 'lucide-react';
 // import { BuilderView } from "@/components/app/builder-view"; // REMOVED
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -39,9 +55,11 @@ import { DependentesDescontoInfo } from '@/components/dependentes-desconto-info'
 import { useToast } from '@/hooks/use-toast';
 import type { ProductType, Produto, Gastos } from '@/lib/types';
 import { NovaOfertaCard } from '@/components/nova-oferta-card';
-import { cn } from '@/lib/utils';
+import { cn, normalizeText } from '@/lib/utils';
 import Link from 'next/link'; // ADDED
 import { produtosOpcionais } from '@/data/seedOpcionais'; // Import optional products data
+import { generateAutoOffer } from '@/lib/auto-offer-generator'; // Import auto-offer generator
+import { regioes } from '@/data/seedRegioes'; // Import regions data
 
 
 
@@ -70,12 +88,13 @@ import {
 import { Check as CheckIcon, ChevronsUpDown } from "lucide-react"
 
 export default function DashboardPage() {
-  const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct } = useOffer();
+  const { products, clearOffer, removeProduct, gastos, setGastos, totalMensal, addProduct, debitoEmConta, setDebitoEmConta, totalComDesconto, descontoDCC, selectedCity, setSelectedCity } = useOffer();
   const { user } = useAuth();
   const { firestore } = useFirebase();
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
-  const [debitoEmConta, setDebitoEmConta] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [cityOpen, setCityOpen] = useState(false); // State for city selector popover
   const [calculadoraValor, setCalculadoraValor] = useState('');
   const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Mesh' | 'AlaCarte' | null>(null);
 
@@ -277,34 +296,76 @@ export default function DashboardPage() {
     }
   };
 
-  // Calcular desconto de débito em conta
-  const descontoDCC = useMemo(() => {
-    if (!debitoEmConta) return 0;
+  // Handler for auto-generating offer
+  const handleGerarOferta = useCallback(() => {
+    // Validation 1: Check if city is selected
+    if (!selectedCity) {
+      toast({
+        title: "Cidade não selecionada",
+        description: "Selecione uma cidade antes de gerar a oferta automaticamente.",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    let desconto = 0;
-    products.forEach(product => {
-      // Móvel Pós-Pago: R$ 10,00 de desconto
-      if (product.tipo === 'Movel' && product.nome.includes('Pós')) {
-        desconto += 10;
-      }
-      // Móvel Controle: R$ 5,00 de desconto
-      else if (product.tipo === 'Movel' && product.nome.includes('Controle')) {
-        desconto += 5;
-      }
-      // Banda Larga: R$ 5,00 de desconto
-      else if (product.tipo === 'Banda Larga') {
-        desconto += 5;
-      }
-      // TV: R$ 5,00 de desconto
-      else if (product.tipo === 'TV Cabeada' || product.tipo === 'TV Box' || product.tipo === 'Claro TV APP') {
-        desconto += 5;
-      }
+    // Validation 2: Block if products already exist (per user request)
+    if (products.length > 0) {
+      toast({
+        title: "Oferta já existe",
+        description: "Você já possui produtos na oferta. Limpe a oferta antes de gerar automaticamente.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+
+    const result = generateAutoOffer(gastos, selectedCity);
+
+    if (!result.success) {
+      toast({
+        title: "Erro ao gerar oferta",
+        description: result.errors.join(', '),
+        variant: "destructive"
+      });
+      setIsGenerating(false);
+      return;
+    }
+
+    // Add products automatically
+    result.products.forEach(product => {
+      // Add missing fields to match Produto type
+      const productWithFields: Produto = {
+        ...product,
+        id: product.id || `auto-${Date.now()}-${Math.random()}`,
+        fidelidade: product.fidelidade || product.observacoes?.includes('Fidelidade 12m') ? '12 meses' : 'Sem fidelidade',
+        tipo: product.tipo
+      };
+      addProduct(productWithFields);
     });
 
-    return desconto;
-  }, [debitoEmConta, products]);
+    toast({
+      title: "Oferta Gerada com Sucesso! 🎉",
+      description: `${result.products.length} produto(s) adicionado(s) automaticamente. Adicione o plano Móvel manualmente se necessário.`,
+      duration: 5000
+    });
 
-  const totalComDesconto = useMemo(() => totalMensal - descontoDCC, [totalMensal, descontoDCC]);
+    if (result.warnings.length > 0) {
+      // Show warnings in a separate toast
+      setTimeout(() => {
+        toast({
+          title: "Avisos",
+          description: result.warnings.join(' | '),
+          variant: "default"
+        });
+      }, 500);
+    }
+
+    setIsGenerating(false);
+  }, [gastos, selectedCity, products, addProduct, toast]);
+
+  // Calcular desconto de débito em conta
+
 
   const alaCarteTotal = useMemo(() => gastos.outros.reduce((acc, item) => acc + (Number(item.value) || 0), 0), [gastos.outros]);
 
@@ -373,11 +434,103 @@ export default function DashboardPage() {
           {/* Coluna Esquerda: Principal (Gastos + Builder + Argumento) */}
           <div className="col-span-12 xl:col-span-8 space-y-6">
 
+            {/* Portability Incentive Banner */}
+            <div className="relative group overflow-hidden rounded-xl p-[3px] shadow-xl">
+              <div className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,#ffffff_50%,transparent_100%)] opacity-80" />
+
+              <div className="relative h-full w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-6 lg:py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl opacity-50 pointer-events-none"></div>
+
+                <div className="relative flex flex-col sm:flex-row items-center gap-5 z-10">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white/20 shadow-[0_0_15px_rgba(255,255,255,0.3)] ring-1 ring-white/30 backdrop-blur-sm">
+                    <ArrowRightLeft className="h-8 w-8 text-white drop-shadow-md" />
+                  </div>
+                  <div className="space-y-1.5 text-center sm:text-left">
+                    <h3 className="text-xl lg:text-2xl font-black text-white leading-tight drop-shadow-sm">
+                      O cliente possui outra operadora?
+                    </h3>
+                    <p className="text-sm lg:text-base font-medium text-blue-50 max-w-2xl text-shadow-sm leading-relaxed">
+                      Oferte a <span className="font-bold text-white bg-white/10 px-1.5 py-0.5 rounded border border-white/20">Portabilidade</span> e garanta <span className="font-black text-yellow-300">SUA COMISSÃO</span> E UMA <span className="font-black text-green-300">BAIXA TAXA DE SILENTE!</span>
+                    </p>
+                  </div>
+                </div>
+
+                <Badge className="relative z-10 bg-white text-blue-600 hover:bg-blue-50 border-0 px-6 py-3 text-xs lg:text-sm font-black uppercase tracking-widest shadow-lg transform transition-transform group-hover:scale-105 whitespace-normal sm:whitespace-nowrap text-center">
+                  PORTABILIDADE É GARANTIA DE DINHEIRO NO SEU BOLSO 🚀
+                </Badge>
+              </div>
+            </div>
+
+            {/* City Selector - Destacado no topo */}
+            <Card className="shadow-md border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50/50 to-transparent">
+              <CardContent className="py-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-blue-100">
+                      <MapPin className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <Label className="text-sm font-semibold text-gray-700">Cidade do Cliente</Label>
+                      <p className="text-xs text-muted-foreground">Selecione a cidade para gerar ofertas</p>
+                    </div>
+                  </div>
+
+                  <Popover open={cityOpen} onOpenChange={setCityOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={cityOpen}
+                        className="w-[280px] justify-between font-medium"
+                      >
+                        {selectedCity || "Selecione a cidade..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[280px] p-0">
+                      <Command
+                        filter={(value, search) => {
+                          const normalizedValue = normalizeText(value);
+                          const normalizedSearch = normalizeText(search);
+                          return normalizedValue.includes(normalizedSearch) ? 1 : 0;
+                        }}
+                      >
+                        <CommandInput placeholder="Buscar cidade..." />
+                        <CommandList>
+                          <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
+                          <CommandGroup>
+                            {regioes.flatMap(regiao => regiao.cidades).sort().map((cidade) => (
+                              <CommandItem
+                                key={cidade}
+                                value={cidade}
+                                onSelect={(currentValue) => {
+                                  setSelectedCity(currentValue === selectedCity ? null : currentValue);
+                                  setCityOpen(false);
+                                }}
+                              >
+                                <CheckIcon
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    selectedCity === cidade ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                {cidade}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Desktop Top Row: Gastos + Carrinho (Side by Side) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 1. Gastos Atuais */}
-              <Card className="shadow-sm border-slate-200 h-full flex flex-col">
-                <CardHeader className="pb-4">
+              <Card className="shadow-sm border-slate-200 h-full flex flex-col border-t-4 border-t-slate-500">
+                <CardHeader className="pb-3 pt-4">
                   <div className="flex flex-row items-center justify-between">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
@@ -386,46 +539,165 @@ export default function DashboardPage() {
                       </div>
                       <CardDescription>Quanto o cliente paga hoje.</CardDescription>
                     </div>
-                    <div className="text-right bg-gray-50 px-3 py-1 rounded-lg border">
-                      <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider block">Total Atual</span>
-                      <span className="text-lg font-black text-gray-800">{formatCurrency(totalGastoAtual)}</span>
+                    <div className="text-right bg-yellow-400/10 px-3 py-1 rounded-lg border border-yellow-400/20">
+                      <span className="text-[10px] text-yellow-700/80 font-bold uppercase tracking-wider block">Total Atual</span>
+                      <span className="text-lg font-black text-yellow-900">{formatCurrency(totalGastoAtual)}</span>
                     </div>
                   </div>
                 </CardHeader>
+
+                {/* Auto-Generate Offer Button */}
+                <div className="px-4 pb-4">
+                  <Button
+                    onClick={handleGerarOferta}
+                    disabled={isGenerating || !selectedCity || products.length > 0}
+                    className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold shadow-lg transform transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                    size="lg"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Gerando Oferta...
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="mr-2 h-5 w-5" />
+                        Gerar Oferta Automaticamente
+                      </>
+                    )}
+                  </Button>
+                  {!selectedCity && (
+                    <p className="text-xs text-center text-muted-foreground mt-2">
+                      Selecione uma cidade primeiro
+                    </p>
+                  )}
+                  {products.length > 0 && selectedCity && (
+                    <p className="text-xs text-center text-orange-600 mt-2 font-medium">
+                      Limpe a oferta para gerar automaticamente
+                    </p>
+                  )}
+                </div>
+
                 <CardContent className="space-y-6 flex-1">
                   <div className="flex flex-col gap-4">
-                    {/* Fixed Fields */}
-                    {['tv', 'internet', 'fixo', 'movel', 'wifiMesh'].map((key) => {
-                      const labelMap: Record<string, string> = {
-                        'tv': 'TV',
-                        'internet': 'Internet',
-                        'fixo': 'Fixo',
-                        'movel': 'Móvel',
-                        'wifiMesh': 'WiFi Mesh'
-                      };
-                      const label = labelMap[key] || key;
-                      const icon = getIconForType(key);
-
-                      return (
-                        <div key={key} className="space-y-1.5 group">
-                          <Label htmlFor={key} className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
-                            {icon} {label}
-                          </Label>
-                          <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
-                            <Input
-                              type="number"
-                              id={key}
-                              name={key}
-                              value={gastos[key as keyof Omit<Gastos, 'outros'>] === 0 ? '' : gastos[key as keyof Omit<Gastos, 'outros'>]}
-                              onChange={handleGastoChange}
-                              placeholder="0,00"
-                              className="pl-8 text-right font-medium transition-all focus:border-primary"
-                            />
-                          </div>
+                    {/* TV - 3 colunas (Valor | Pacote | Pontos Adicionais) */}
+                    <div className="space-y-1.5 group">
+                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
+                        <Tv className="h-3.5 w-3.5" /> TV
+                      </Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
+                          <Input
+                            type="number"
+                            value={gastos.tv === 0 ? '' : gastos.tv}
+                            onChange={(e) => setGastos({ ...gastos, tv: Number(e.target.value) || 0 })}
+                            placeholder="0,00"
+                            className="pl-8 text-right font-medium transition-all focus:border-primary"
+                          />
                         </div>
-                      );
-                    })}
+                        <Input
+                          type="text"
+                          value={gastos.tvPacote || ''}
+                          onChange={(e) => setGastos({ ...gastos, tvPacote: e.target.value })}
+                          placeholder="ex: MIX HD"
+                          className="text-sm"
+                        />
+                        <Input
+                          type="number"
+                          value={gastos.tvPontosAdicionais || ''}
+                          onChange={(e) => setGastos({ ...gastos, tvPontosAdicionais: Number(e.target.value) || 0 })}
+                          placeholder="Pontos Adic."
+                          className="text-sm text-center"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Internet - 2 colunas */}
+                    <div className="space-y-1.5 group">
+                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
+                        <Wifi className="h-3.5 w-3.5" /> Internet
+                      </Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
+                          <Input
+                            type="number"
+                            value={gastos.internet === 0 ? '' : gastos.internet}
+                            onChange={(e) => setGastos({ ...gastos, internet: Number(e.target.value) || 0 })}
+                            placeholder="0,00"
+                            className="pl-8 text-right font-medium transition-all focus:border-primary"
+                          />
+                        </div>
+                        <Input
+                          type="text"
+                          value={gastos.internetPacote || ''}
+                          onChange={(e) => setGastos({ ...gastos, internetPacote: e.target.value })}
+                          placeholder="ex: 350 Megas"
+                          className="text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Fixo - 2 colunas */}
+                    <div className="space-y-1.5 group">
+                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
+                        <Phone className="h-3.5 w-3.5" /> Fixo
+                      </Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
+                          <Input
+                            type="number"
+                            value={gastos.fixo === 0 ? '' : gastos.fixo}
+                            onChange={(e) => setGastos({ ...gastos, fixo: Number(e.target.value) || 0 })}
+                            placeholder="0,00"
+                            className="pl-8 text-right font-medium transition-all focus:border-primary"
+                          />
+                        </div>
+                        <Input
+                          type="text"
+                          value={gastos.fixoPacote || ''}
+                          onChange={(e) => setGastos({ ...gastos, fixoPacote: e.target.value })}
+                          placeholder="ex: Brasil"
+                          className="text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Móvel - 1 coluna */}
+                    <div className="space-y-1.5 group">
+                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
+                        <Smartphone className="h-3.5 w-3.5" /> Móvel
+                      </Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
+                        <Input
+                          type="number"
+                          value={gastos.movel === 0 ? '' : gastos.movel}
+                          onChange={(e) => setGastos({ ...gastos, movel: Number(e.target.value) || 0 })}
+                          placeholder="0,00"
+                          className="pl-8 text-right font-medium transition-all focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* WiFi Mesh - 1 coluna */}
+                    <div className="space-y-1.5 group">
+                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
+                        <Zap className="h-3.5 w-3.5" /> WiFi Mesh
+                      </Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
+                        <Input
+                          type="number"
+                          value={gastos.wifiMesh === 0 ? '' : gastos.wifiMesh}
+                          onChange={(e) => setGastos({ ...gastos, wifiMesh: Number(e.target.value) || 0 })}
+                          placeholder="0,00"
+                          className="pl-8 text-right font-medium transition-all focus:border-primary"
+                        />
+                      </div>
+                    </div>
 
                     {/* Dynamic Ala Carte Fields */}
                     <div className="space-y-3 pt-2 border-t border-dashed">
@@ -433,7 +705,7 @@ export default function DashboardPage() {
                         <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
                           {getIconForType('AlaCarte')} A la carte (Outros)
                         </Label>
-                        <Button variant="ghost" size="sm" onClick={addAlaCarteItem} className="h-6 px-2 text-xs">
+                        <Button variant="ghost" size="sm" onClick={addAlaCarteItem} className="h-7 px-2.5 text-xs text-red-600 hover:text-red-700 hover:bg-red-50">
                           <Plus className="h-3 w-3 mr-1" /> Adicionar
                         </Button>
                       </div>
@@ -557,10 +829,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Coluna Direita: Sidebar (Mobile: Cart + Argumento / Desktop: Argumento) */}
-          <div className="space-y-6 col-span-12 xl:col-span-4 xl:sticky xl:top-[6.5rem] max-h-[calc(100vh-7rem)] overflow-y-auto pb-4 pr-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 transition-colors">
+          <div className="col-span-12 xl:col-span-4">
 
             {/* Mobile Cart (Hidden on Desktop) */}
-            <div className="lg:hidden">
+            <div className="lg:hidden mb-6">
               <NovaOfertaCard
                 products={products}
                 debitoEmConta={debitoEmConta}
@@ -580,57 +852,84 @@ export default function DashboardPage() {
             {/* CARD: Argumento de Venda (Full Benefits) */}
             {products.length > 0 && (
               <Card className={cn(
-                "shadow-sm shrink-0 border transition-all",
-                economiaMensal >= 0 ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"
+                "shadow-md border-t-4 transition-all bg-white",
+                economiaMensal >= 0 ? "border-t-emerald-500 border-emerald-100" : "border-t-orange-500 border-orange-100"
               )}>
-                <CardHeader className="pb-4 pt-6">
-                  <CardTitle className="text-xl font-bold uppercase tracking-wider flex items-center gap-3 text-muted-foreground">
-                    <Check className="h-6 w-6" /> Argumento Final
-                  </CardTitle>
+                <CardHeader className="pb-3 pt-4">
+                  <div className="flex items-center gap-2">
+                    <div className={cn("p-2 rounded-lg", economiaMensal >= 0 ? "bg-emerald-100" : "bg-orange-100")}>
+                      {economiaMensal >= 0 ? (
+                        <TrendingDown className={cn("h-5 w-5", economiaMensal >= 0 ? "text-emerald-600" : "text-orange-600")} />
+                      ) : (
+                        <TrendingUp className="h-5 w-5 text-orange-600" />
+                      )}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-bold text-gray-800">
+                        Argumento Final
+                      </CardTitle>
+                      <CardDescription>Resumo financeiro e benefícios.</CardDescription>
+                    </div>
+                  </div>
                 </CardHeader>
-                <CardContent className="pb-6">
-                  {/* Economy Highlight */}
-                  <div className="mb-6">
-                    <div className="flex items-baseline justify-between mb-3">
-                      <span className="font-semibold text-base text-muted-foreground">
+                <CardContent className="pt-4 pb-6">
+                  {/* Monthly Highlight */}
+                  <div className="flex flex-col gap-1 mb-6">
+                    <div className="flex items-end justify-between px-1">
+                      <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                         {economiaMensal >= 0 ? "Economia Mensal" : "Diferença Mensal"}
                       </span>
                       <span className={cn(
-                        "font-black text-4xl",
-                        economiaMensal >= 0 ? "text-green-600" : "text-red-600"
+                        "text-3xl font-black leading-none",
+                        economiaMensal >= 0 ? "text-emerald-600" : "text-orange-600"
                       )}>
                         {formatCurrency(Math.abs(economiaMensal))}
                       </span>
                     </div>
-                    {economiaMensal > 0 && (
-                      <div className="mt-4 p-4 bg-emerald-600 text-white rounded-lg flex items-center justify-between shadow-lg transform hover:scale-105 transition-transform animate-in fade-in zoom-in duration-300">
-                        <div className="flex flex-col text-left">
-                          <span className="text-emerald-100 font-bold text-xs uppercase tracking-wider">Economia Anual</span>
-                          <span className="font-extrabold text-xl leading-none">GARANTIDA</span>
-                        </div>
-                        <strong className="text-3xl font-black tracking-tight">{formatCurrency(economiaMensal * 12)}</strong>
-                      </div>
-                    )}
+                    <div className="h-1.5 w-full bg-gray-100 rounded-full mt-2 overflow-hidden">
+                      <div className={cn("h-full rounded-full w-full", economiaMensal >= 0 ? "bg-emerald-500" : "bg-orange-500")} />
+                    </div>
                   </div>
 
-                  <Separator className="my-6 bg-black/5" />
+                  {/* Annual Savings Hero */}
+                  {economiaMensal > 0 && (
+                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 p-6 text-white shadow-lg shadow-emerald-200 mb-8 transform transition-all hover:scale-[1.02]">
+                      <div className="absolute top-0 right-0 p-3 opacity-10">
+                        <Wallet className="w-24 h-24 rotate-12" />
+                      </div>
+                      <div className="relative z-10 flex flex-col items-center text-center gap-0">
+                        <span className="text-emerald-50 font-semibold text-xs uppercase tracking-[0.2em] mb-1">Economia Anual</span>
+                        <span className="text-4xl font-black tracking-tighter drop-shadow-sm">{formatCurrency(economiaMensal * 12)}</span>
+                        <span className="text-emerald-100 text-[10px] mt-1 bg-white/20 px-2 py-0.5 rounded-full">Garantida em 12 meses</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <Separator className="my-6" />
 
                   {/* Benefits List (Detailed) */}
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     {Object.entries(beneficiosAgrupados).map(([tipo, beneficios]) => {
                       const beneficiosUnicos = [...new Set(beneficios)];
                       if (beneficiosUnicos.length === 0) return null;
                       return (
-                        <div key={tipo}>
-                          <h5 className="font-bold text-sm text-gray-500 uppercase mb-3 bg-white/50 p-2 rounded w-fit">
-                            {tipo}
-                          </h5>
-                          <ul className="space-y-3">
-                            {/* SHOW ALL BENEFITS - NO SLICE */}
+                        <div key={tipo} className="relative">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+                              {tipo}
+                            </span>
+                            <div className="h-px bg-gray-100 flex-1" />
+                          </div>
+
+                          <ul className="space-y-3 pl-1">
                             {beneficiosUnicos.map((b, i) => (
-                              <li key={i} className="flex items-start gap-3 text-base text-gray-800 leading-relaxed">
-                                <Check className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                                <span>{b}</span>
+                              <li key={i} className="flex items-start gap-3 group">
+                                <div className="mt-1 h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                                  <Check className="h-3 w-3 text-primary" />
+                                </div>
+                                <span className="text-sm text-gray-700 leading-relaxed font-medium group-hover:text-gray-900 transition-colors">
+                                  {b}
+                                </span>
                               </li>
                             ))}
                           </ul>
@@ -735,7 +1034,13 @@ function AlaCarteRow({ item, onChange, onRemove }: {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[300px] p-0" align="start">
-            <Command>
+            <Command
+              filter={(value, search) => {
+                const normalizedValue = normalizeText(value);
+                const normalizedSearch = normalizeText(search);
+                return normalizedValue.includes(normalizedSearch) ? 1 : 0;
+              }}
+            >
               <CommandInput
                 placeholder="Buscar serviço..."
                 className="h-9 text-xs"

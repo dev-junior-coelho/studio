@@ -9,6 +9,11 @@ export interface Produto {
   fidelidade: string;
   observacoes?: string;
   regiaoId?: string; // Adicionado para filtro
+  // Campos opcionais para especificar pacotes
+  tvPacote?: string;
+  tvPontosAdicionais?: number; // Quantidade de pontos adicionais de TV
+  internetPacote?: string;
+  fixoPacote?: string; // Adicionado para filtro
   dependentesGratis?: number; // Número de dependentes grátis (apenas para Móvel)
   precoAplicado?: number; // Preço final com descontos aplicados
   precoAnual?: number | null; // Preço anual (se houver)
@@ -75,8 +80,11 @@ export interface Regiao {
 
 export type Gastos = {
   tv: number;
+  tvPacote?: string; // ex: "MIX HD", "INICIAL HD"
   internet: number;
+  internetPacote?: string; // ex: "350 Megas", "1 Giga"
   fixo: number;
+  fixoPacote?: string; // ex: "Ilimitado Brasil", "Ilimitado Mundo"
   movel: number;
   outros: { id: string; name: string; value: number }[];
   wifiMesh: number;
