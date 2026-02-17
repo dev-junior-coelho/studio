@@ -379,14 +379,14 @@ export const produtosTV = [
     // TV CABEADA - Upgrade/Rentabilização - Opções de Entrada
     // ==========================================
     {
-        regiaoId: "nacional", tipo: "TV Cabeada", nome: "INICIAL HD RET ANUNCIO FID (R$ 69,90)", precoMensal: 69.90, precoAnual: null,
-        beneficios: ["Pacote Inicial HD (Canais Abertos/Cortesia)", "Globoplay Canais Incluso"],
-        observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m."
-    },
-    {
-        regiaoId: "nacional", tipo: "TV Cabeada", nome: "INICIAL HD RET ANUNCIO TELECINE FID", precoMensal: 79.90, precoAnual: null,
-        beneficios: ["Pacote Inicial HD", "Acesso aos canais Telecine", "Globoplay Canais Incluso"],
-        observacoes: "Preço de UPGRADE (p.71). SEM Disney/Amazon. Desconto R$ 5,00 DCC. Fidelidade 12m."
+        regiaoId: "nacional", tipo: "TV Cabeada", nome: "INICIAL HD RET Claro TV+ HD 6S", precoMensal: 79.90, precoAnual: null,
+        beneficios: [
+            "Pacote Claro TV+ HD 6S",
+            "6 Streamings inclusos",
+            "Globoplay Canais Incluso",
+            "Mais de 100 canais HD"
+        ],
+        observacoes: "Preço de UPGRADE (p.71). Desconto R$ 5,00 DCC. Fidelidade 12m."
     },
 
     // ==========================================

@@ -1,4 +1,5 @@
 import { produtosBandaLarga } from '@/data/seedBandaLarga';
+// Auto-Offer Generator - Updated: 2026-02-17 18:35
 import { produtosTV } from '@/data/seedTV';
 import { produtosOpcionais } from '@/data/seedOpcionais';
 import { regioes } from '@/data/seedRegioes';
