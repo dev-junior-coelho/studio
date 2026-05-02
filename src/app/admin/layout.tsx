@@ -25,6 +25,18 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const currentSection =
+    pathname === "/admin"
+      ? "Visão geral"
+      : pathname === "/admin/history"
+        ? "Histórico"
+        : pathname === "/admin/agents"
+          ? "Equipe"
+          : pathname === "/admin/products"
+            ? "Produtos"
+            : pathname === "/admin/procedures"
+              ? "Procedimentos"
+              : "Admin";
 
   useEffect(() => {
     if (!loading) {
@@ -41,14 +53,14 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc]">
+    <div className="flex min-h-screen bg-background">
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex w-64 flex-col border-r bg-white shadow-sm sticky top-0 h-screen">
+      <aside className="hidden md:flex w-64 flex-col border-r bg-card shadow-sm sticky top-0 h-screen">
         <SidebarContent user={user} logout={logout} />
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 border-b bg-white flex items-center justify-between px-6 sticky top-0 z-20 shadow-sm shadow-slate-100">
+        <header className="h-16 border-b bg-card flex items-center justify-between px-6 sticky top-0 z-20 shadow-sm">
           <div className="flex items-center gap-2">
             <div className="md:hidden">
               <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
@@ -65,7 +77,7 @@ export default function AdminLayout({
             <div className="hidden md:flex items-center gap-2 text-sm font-medium text-slate-400">
               <span>Páginas</span>
               <span>/</span>
-              <span className="text-slate-800 capitalize font-semibold">{pathname?.split('/').pop() || 'Visão Geral'}</span>
+              <span className="text-foreground font-semibold">{currentSection}</span>
             </div>
           </div>
 
@@ -75,11 +87,8 @@ export default function AdminLayout({
             </Link>
             <div className="h-4 w-px bg-slate-200" />
             <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Sistema Online</span>
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">Sistema online</span>
             </div>
           </div>
         </header>
@@ -113,9 +122,9 @@ function SidebarContent({ user, logout, isMobile, onLinkClick }: { user: any; lo
         <SidebarLink href="/admin/procedures" icon={BookOpen} label="Procedimentos" onClick={onLinkClick} />
       </nav>
 
-      <div className="p-4 border-t bg-slate-50/50">
+      <div className="p-4 border-t bg-muted/30">
         <div className="flex items-center gap-3 mb-4 px-2">
-          <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-xs border border-purple-200">
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs border border-primary/20">
             {user.nome?.substring(0, 1) || "S"}
           </div>
           <div className="flex-1 overflow-hidden">
@@ -143,13 +152,12 @@ function SidebarLink({ href, icon: Icon, label, onClick }: { href: string; icon:
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200",
         isActive
-          ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]"
-          : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+          ? "bg-primary/10 text-primary border border-primary/20"
+          : "text-slate-600 hover:bg-muted hover:text-foreground"
       )}
     >
-      <Icon className={cn("h-4 w-4", isActive ? "text-white" : "text-slate-400")} />
+      <Icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-slate-400")} />
       {label}
     </Link>
   );
 }
-

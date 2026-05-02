@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-    { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/", label: "Início", icon: LayoutDashboard },
     { href: "/historico", label: "Histórico", icon: History },
     { href: "/channels", label: "Grade de Canais", icon: Tv },
     { href: "/perfil", label: "Meu Perfil", icon: User },

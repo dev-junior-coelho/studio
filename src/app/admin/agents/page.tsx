@@ -37,7 +37,7 @@ import { Label } from "@/components/ui/label";
 
 export default function AdminAgentsPage() {
     const { user } = useAuth();
-    const { firestore } = useFirebase();
+    const { firestore, auth } = useFirebase();
     const { toast } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [promoteTarget, setPromoteTarget] = useState<any>(null);
@@ -65,6 +65,9 @@ export default function AdminAgentsPage() {
             // FILTRO: Agentes e Supervisores com Z-Login válido e que não sejam a conta genérica 'agente'
             const validAgents = users.filter((u: any) =>
                 u.zLogin &&
+                !u.isTest &&
+                u.zLogin !== '000000' &&
+                u.zLogin !== '000001' &&
                 u.zLogin.toLowerCase() !== 'agente' &&
                 !u.nome?.toLowerCase().includes('agente')
             ).sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
@@ -129,10 +132,6 @@ export default function AdminAgentsPage() {
                 throw new Error("User not authenticated");
             }
 
-            // We need the ID token, which we can get from the auth context or firebase directly.
-            // Since we don't have direct access to the token string in the user object usually, 
-            // we should get it from the current user.
-            const { auth } = useFirebase();
             const token = await auth?.currentUser?.getIdToken();
 
             if (!token) {
@@ -289,8 +288,8 @@ export default function AdminAgentsPage() {
                     <p className="text-slate-500 font-medium mt-1">Monitoramento detalhado e controle de acesso dos agentes.</p>
                 </div>
 
-                <div className="flex items-center gap-3 bg-white p-2 rounded-xl shadow-sm border border-slate-100">
-                    <div className="text-right px-3 border-r border-slate-100">
+                <div className="flex items-center gap-3 bg-white p-2 rounded-xl shadow-sm border border-slate-200">
+                    <div className="text-right px-3 border-r border-slate-200">
                         <p className="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">Total</p>
                         <p className="text-xl font-black text-slate-700 leading-none">{data.agents.length}</p>
                     </div>
@@ -328,7 +327,7 @@ export default function AdminAgentsPage() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-50/50 border-b border-slate-100">
+                                <tr className="bg-slate-50/50 border-b border-slate-200">
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Agente</th>
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Identificação</th>
                                     <th className="px-8 py-4 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Supervisor</th>
@@ -346,7 +345,7 @@ export default function AdminAgentsPage() {
                                                 <div className="flex items-center gap-4">
                                                     <div className={cn(
                                                         "h-10 w-10 rounded-xl flex items-center justify-center font-black text-sm border-2 transition-all",
-                                                        isOnline ? "bg-emerald-50 border-emerald-100 text-emerald-600" : "bg-slate-50 border-slate-100 text-slate-400"
+                                                        isOnline ? "bg-emerald-50 border-emerald-200 text-emerald-600" : "bg-slate-50 border-slate-200 text-slate-400"
                                                     )}>
                                                         {agent.nome?.substring(0, 2).toUpperCase() || '??'}
                                                     </div>

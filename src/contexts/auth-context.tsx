@@ -6,6 +6,7 @@ import type { Usuario as AppUsuario } from '@/lib/types';
 import { useRouter, usePathname } from 'next/navigation';
 import { useUser as useFirebaseUser, useFirebase } from '@/firebase';
 import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { isMaintenanceMode } from '@/lib/maintenance';
 
 interface AuthContextType {
   user: AppUsuario | null;
@@ -27,10 +28,11 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const isTestUser = !!appUser?.isTest || appUser?.zLogin === "000000" || appUser?.zLogin === "000001";
 
   // Periodic lastSeen update for active monitoring
   useEffect(() => {
-    if (!appUser || appUser.role !== 'agente' || !firestore) return;
+    if (!appUser || appUser.role !== 'agente' || !firestore || isTestUser) return;
 
     const updateLastSeen = async () => {
       try {
@@ -65,7 +67,12 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
             } else {
               setAppUser(userData);
               // Update lastSeen on sync if agent
-              if (userData.role === 'agente') {
+              const shouldUpdateLastSeen =
+                userData.role === "agente" &&
+                !userData.isTest &&
+                userData.zLogin !== "000000" &&
+                userData.zLogin !== "000001";
+              if (shouldUpdateLastSeen) {
                 await setDoc(userDocRef, { lastSeen: new Date().toISOString() }, { merge: true });
               }
             }
@@ -112,6 +119,12 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
 
   const loginWithZ = async (zLogin: string, pin: string, mode: 'login' | 'register', roleArg: 'agente' | 'supervisor' = 'agente', nome?: string, supervisor?: string) => {
     if (!auth || !firestore) return;
+    
+    // Verificar se o sistema está em manutenção
+    if (isMaintenanceMode()) {
+      throw new Error("MANUTENÇÃO: O sistema está em manutenção no momento. Por favor, tente novamente mais tarde.");
+    }
+    
     setLoading(true);
 
     const role = roleArg; // Explicitly use the argument
@@ -141,7 +154,8 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
           nome: nome || '', // Nome completo do agente
           zLogin: zLogin, // Número Z sem o prefixo
           supervisor: supervisor, // Supervisor (GILVAN, HELIO, MARIANA PAIXÃO)
-          lastSeen: new Date().toISOString()
+          lastSeen: new Date().toISOString(),
+          isTest: zLogin === "000000" || zLogin === "000001"
         };
 
         await setDoc(doc(firestore, "usuarios", user.uid), newUser);

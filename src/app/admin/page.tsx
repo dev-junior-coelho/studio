@@ -53,6 +53,9 @@ export default function AdminDashboardPage() {
             const validAgents = users.filter((u: any) =>
                 u.role === 'agente' &&
                 u.zLogin &&
+                !u.isTest &&
+                u.zLogin !== '000000' &&
+                u.zLogin !== '000001' &&
                 u.zLogin.toLowerCase() !== 'agente' &&
                 !u.nome?.toLowerCase().includes('agente')
             );
@@ -79,7 +82,7 @@ export default function AdminDashboardPage() {
                         const newUser = change.doc.data() as any;
                         if (newUser.role === 'agente' && newUser.zLogin && newUser.zLogin.toLowerCase() !== 'agente') {
                             toast({
-                                title: "🚀 Novo Agente Registrado",
+                                title: "Novo agente registrado",
                                 description: `${newUser.nome || 'Um novo agente'} (Z${newUser.zLogin || '---'}) acabou de entrar no time.`,
                                 duration: 5000,
                             });
@@ -190,8 +193,8 @@ export default function AdminDashboardPage() {
         <div className="space-y-8 animate-in fade-in duration-500 pb-10">
             {/* Boas vindas e Título */}
             <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-extrabold tracking-tight text-slate-800">Centro de Comando Real-Time</h2>
-                <p className="text-slate-500 font-medium font-mono text-[11px] uppercase tracking-widest bg-slate-100 w-fit px-2 py-1 rounded">Atividade e Inteligência de Vendas</p>
+                <h2 className="text-3xl font-extrabold tracking-tight text-slate-800">Painel Administrativo</h2>
+                <p className="text-slate-500 font-medium font-mono text-[11px] uppercase tracking-widest bg-slate-100 w-fit px-2 py-1 rounded">Acompanhamento de equipe e resultados</p>
             </div>
 
             {/* Quick Stats Grid */}
@@ -319,7 +322,7 @@ export default function AdminDashboardPage() {
                     <CardContent>
                         <div className="space-y-4">
                             {stats.topAgents.length > 0 ? stats.topAgents.map((agent, i) => (
-                                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/20 transition-all">
+                                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-primary/20 transition-all">
                                     <div className="flex items-center gap-3">
                                         <div className={cn(
                                             "h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs",

@@ -8,6 +8,7 @@ import { Search, Loader2 } from 'lucide-react';
 import { useCollection } from '@/firebase/firestore/use-collection';
 import { collection } from 'firebase/firestore';
 import { useFirebase, useMemoFirebase } from '@/firebase/provider';
+import { PageShell } from '@/components/layout/page-shell';
 
 interface Procedimento {
   id: string;
@@ -60,43 +61,49 @@ export default function GuiaRapidoPage() {
   if (isLoading) {
     return (
       <div className="p-4 flex items-center justify-center h-[50vh]">
-        <div className="text-center space-y-2">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-          <p className="text-muted-foreground">Carregando procedimentos...</p>
+        <div className="text-center space-y-2 select-none">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-red-500" />
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Carregando procedimentos...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold">Guia Rápido</h1>
-      
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+    <PageShell
+      title="Guia Rápido"
+      description="Consulte os procedimentos e orientações do sistema."
+      contentClassName="space-y-6 max-w-4xl"
+    >
+      <div className="relative select-none">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <Input
           type="search"
           placeholder="Buscar por título ou tag..."
-          className="pl-10"
+          className="pl-10 h-12 border-slate-200 rounded-2xl bg-white shadow-sm focus:border-red-500 focus:ring-red-500/10 transition-all font-bold text-xs select-all"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
       {filteredProcedimentos.length > 0 ? (
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full space-y-3">
           {categories.map((category) => (
-            <AccordionItem value={category} key={category}>
-              <AccordionTrigger className="text-lg font-semibold">{category}</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-4">
+            <AccordionItem value={category} key={category} className="border border-slate-200 bg-white hover:border-slate-300 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden px-1">
+              <AccordionTrigger className="text-sm font-black text-slate-800 tracking-tight leading-tight px-5 py-4 hover:no-underline select-none">
+                {category}
+              </AccordionTrigger>
+              <AccordionContent className="px-5 pb-5">
+                <div className="space-y-4 pt-1">
                   {groupedProcedimentos[category].map((proc) => (
-                    <div key={proc.id} className="p-4 rounded-lg bg-muted/50">
-                      <h4 className="font-semibold mb-2">{proc.titulo}</h4>
-                      <p className="whitespace-pre-wrap text-sm text-foreground/80">{proc.conteudo}</p>
-                      <div className="flex flex-wrap gap-2 mt-3">
+                    <div key={proc.id} className="p-4 rounded-2xl bg-slate-50/50 border border-slate-200 hover:border-slate-300 transition-all select-none">
+                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 select-all">{proc.titulo}</h4>
+                      <p className="whitespace-pre-wrap text-xs text-slate-600 font-medium select-all">{proc.conteudo}</p>
+                      <div className="flex flex-wrap gap-1.5 mt-3 select-all">
                         {proc.tags.map(tag => (
-                          <span key={tag} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">{tag}</span>
+                          <span key={tag} className="text-[10px] bg-white text-slate-500 font-bold border border-slate-200 px-2.5 py-1 rounded-xl">
+                            {tag}
+                          </span>
                         ))}
                       </div>
                     </div>
@@ -107,10 +114,10 @@ export default function GuiaRapidoPage() {
           ))}
         </Accordion>
       ) : (
-        <div className="text-center py-10">
-          <p className="text-muted-foreground">Nenhum procedimento encontrado.</p>
+        <div className="text-center py-12 bg-white border border-slate-200 rounded-3xl shadow-sm select-none">
+          <p className="text-xs font-black text-slate-400 tracking-wider uppercase">Nenhum procedimento encontrado.</p>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

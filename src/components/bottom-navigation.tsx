@@ -6,7 +6,7 @@ import { Calculator, Search, ShoppingBasket, Tv, History, User, LayoutDashboard 
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/", label: "Início", icon: LayoutDashboard },
   { href: "/builder", label: "Montador", icon: ShoppingBasket },
   { href: "/historico", label: "Histórico", icon: History },
   { href: "/channels", label: "Canais", icon: Tv },
@@ -17,7 +17,7 @@ export function BottomNavigation() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-16 border-t bg-card text-card-foreground shadow-t-lg md:left-auto md:right-auto md:w-full md:max-w-lg md:mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 h-16 border-t border-slate-200 bg-white text-slate-800 shadow-lg md:left-auto md:right-auto md:w-full md:max-w-lg md:mx-auto select-none">
       <div className="grid h-full grid-cols-5">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
@@ -26,11 +26,11 @@ export function BottomNavigation() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center gap-1 text-xs font-medium transition-colors",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-primary"
+                "flex flex-col items-center justify-center gap-1 text-[10px] font-black uppercase tracking-wider transition-all duration-300",
+                isActive ? "text-red-500" : "text-slate-400 hover:text-slate-800"
               )}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="h-4.5 w-4.5" />
               <span>{item.label}</span>
             </Link>
           );

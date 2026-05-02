@@ -66,6 +66,7 @@ export interface Usuario {
   zLogin?: string; // Número do Z (sem o prefixo)
   supervisor?: string; // Nome do supervisor responsável
   lastSeen?: string | null; // Data da última atividade
+  isTest?: boolean;
   promotedBy?: string; // Quem promoveu
   promotedAt?: string; // Quando promoveu
   demotedBy?: string; // Quem rebaixou
@@ -81,6 +82,7 @@ export interface Regiao {
 export type Gastos = {
   tv: number;
   tvPacote?: string; // ex: "MIX HD", "INICIAL HD"
+  tvPontosAdicionais?: number;
   internet: number;
   internetPacote?: string; // ex: "350 Megas", "1 Giga"
   fixo: number;

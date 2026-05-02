@@ -60,20 +60,20 @@ service cloud.firestore {
 
     /**
      * @description Allows authenticated users to read and write their own user profile.
+     *              Supervisors can also read and update any user profile (for promote/demote/sync).
      * @path /usuarios/{usuarioId}
-     * @allow get: User can read their own profile if authenticated and the profile exists.
-     * @allow create: User can create their own profile if authenticated.
-     * @allow update: User can update their own profile if authenticated.
-     * @deny list, delete: User cannot list all profiles or delete their profile.
-     * @deny create: User cannot create a profile with an ID that does not match their auth UID.
-     * @deny update: User cannot change the ID after creating the profile.
-     * @principle Enforces user-ownership for profile data; restricts listing and deletion.
+     * @allow get: Owner or supervisor can read a profile.
+     * @allow list: Only supervisors can list all profiles.
+     * @allow create: Only the owner can create their own profile.
+     * @allow update: Owner can update their own profile; supervisors can update any profile.
+     * @deny delete: No one can delete profiles.
+     * @principle Enforces user-ownership with supervisor override for management operations.
      */
     match /usuarios/{usuarioId} {
       allow get: if isSignedIn() && (isOwner(usuarioId) || isSupervisor());
       allow list: if isSignedIn() && isSupervisor();
       allow create: if isSignedIn() && isOwner(usuarioId);
-      allow update: if isSignedIn() && isOwner(usuarioId);
+      allow update: if isSignedIn() && (isOwner(usuarioId) || isSupervisor());
       allow delete: if false;
     }
 

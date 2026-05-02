@@ -45,11 +45,9 @@ import {
   RotateCcw,
   Archive,
   ArrowRightLeft,
-
   Calculator,
   Lock
 } from 'lucide-react';
-// import { BuilderView } from "@/components/app/builder-view"; // REMOVED
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { useFirebase } from '@/firebase/provider';
@@ -59,12 +57,11 @@ import { useToast } from '@/hooks/use-toast';
 import type { ProductType, Produto, Gastos } from '@/lib/types';
 import { NovaOfertaCard } from '@/components/nova-oferta-card';
 import { cn, normalizeText } from '@/lib/utils';
-import Link from 'next/link'; // ADDED
-import { produtosOpcionais } from '@/data/seedOpcionais'; // Import optional products data
-import { generateAutoOffer } from '@/lib/auto-offer-generator'; // Import auto-offer generator
-import { regioes } from '@/data/seedRegioes'; // Import regions data
-
-
+import Link from 'next/link';
+import { produtosOpcionais } from '@/data/seedOpcionais';
+import { generateAutoOffer } from '@/lib/auto-offer-generator';
+import { regioes } from '@/data/seedRegioes';
+import { PageShell } from '@/components/layout/page-shell';
 
 import {
   Dialog,
@@ -97,21 +94,20 @@ export default function DashboardPage() {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [cityOpen, setCityOpen] = useState(false); // State for city selector popover
+
+  const [cityOpen, setCityOpen] = useState(false);
   const [calculadoraValor, setCalculadoraValor] = useState('');
   const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Mesh' | 'AlaCarte' | null>(null);
 
-  // === Modal and Contract State ===
   const [showContractModal, setShowContractModal] = useState(false);
   const [showActivationInfo, setShowActivationInfo] = useState(false);
   const [contractNumber, setContractNumber] = useState('');
   const [contractError, setContractError] = useState('');
 
-  // Format contract number as 000/123456789
   const handleContractChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    let value = e.target.value.replace(/\D/g, '');
 
-    if (value.length > 12) value = value.slice(0, 12); // Max length
+    if (value.length > 12) value = value.slice(0, 12);
 
     if (value.length > 3) {
       value = value.slice(0, 3) + '/' + value.slice(3);
@@ -122,7 +118,6 @@ export default function DashboardPage() {
   };
 
   const validateContract = () => {
-    // Regex for 000/123456789 (3 digits, slash, 9 digits)
     const regex = /^\d{3}\/\d{9}$/;
     if (!regex.test(contractNumber)) {
       setContractError('Formato inválido. Use: 000/123456789');
@@ -151,11 +146,9 @@ export default function DashboardPage() {
   const saveOfferToFirebase = async (status: 'Aceitou' | 'Recusou', contrato: string | null) => {
     if (!user || !firestore) return;
 
-    // SIMULAÇÃO PARA AGENTE DE TESTE (Z000001)
     const currentZLogin = user.email?.split('@')[0].replace('z', '') || '';
-    if (currentZLogin === '000001') {
+    if (currentZLogin === '000000' || currentZLogin === '000001') {
       setIsSaving(true);
-      // Simula um delay de rede
       await new Promise(resolve => setTimeout(resolve, 800));
 
       clearOffer();
@@ -179,7 +172,7 @@ export default function DashboardPage() {
         produtoIds: products.map(p => p.id),
         produtos: products,
         status,
-        contrato: contrato || 'N/A', // Save contract number
+        contrato: contrato || 'N/A',
         timestamp: serverTimestamp(),
         totalOferta: totalComDesconto,
         economia: economiaMensal,
@@ -211,16 +204,13 @@ export default function DashboardPage() {
     }
   };
 
-  // Handle changes for standard numeric fields
   const handleGastoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // Ensure we are only updating numeric fields, not 'outros' array
     if (name !== 'outros') {
       setGastos((prev) => ({ ...prev, [name]: Number(value) || 0 }));
     }
   };
 
-  // Handle changes for dynamic AlaCarte fields
   const handleAlaCarteChange = (id: string, field: 'name' | 'value', value: string | number) => {
     setGastos((prev) => ({
       ...prev,
@@ -245,25 +235,21 @@ export default function DashboardPage() {
   const handleSelecionarTipo = (tipo: 'TV' | 'Internet' | 'Fixo' | 'Mesh' | 'AlaCarte') => {
     setCalculadoraTipo(tipo);
 
-    // Mapa de tipo para chave de gastos
-    const tipoMap: Record<string, keyof Gastos> = {
-      'TV': 'tv',
-      'Internet': 'internet',
-      'Fixo': 'fixo',
-      'Mesh': 'wifiMesh',
-      'AlaCarte': 'outros'
-    };
+    const tipoMap = {
+      TV: 'tv',
+      Internet: 'internet',
+      Fixo: 'fixo',
+      Mesh: 'wifiMesh',
+      AlaCarte: 'outros'
+    } as const;
 
-    // Auto-preencher com o valor atual de gastos
     const chave = tipoMap[tipo];
     let valorAtual = 0;
 
     if (chave === 'outros') {
-      // Se for AlaCarte (outros), somar os valores do array
       valorAtual = gastos.outros.reduce((acc, item) => acc + (Number(item.value) || 0), 0);
     } else {
-      // Para outros tipos, pegar o valor direto
-      valorAtual = gastos[chave as keyof Omit<Gastos, 'outros'>] || 0;
+      valorAtual = gastos[chave] || 0;
     }
 
     setCalculadoraValor(valorAtual > 0 ? valorAtual.toString() : '');
@@ -272,7 +258,6 @@ export default function DashboardPage() {
   const handleAdicionarCalculadora = () => {
     const valor = Number(calculadoraValor);
     if (valor > 0 && calculadoraTipo) {
-      // Mapa de tipo para nome legível
       const tipoMap: Record<string, string> = {
         'TV': 'TV',
         'Internet': 'Internet',
@@ -281,7 +266,6 @@ export default function DashboardPage() {
         'AlaCarte': 'A la carte'
       };
 
-      // ✅ Criar produto customizado com tipos corretos
       const produtoCustomizado: Produto = {
         id: `custom-${Date.now()}`,
         nome: `${tipoMap[calculadoraTipo]} (Mantém como está)`,
@@ -299,9 +283,7 @@ export default function DashboardPage() {
     }
   };
 
-  // Handler for auto-generating offer
   const handleGerarOferta = useCallback(() => {
-    // Validation 1: Check if city is selected
     if (!selectedCity) {
       toast({
         title: "Cidade não selecionada",
@@ -311,7 +293,6 @@ export default function DashboardPage() {
       return;
     }
 
-    // Validation 2: Block if products already exist (per user request)
     if (products.length > 0) {
       toast({
         title: "Oferta já existe",
@@ -335,9 +316,7 @@ export default function DashboardPage() {
       return;
     }
 
-    // Add products automatically
     result.products.forEach(product => {
-      // Add missing fields to match Produto type
       const productWithFields: Produto = {
         ...product,
         id: product.id || `auto-${Date.now()}-${Math.random()}`,
@@ -348,13 +327,12 @@ export default function DashboardPage() {
     });
 
     toast({
-      title: "Oferta Gerada com Sucesso! 🎉",
+      title: "Oferta gerada com sucesso",
       description: `${result.products.length} produto(s) adicionado(s) automaticamente. Adicione o plano Móvel manualmente se necessário.`,
       duration: 5000
     });
 
     if (result.warnings.length > 0) {
-      // Show warnings in a separate toast
       setTimeout(() => {
         toast({
           title: "Avisos",
@@ -366,9 +344,6 @@ export default function DashboardPage() {
 
     setIsGenerating(false);
   }, [gastos, selectedCity, products, addProduct, toast]);
-
-  // Calcular desconto de débito em conta
-
 
   const alaCarteTotal = useMemo(() => gastos.outros.reduce((acc, item) => acc + (Number(item.value) || 0), 0), [gastos.outros]);
 
@@ -384,7 +359,8 @@ export default function DashboardPage() {
       if (!acc[tipo]) {
         acc[tipo] = [];
       }
-      acc[tipo].push(...beneficios);
+      const sanitized = (beneficios || []).filter((b) => !b.toLowerCase().includes("chatgpt"));
+      acc[tipo].push(...sanitized);
       return acc;
     }, {} as Record<ProductType, string[]>);
   }, [products]);
@@ -394,8 +370,6 @@ export default function DashboardPage() {
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   };
-
-
 
   const getIconForType = (type: string) => {
     switch (type.toLowerCase()) {
@@ -410,630 +384,611 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-transparent pb-4">
-      <main className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 space-y-6 pt-6" style={{ maxWidth: '1920px', width: '100%' }}>
-        {/* Header da Dashboard */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
-              {user && 'nome' in user ? `Olá, ${(user as any).nome.split(' ')[0]}` : 'Olá, Agente'}
-              <span className="text-xl">👋</span>
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Vamos superar as metas hoje?
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="px-3 py-1">
-              <Check className="mr-1 h-3 w-3" />
-              Sistema Ativo
-            </Badge>
-          </div>
-        </div>
+    <PageShell
+      title={user && 'nome' in user ? `Olá, ${(user as any).nome.split(' ')[0]}` : 'Início'}
+      description="Monte ofertas com rapidez e clareza."
+      actions={
+        <Badge variant="secondary" className="px-3 py-1 bg-red-50 text-red-600 border border-red-100 hover:bg-red-50">
+          <Check className="mr-1 h-3 w-3 text-red-500" />
+          Sistema ativo
+        </Badge>
+      }
+      className="pb-24 animate-in fade-in duration-500"
+      contentClassName="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start"
+    >
+      {/* Coluna Esquerda: Principal (Gastos + Builder + Argumento) */}
+      <div className="col-span-12 xl:col-span-8 space-y-6">
 
-        {/* Layout Principal Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-
-          {/* Coluna Esquerda: Principal (Gastos + Builder + Argumento) */}
-          <div className="col-span-12 xl:col-span-8 space-y-6">
-
-            {/* Portability Incentive Banner */}
-            <div className="relative group overflow-hidden rounded-xl p-[3px] shadow-xl">
-              <div className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,#ffffff_50%,transparent_100%)] opacity-80" />
-
-              <div className="relative h-full w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-6 lg:py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl opacity-50 pointer-events-none"></div>
-
-                <div className="relative flex flex-col sm:flex-row items-center gap-5 z-10">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white/20 shadow-[0_0_15px_rgba(255,255,255,0.3)] ring-1 ring-white/30 backdrop-blur-sm">
-                    <ArrowRightLeft className="h-8 w-8 text-white drop-shadow-md" />
-                  </div>
-                  <div className="space-y-1.5 text-center sm:text-left">
-                    <h3 className="text-xl lg:text-2xl font-black text-white leading-tight drop-shadow-sm">
-                      O cliente possui outra operadora?
+        {/* Card Portabilidade - Nova Paleta */}
+        <Card className="border border-amber-200/60 bg-gradient-to-br from-amber-50/40 via-white to-amber-50/20 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5">
+          <CardContent className="p-0">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <div className="rounded-xl bg-amber-50 p-3 border border-amber-100/50">
+                  <ArrowRightLeft className="h-6 w-6 text-amber-600" />
+                </div>
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-800">
+                      Portabilidade é garantia de dinheiro no seu bolso
                     </h3>
-                    <p className="text-sm lg:text-base font-medium text-blue-50 max-w-2xl text-shadow-sm leading-relaxed">
-                      Oferte a <span className="font-bold text-white bg-white/10 px-1.5 py-0.5 rounded border border-white/20">Portabilidade</span> e garanta <span className="font-black text-yellow-300">SUA COMISSÃO</span> E UMA <span className="font-black text-green-300">BAIXA TAXA DE SILENTE!</span>
-                    </p>
+                  </div>
+                  <p className="text-sm text-slate-600/90 leading-relaxed font-bold">
+                    Cada ligação é uma oportunidade real - Acredite no que você oferece — isso faz toda diferença. Não fechou? Próximo.<br />
+                    Porque o “sim” sempre chega pra quem não para.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-slate-500 font-medium">
+                    <span className="rounded-md bg-amber-100/30 px-3 py-1.5 border border-amber-200/40 text-amber-800 font-black uppercase tracking-wide">
+                      Foco, energia e atitude. Bora vender portabilidade! 🚀
+                    </span>
                   </div>
                 </div>
+              </div>
 
-                <Badge className="relative z-10 bg-white text-blue-600 hover:bg-blue-50 border-0 px-6 py-3 text-xs lg:text-sm font-black uppercase tracking-widest shadow-lg transform transition-transform group-hover:scale-105 whitespace-normal sm:whitespace-nowrap text-center">
-                  PORTABILIDADE É GARANTIA DE DINHEIRO NO SEU BOLSO 🚀
+              <div className="w-full lg:w-auto">
+                <Badge className="w-full lg:w-auto justify-center bg-purple-600 hover:bg-purple-700 text-white border-0 px-4 py-2 text-[11px] font-black uppercase tracking-wider shadow-sm rounded-xl select-none">
+                  Portabilidade aumenta sua comissão
                 </Badge>
               </div>
             </div>
+          </CardContent>
+        </Card>
 
-            {/* City Selector - Destacado no topo */}
-            <Card className="shadow-md border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50/50 to-transparent">
-              <CardContent className="py-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-blue-100">
-                      <MapPin className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <Label className="text-sm font-semibold text-gray-700">Cidade do Cliente</Label>
-                      <p className="text-xs text-muted-foreground">Selecione a cidade para gerar ofertas</p>
-                    </div>
-                  </div>
-
-                  <Popover open={cityOpen} onOpenChange={setCityOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={cityOpen}
-                        className="w-[280px] justify-between font-medium"
-                      >
-                        {selectedCity || "Selecione a cidade..."}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[280px] p-0">
-                      <Command
-                        filter={(value, search) => {
-                          const normalizedValue = normalizeText(value);
-                          const normalizedSearch = normalizeText(search);
-                          return normalizedValue.includes(normalizedSearch) ? 1 : 0;
-                        }}
-                      >
-                        <CommandInput placeholder="Buscar cidade..." />
-                        <CommandList>
-                          <CommandEmpty>Nenhuma cidade encontrada.</CommandEmpty>
-                          <CommandGroup>
-                            {regioes.flatMap(regiao => regiao.cidades).sort().map((cidade) => (
-                              <CommandItem
-                                key={cidade}
-                                value={cidade}
-                                onSelect={(currentValue) => {
-                                  setSelectedCity(currentValue === selectedCity ? null : currentValue);
-                                  setCityOpen(false);
-                                }}
-                              >
-                                <CheckIcon
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    selectedCity === cidade ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {cidade}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+        {/* City Selector - Destacado */}
+        <Card className="border border-slate-200 bg-white/80 rounded-3xl p-4 shadow-sm hover:shadow-md transition-all duration-300">
+          <CardContent className="p-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-red-50 border border-red-100/50">
+                  <MapPin className="h-5 w-5 text-red-500" />
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <Label className="text-sm font-black text-slate-800 tracking-tight">Cidade do Cliente</Label>
+                  <p className="text-xs text-muted-foreground">Usada para filtrar catálogo e gerar sugestão.</p>
+                </div>
+              </div>
 
-            {/* Desktop Top Row: Gastos + Carrinho (Side by Side) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* 1. Gastos Atuais */}
-              <Card className="shadow-sm border-slate-200 h-full flex flex-col border-t-4 border-t-slate-500">
-                <CardHeader className="pb-3 pt-4">
-                  <div className="flex flex-row items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Wallet className="h-5 w-5 text-gray-500" />
-                        <CardTitle className="text-xl">Gastos Atuais</CardTitle>
-                      </div>
-                      <CardDescription>Quanto o cliente paga hoje.</CardDescription>
-                    </div>
-                    <div className="text-right bg-yellow-400/10 px-3 py-1 rounded-lg border border-yellow-400/20">
-                      <span className="text-[10px] text-yellow-700/80 font-bold uppercase tracking-wider block">Total Atual</span>
-                      <span className="text-lg font-black text-yellow-900">{formatCurrency(totalGastoAtual)}</span>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                {/* Auto-Generate Offer Button */}
-                <div className="px-4 pb-4">
+              <Popover open={cityOpen} onOpenChange={setCityOpen}>
+                <PopoverTrigger asChild>
                   <Button
-                    onClick={() => {
-                      // VERIFICAÇÃO PREMIUM: Apenas Z000001 tem acesso
-                      const isPremiumUser = user?.zLogin === '000001';
-
-                      if (!isPremiumUser) {
-                        toast({
-                          title: "Funcionalidade Premium 💎",
-                          description: "A geração automática de ofertas está disponível apenas na versão Premium.",
-                          className: "bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-none shadow-lg",
-                          duration: 4000
-                        });
-                        return;
-                      }
-
-                      handleGerarOferta();
-                    }}
-                    disabled={isGenerating || (user?.zLogin === '000001' && (!selectedCity || products.length > 0))}
-                    className={cn(
-                      "w-full font-bold shadow-lg transform transition-all hover:scale-[1.02]",
-                      user?.zLogin === '000001'
-                        ? "bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white"
-                        : "bg-slate-100 text-slate-500 hover:bg-slate-200 border-2 border-dashed border-slate-300"
-                    )}
-                    size="lg"
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={cityOpen}
+                    className="w-full sm:w-[320px] justify-between font-bold text-xs bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-slate-300 text-slate-700 rounded-2xl h-11 transition-all"
                   >
-                    {isGenerating ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Gerando Oferta...
-                      </>
-                    ) : (
-                      <>
-                        {user?.zLogin !== '000001' && <Lock className="mr-2 h-4 w-4" />}
-                        {user?.zLogin === '000001' ? (
-                          <>
-                            <Zap className="mr-2 h-5 w-5" />
-                            Gerar Oferta Automaticamente
-                          </>
-                        ) : (
-                          "Gerar Oferta (Premium)"
-                        )}
-                      </>
-                    )}
+                    {selectedCity || "Selecione a cidade..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
-                  {!selectedCity && (
-                    <p className="text-xs text-center text-muted-foreground mt-2">
-                      Selecione uma cidade primeiro
-                    </p>
-                  )}
-                  {products.length > 0 && selectedCity && (
-                    <p className="text-xs text-center text-orange-600 mt-2 font-medium">
-                      Limpe a oferta para gerar automaticamente
-                    </p>
-                  )}
+                </PopoverTrigger>
+                <PopoverContent className="w-[320px] p-0 rounded-2xl overflow-hidden border-slate-200 shadow-xl">
+                  <Command
+                    filter={(value, search) => {
+                      const normalizedValue = normalizeText(value);
+                      const normalizedSearch = normalizeText(search);
+                      return normalizedValue.includes(normalizedSearch) ? 1 : 0;
+                    }}
+                  >
+                    <CommandInput placeholder="Buscar cidade..." className="h-10 text-xs font-semibold" />
+                    <CommandList>
+                      <CommandEmpty className="text-xs p-3">Nenhuma cidade encontrada.</CommandEmpty>
+                      <CommandGroup>
+                        {regioes.flatMap(regiao => regiao.cidades).sort().map((cidade) => (
+                          <CommandItem
+                            key={cidade}
+                            value={cidade}
+                            onSelect={(currentValue) => {
+                              setSelectedCity(currentValue === selectedCity ? null : currentValue);
+                              setCityOpen(false);
+                            }}
+                            className="text-xs font-bold text-slate-700 cursor-pointer"
+                          >
+                            <CheckIcon
+                              className={cn(
+                                "mr-2 h-4 w-4 text-red-500",
+                                selectedCity === cidade ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {cidade}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Desktop Top Row: Gastos + Carrinho */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* 1. Gastos Atuais */}
+          <Card className="border border-slate-200 bg-white shadow-sm rounded-3xl flex flex-col h-full overflow-hidden hover:shadow-md transition-all duration-300">
+            <CardHeader className="p-5 pb-3 bg-slate-50/50 border-b border-slate-50">
+              <div className="flex flex-row items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Wallet className="h-5 w-5 text-red-500" />
+                    <CardTitle className="text-base font-black tracking-tight text-slate-800">Gastos Atuais</CardTitle>
+                  </div>
+                  <CardDescription className="text-xs text-slate-500 font-semibold">Quanto o cliente paga hoje.</CardDescription>
+                </div>
+                <div className="text-right bg-slate-50 px-3.5 py-1.5 rounded-2xl border border-slate-200">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block leading-tight">Total Atual</span>
+                  <span className="text-xl font-black text-slate-800 font-mono tracking-tight">{formatCurrency(totalGastoAtual)}</span>
+                </div>
+              </div>
+            </CardHeader>
+
+            {/* Auto-Generate Offer Button - Super Premium Tone */}
+            <div className="px-5 pt-4">
+              <Button
+                onClick={() => {
+                  handleGerarOferta();
+                }}
+                disabled={isGenerating || !selectedCity || products.length > 0}
+                className="w-full font-black text-xs tracking-wider uppercase bg-gradient-to-r from-red-600 via-red-500 to-red-400 hover:brightness-110 text-white rounded-full h-11 shadow-lg transform active:scale-95 transition-all flex items-center justify-center border-0 select-none cursor-pointer"
+                size="lg"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Gerando sugestão...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="mr-2 h-4 w-4" />
+                    Gerar Sugestão Automática
+                  </>
+                )}
+              </Button>
+              {!selectedCity && (
+                <p className="text-[10px] text-center text-muted-foreground mt-2 font-bold uppercase tracking-wide">
+                  Selecione uma cidade primeiro
+                </p>
+              )}
+              {products.length > 0 && selectedCity && (
+                <p className="text-[10px] text-center text-red-500 mt-2 font-bold uppercase tracking-wide">
+                  Limpe a oferta para gerar automaticamente
+                </p>
+              )}
+            </div>
+
+            <CardContent className="p-5 space-y-5 flex-1 overflow-auto">
+              <div className="flex flex-col gap-3.5">
+                {/* TV */}
+                <div className="space-y-1 group">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 leading-none select-none">
+                    <Tv className="h-3.5 w-3.5 text-red-500" /> TV
+                  </Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">R$</span>
+                      <Input
+                        type="number"
+                        value={gastos.tv === 0 ? '' : gastos.tv}
+                        onChange={(e) => setGastos({ ...gastos, tv: Number(e.target.value) || 0 })}
+                        placeholder="0,00"
+                        className="pl-8 text-right font-black font-mono transition-all bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 text-xs text-slate-800"
+                      />
+                    </div>
+                    <Input
+                      type="text"
+                      value={gastos.tvPacote || ''}
+                      onChange={(e) => setGastos({ ...gastos, tvPacote: e.target.value })}
+                      placeholder="ex: MIX HD"
+                      className="text-xs bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 font-semibold"
+                    />
+                    <Input
+                      type="number"
+                      value={gastos.tvPontosAdicionais || ''}
+                      onChange={(e) => setGastos({ ...gastos, tvPontosAdicionais: Number(e.target.value) || 0 })}
+                      placeholder="Pontos"
+                      className="text-xs bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 text-center font-semibold"
+                    />
+                  </div>
                 </div>
 
-                <CardContent className="space-y-6 flex-1">
-                  <div className="flex flex-col gap-4">
-                    {/* TV - 3 colunas (Valor | Pacote | Pontos Adicionais) */}
-                    <div className="space-y-1.5 group">
-                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
-                        <Tv className="h-3.5 w-3.5" /> TV
-                      </Label>
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
-                          <Input
-                            type="number"
-                            value={gastos.tv === 0 ? '' : gastos.tv}
-                            onChange={(e) => setGastos({ ...gastos, tv: Number(e.target.value) || 0 })}
-                            placeholder="0,00"
-                            className="pl-8 text-right font-medium transition-all focus:border-primary"
-                          />
-                        </div>
-                        <Input
-                          type="text"
-                          value={gastos.tvPacote || ''}
-                          onChange={(e) => setGastos({ ...gastos, tvPacote: e.target.value })}
-                          placeholder="ex: MIX HD"
-                          className="text-sm"
-                        />
-                        <Input
-                          type="number"
-                          value={gastos.tvPontosAdicionais || ''}
-                          onChange={(e) => setGastos({ ...gastos, tvPontosAdicionais: Number(e.target.value) || 0 })}
-                          placeholder="Pontos Adic."
-                          className="text-sm text-center"
-                        />
-                      </div>
+                {/* Internet */}
+                <div className="space-y-1 group">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 leading-none select-none">
+                    <Wifi className="h-3.5 w-3.5 text-red-500" /> Internet
+                  </Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">R$</span>
+                      <Input
+                        type="number"
+                        value={gastos.internet === 0 ? '' : gastos.internet}
+                        onChange={(e) => setGastos({ ...gastos, internet: Number(e.target.value) || 0 })}
+                        placeholder="0,00"
+                        className="pl-8 text-right font-black font-mono transition-all bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 text-xs text-slate-800"
+                      />
                     </div>
+                    <Input
+                      type="text"
+                      value={gastos.internetPacote || ''}
+                      onChange={(e) => setGastos({ ...gastos, internetPacote: e.target.value })}
+                      placeholder="ex: 350 Megas"
+                      className="text-xs bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 font-semibold"
+                    />
+                  </div>
+                </div>
 
-                    {/* Internet - 2 colunas */}
-                    <div className="space-y-1.5 group">
-                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
-                        <Wifi className="h-3.5 w-3.5" /> Internet
-                      </Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
-                          <Input
-                            type="number"
-                            value={gastos.internet === 0 ? '' : gastos.internet}
-                            onChange={(e) => setGastos({ ...gastos, internet: Number(e.target.value) || 0 })}
-                            placeholder="0,00"
-                            className="pl-8 text-right font-medium transition-all focus:border-primary"
-                          />
-                        </div>
-                        <Input
-                          type="text"
-                          value={gastos.internetPacote || ''}
-                          onChange={(e) => setGastos({ ...gastos, internetPacote: e.target.value })}
-                          placeholder="ex: 350 Megas"
-                          className="text-sm"
-                        />
-                      </div>
+                {/* Fixo */}
+                <div className="space-y-1 group">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 leading-none select-none">
+                    <Phone className="h-3.5 w-3.5 text-red-500" /> Fixo
+                  </Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">R$</span>
+                      <Input
+                        type="number"
+                        value={gastos.fixo === 0 ? '' : gastos.fixo}
+                        onChange={(e) => setGastos({ ...gastos, fixo: Number(e.target.value) || 0 })}
+                        placeholder="0,00"
+                        className="pl-8 text-right font-black font-mono transition-all bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 text-xs text-slate-800"
+                      />
                     </div>
+                    <Input
+                      type="text"
+                      value={gastos.fixoPacote || ''}
+                      onChange={(e) => setGastos({ ...gastos, fixoPacote: e.target.value })}
+                      placeholder="ex: Brasil"
+                      className="text-xs bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 font-semibold"
+                    />
+                  </div>
+                </div>
 
-                    {/* Fixo - 2 colunas */}
-                    <div className="space-y-1.5 group">
-                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
-                        <Phone className="h-3.5 w-3.5" /> Fixo
-                      </Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
-                          <Input
-                            type="number"
-                            value={gastos.fixo === 0 ? '' : gastos.fixo}
-                            onChange={(e) => setGastos({ ...gastos, fixo: Number(e.target.value) || 0 })}
-                            placeholder="0,00"
-                            className="pl-8 text-right font-medium transition-all focus:border-primary"
-                          />
-                        </div>
-                        <Input
-                          type="text"
-                          value={gastos.fixoPacote || ''}
-                          onChange={(e) => setGastos({ ...gastos, fixoPacote: e.target.value })}
-                          placeholder="ex: Brasil"
-                          className="text-sm"
-                        />
-                      </div>
+                {/* Móvel */}
+                <div className="space-y-1 group">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 leading-none select-none">
+                    <Smartphone className="h-3.5 w-3.5 text-red-500" /> Móvel
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">R$</span>
+                    <Input
+                      type="number"
+                      value={gastos.movel === 0 ? '' : gastos.movel}
+                      onChange={(e) => setGastos({ ...gastos, movel: Number(e.target.value) || 0 })}
+                      placeholder="0,00"
+                      className="pl-8 text-right font-black font-mono transition-all bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 text-xs text-slate-800"
+                    />
+                  </div>
+                </div>
+
+                {/* WiFi Mesh */}
+                <div className="space-y-1 group">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 leading-none select-none">
+                    <Zap className="h-3.5 w-3.5 text-red-500" /> WiFi Mesh
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">R$</span>
+                    <Input
+                      type="number"
+                      value={gastos.wifiMesh === 0 ? '' : gastos.wifiMesh}
+                      onChange={(e) => setGastos({ ...gastos, wifiMesh: Number(e.target.value) || 0 })}
+                      placeholder="0,00"
+                      className="pl-8 text-right font-black font-mono transition-all bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 text-xs text-slate-800"
+                    />
+                  </div>
+                </div>
+
+                {/* Dynamic Ala Carte Fields */}
+                <div className="space-y-3 pt-2 border-t border-dashed">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 leading-none select-none">
+                      {getIconForType('AlaCarte')} A la carte (Outros)
+                    </Label>
+                    <Button variant="ghost" size="sm" onClick={addAlaCarteItem} className="h-7 px-2.5 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all">
+                      <Plus className="h-3.5 w-3.5 mr-1" /> Adicionar
+                    </Button>
+                  </div>
+
+                  {gastos.outros.map((item) => (
+                    <AlaCarteRow
+                      key={item.id}
+                      item={item}
+                      onChange={handleAlaCarteChange}
+                      onRemove={removeAlaCarteItem}
+                    />
+                  ))}
+
+                  {gastos.outros.length > 0 && (
+                    <div className="flex justify-end items-center pt-2 border-t border-dashed mt-1">
+                      <span className="text-[10px] text-muted-foreground mr-2 font-bold uppercase tracking-wider">Total A la carte:</span>
+                      <span className="text-xs font-black text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200/50 font-mono">{formatCurrency(alaCarteTotal)}</span>
                     </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
 
-                    {/* Móvel - 1 coluna */}
-                    <div className="space-y-1.5 group">
-                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
-                        <Smartphone className="h-3.5 w-3.5" /> Móvel
-                      </Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
-                        <Input
-                          type="number"
-                          value={gastos.movel === 0 ? '' : gastos.movel}
-                          onChange={(e) => setGastos({ ...gastos, movel: Number(e.target.value) || 0 })}
-                          placeholder="0,00"
-                          className="pl-8 text-right font-medium transition-all focus:border-primary"
-                        />
-                      </div>
-                    </div>
+            {/* Calculadora Integration */}
+            <div className="border-t bg-slate-50/40 p-4 space-y-4 rounded-b-3xl">
+              <div className="flex items-center gap-2 text-red-500 font-bold select-none">
+                <Calculator className="h-4 w-4" />
+                <span className="text-xs tracking-tight">Manter valor atual na oferta</span>
+              </div>
 
-                    {/* WiFi Mesh - 1 coluna */}
-                    <div className="space-y-1.5 group">
-                      <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
-                        <Zap className="h-3.5 w-3.5" /> WiFi Mesh
-                      </Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
-                        <Input
-                          type="number"
-                          value={gastos.wifiMesh === 0 ? '' : gastos.wifiMesh}
-                          onChange={(e) => setGastos({ ...gastos, wifiMesh: Number(e.target.value) || 0 })}
-                          placeholder="0,00"
-                          className="pl-8 text-right font-medium transition-all focus:border-primary"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Dynamic Ala Carte Fields */}
-                    <div className="space-y-3 pt-2 border-t border-dashed">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-muted-foreground text-xs uppercase font-semibold flex items-center gap-1.5">
-                          {getIconForType('AlaCarte')} A la carte (Outros)
-                        </Label>
-                        <Button variant="ghost" size="sm" onClick={addAlaCarteItem} className="h-7 px-2.5 text-xs text-red-600 hover:text-red-700 hover:bg-red-50">
-                          <Plus className="h-3 w-3 mr-1" /> Adicionar
-                        </Button>
-                      </div>
-
-                      {gastos.outros.map((item, index) => (
-                        <AlaCarteRow
-                          key={item.id}
-                          item={item}
-                          onChange={handleAlaCarteChange}
-                          onRemove={removeAlaCarteItem}
-                        />
-                      ))}
-
-
-                      {/* Discrete Total for A la carte */}
-                      {gastos.outros.length > 0 && (
-                        <div className="flex justify-end items-center pt-2 border-t border-dashed mt-1">
-                          <span className="text-[10px] text-muted-foreground mr-2">Total A la carte:</span>
-                          <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">{formatCurrency(alaCarteTotal)}</span>
-                        </div>
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-1.5">
+                  {['TV', 'Internet', 'Fixo', 'Mesh', 'AlaCarte'].map((tipo) => (
+                    <button
+                      key={tipo}
+                      onClick={() => handleSelecionarTipo(tipo as any)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-wide border transition-all flex items-center gap-1.5",
+                        calculadoraTipo === tipo
+                          ? 'border-red-500 bg-red-500 text-white shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                       )}
-                    </div>
-                  </div>
-                </CardContent>
-
-                {/* Seção Calculadora Integration */}
-                <div className="border-t bg-gray-50/50 p-5 space-y-4 rounded-b-lg">
-                  <div className="flex items-center gap-2 text-primary font-medium">
-                    <Calculator className="h-4 w-4" />
-                    <span className="text-sm">Manter valor atual na oferta</span>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex flex-wrap gap-2">
-                      {['TV', 'Internet', 'Fixo', 'Mesh', 'AlaCarte'].map((tipo) => (
-                        <button
-                          key={tipo}
-                          onClick={() => handleSelecionarTipo(tipo as any)}
-                          className={cn(
-                            "px-3 py-1.5 rounded-full text-xs font-medium border transition-all flex items-center gap-1",
-                            calculadoraTipo === tipo
-                              ? 'border-primary bg-primary text-primary-foreground shadow-sm'
-                              : 'border-gray-200 bg-white text-gray-600 hover:border-primary/50'
-                          )}
-                        >
-                          {getIconForType(tipo)}
-                          {tipo === 'Mesh' ? 'WiFi Mesh' : (tipo === 'AlaCarte' ? 'A la carte' : tipo)}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="flex gap-2 items-end">
-                      <div className="flex-1 space-y-1.5">
-                        <Label className="text-xs text-muted-foreground">Valor a manter (R$)</Label>
-                        <Input
-                          type="number"
-                          value={calculadoraValor}
-                          onChange={(e) => setCalculadoraValor(e.target.value)}
-                          placeholder="0,00"
-                          className="h-9"
-                        />
-                      </div>
-                      <Button
-                        onClick={handleAdicionarCalculadora}
-                        className="h-9 px-4 shrink-0 bg-primary hover:bg-primary/90"
-                        disabled={!calculadoraValor || Number(calculadoraValor) <= 0 || !calculadoraTipo}
-                        size="sm"
-                      >
-                        <Plus className="h-3.5 w-3.5 mr-1.5" /> Adicionar
-                      </Button>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground">
-                      *Isso adiciona um item personalizado na lista de produtos.
-                    </p>
-                  </div>
+                    >
+                      {getIconForType(tipo)}
+                      {tipo === 'Mesh' ? 'WiFi Mesh' : (tipo === 'AlaCarte' ? 'A la carte' : tipo)}
+                    </button>
+                  ))}
                 </div>
-              </Card>
 
-              {/* 2. Desktop Cart (Placed here to sit next to Expenses) */}
-              <div className="hidden lg:flex flex-col h-full">
-                <NovaOfertaCard
-                  products={products}
-                  debitoEmConta={debitoEmConta}
-                  setDebitoEmConta={setDebitoEmConta}
-                  descontoDCC={descontoDCC}
-                  totalMensal={totalMensal}
-                  totalComDesconto={totalComDesconto}
-                  removeProduct={removeProduct}
-                  handleRecuseOffer={handleRecuseOffer}
-                  handleAcceptOffer={handleAcceptOffer}
-                  isSaving={isSaving}
-                  formatCurrency={formatCurrency}
-                  getIconForType={getIconForType}
-                />
+                <div className="flex gap-2 items-end">
+                  <div className="flex-1 space-y-1">
+                    <Label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider leading-none">Valor a manter</Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">R$</span>
+                      <Input
+                        type="number"
+                        value={calculadoraValor}
+                        onChange={(e) => setCalculadoraValor(e.target.value)}
+                        placeholder="0,00"
+                        className="h-10 pl-8 bg-white border-slate-200 focus:border-red-500 focus:ring-red-500/10 rounded-2xl font-black font-mono text-xs"
+                      />
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleAdicionarCalculadora}
+                    className="h-10 px-4 shrink-0 bg-slate-900 hover:bg-black text-white text-xs font-black uppercase tracking-wide rounded-2xl shadow-md transition-all active:scale-95"
+                    disabled={!calculadoraValor || Number(calculadoraValor) <= 0 || !calculadoraTipo}
+                    size="sm"
+                  >
+                    <Plus className="h-4 w-4 mr-1.5" /> Adicionar
+                  </Button>
+                </div>
+                <p className="text-[10px] text-slate-400/80 font-medium">
+                  *Isso adiciona um item personalizado na lista de produtos.
+                </p>
               </div>
             </div>
+          </Card>
 
-            {/* 3. CTA do Builder (REPLACES BuilderView) */}
-            <div className="hidden lg:block space-y-4">
-              <Card className="bg-gradient-to-tr from-primary/10 to-transparent border-primary/20">
-                <CardContent className="flex flex-col items-center justify-center py-12 text-center gap-4">
-                  <div className="bg-white p-3 rounded-full shadow-sm">
-                    <LayoutGrid className="h-8 w-8 text-primary" />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-gray-900">Catálogo de Produtos</h3>
-                    <p className="text-muted-foreground max-w-md mx-auto">
-                      Acesse o Montador de Ofertas para visualizar todos os produtos disponíveis e montar propostas personalizadas.
-                    </p>
-                  </div>
-                  <Link href="/builder">
-                    <Button size="lg" className="gap-2 font-semibold shadow-lg shadow-primary/25">
-                      <ShoppingBag className="h-5 w-5" />
-                      Ir para o Montador
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-
-          </div>
-
-          {/* Coluna Direita: Sidebar (Mobile: Cart + Argumento / Desktop: Argumento) */}
-          <div className="col-span-12 xl:col-span-4">
-
-            {/* Mobile Cart (Hidden on Desktop) */}
-            <div className="lg:hidden mb-6">
-              <NovaOfertaCard
-                products={products}
-                debitoEmConta={debitoEmConta}
-                setDebitoEmConta={setDebitoEmConta}
-                descontoDCC={descontoDCC}
-                totalMensal={totalMensal}
-                totalComDesconto={totalComDesconto}
-                removeProduct={removeProduct}
-                handleRecuseOffer={handleRecuseOffer}
-                handleAcceptOffer={handleAcceptOffer}
-                isSaving={isSaving}
-                formatCurrency={formatCurrency}
-                getIconForType={getIconForType}
-              />
-            </div>
-
-            {/* CARD: Argumento de Venda (Full Benefits) */}
-            {products.length > 0 && (
-              <Card className={cn(
-                "shadow-md border-t-4 transition-all bg-white",
-                economiaMensal >= 0 ? "border-t-emerald-500 border-emerald-100" : "border-t-orange-500 border-orange-100"
-              )}>
-                <CardHeader className="pb-3 pt-4">
-                  <div className="flex items-center gap-2">
-                    <div className={cn("p-2 rounded-lg", economiaMensal >= 0 ? "bg-emerald-100" : "bg-orange-100")}>
-                      {economiaMensal >= 0 ? (
-                        <TrendingDown className={cn("h-5 w-5", economiaMensal >= 0 ? "text-emerald-600" : "text-orange-600")} />
-                      ) : (
-                        <TrendingUp className="h-5 w-5 text-orange-600" />
-                      )}
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg font-bold text-gray-800">
-                        Argumento Final
-                      </CardTitle>
-                      <CardDescription>Resumo financeiro e benefícios.</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-4 pb-6">
-                  {/* Monthly Highlight */}
-                  <div className="flex flex-col gap-1 mb-6">
-                    <div className="flex items-end justify-between px-1">
-                      <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                        {economiaMensal >= 0 ? "Economia Mensal" : "Diferença Mensal"}
-                      </span>
-                      <span className={cn(
-                        "text-3xl font-black leading-none",
-                        economiaMensal >= 0 ? "text-emerald-600" : "text-orange-600"
-                      )}>
-                        {formatCurrency(Math.abs(economiaMensal))}
-                      </span>
-                    </div>
-                    <div className="h-1.5 w-full bg-gray-100 rounded-full mt-2 overflow-hidden">
-                      <div className={cn("h-full rounded-full w-full", economiaMensal >= 0 ? "bg-emerald-500" : "bg-orange-500")} />
-                    </div>
-                  </div>
-
-                  {/* Annual Savings Hero */}
-                  {economiaMensal > 0 && (
-                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 p-6 text-white shadow-lg shadow-emerald-200 mb-8 transform transition-all hover:scale-[1.02]">
-                      <div className="absolute top-0 right-0 p-3 opacity-10">
-                        <Wallet className="w-24 h-24 rotate-12" />
-                      </div>
-                      <div className="relative z-10 flex flex-col items-center text-center gap-0">
-                        <span className="text-emerald-50 font-semibold text-xs uppercase tracking-[0.2em] mb-1">Economia Anual</span>
-                        <span className="text-4xl font-black tracking-tighter drop-shadow-sm">{formatCurrency(economiaMensal * 12)}</span>
-                        <span className="text-emerald-100 text-[10px] mt-1 bg-white/20 px-2 py-0.5 rounded-full">Garantida em 12 meses</span>
-                      </div>
-                    </div>
-                  )}
-
-                  <Separator className="my-6" />
-
-                  {/* Benefits List (Detailed) */}
-                  <div className="space-y-8">
-                    {Object.entries(beneficiosAgrupados).map(([tipo, beneficios]) => {
-                      const beneficiosUnicos = [...new Set(beneficios)];
-                      if (beneficiosUnicos.length === 0) return null;
-                      return (
-                        <div key={tipo} className="relative">
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                              {tipo}
-                            </span>
-                            <div className="h-px bg-gray-100 flex-1" />
-                          </div>
-
-                          <ul className="space-y-3 pl-1">
-                            {beneficiosUnicos.map((b, i) => (
-                              <li key={i} className="flex items-start gap-3 group">
-                                <div className="mt-1 h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                                  <Check className="h-3 w-3 text-primary" />
-                                </div>
-                                <span className="text-sm text-gray-700 leading-relaxed font-medium group-hover:text-gray-900 transition-colors">
-                                  {b}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+          {/* 2. Desktop Cart */}
+          <div className="hidden lg:flex flex-col h-full overflow-hidden">
+            <NovaOfertaCard
+              products={products}
+              debitoEmConta={debitoEmConta}
+              setDebitoEmConta={setDebitoEmConta}
+              descontoDCC={descontoDCC}
+              totalMensal={totalMensal}
+              totalComDesconto={totalComDesconto}
+              removeProduct={removeProduct}
+              handleRecuseOffer={handleRecuseOffer}
+              handleAcceptOffer={handleAcceptOffer}
+              isSaving={isSaving}
+              formatCurrency={formatCurrency}
+              getIconForType={getIconForType}
+            />
           </div>
         </div>
 
-        {/* Modal de Contrato */}
-        <Dialog open={showContractModal} onOpenChange={setShowContractModal}>
-          <DialogContent className="sm:max-w-md" onOpenAutoFocus={(e) => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle>Finalizar Venda</DialogTitle>
-              <DialogDescription>
-                Insira o número de contrato gerado para o cliente para concluir o registro.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex items-center space-x-2 py-4">
-              <div className="grid flex-1 gap-2">
-                <Label htmlFor="contrato" className="sr-only">
-                  Número do Contrato
-                </Label>
-                <Input
-                  id="contrato"
-                  placeholder="000/123456789"
-                  value={contractNumber}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleContractChange(e)}
-                  maxLength={13}
-                  className={cn("text-center text-lg tracking-widest", contractError && "border-red-500 focus-visible:ring-red-500")}
-                />
-                {contractError && <p className="text-xs text-red-500 text-center">{contractError}</p>}
+        {/* 3. CTA do Builder */}
+        <div className="hidden lg:block space-y-4">
+          <Card className="border border-slate-200 bg-white/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5">
+            <CardContent className="flex flex-col items-center justify-center py-8 text-center gap-4">
+              <div className="bg-red-50 p-3 rounded-full border border-red-100/50">
+                <LayoutGrid className="h-7 w-7 text-red-500" />
               </div>
-            </div>
-            <DialogFooter className="sm:justify-between">
-              <Button variant="secondary" onClick={() => setShowContractModal(false)}>
-                Cancelar
-              </Button>
-              <Button type="submit" onClick={confirmAcceptOffer} disabled={isSaving}>
-                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Confirmar Venda
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <div className="space-y-1">
+                <h3 className="text-lg font-black text-slate-800 tracking-tight">Catálogo de Produtos</h3>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto font-medium">
+                  Acesse o Montador de Ofertas para visualizar todos os produtos disponíveis e montar propostas personalizadas.
+                </p>
+              </div>
+              <Link href="/builder">
+                <Button size="lg" className="bg-gradient-to-r from-red-600 via-red-500 to-red-400 hover:brightness-110 text-white rounded-full h-11 px-6 text-xs font-black shadow-md transform active:scale-95 transition-all gap-2 border-0 select-none cursor-pointer">
+                  <ShoppingBag className="h-4 w-4" />
+                  Ir para o Montador
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
-        {/* Modal de Instruções de Ativação */}
-        <Dialog open={showActivationInfo} onOpenChange={setShowActivationInfo}>
-          <DialogContent className="sm:max-w-lg border-2 border-emerald-500" onOpenAutoFocus={(e) => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-emerald-600 text-xl font-black">
-                <Check className="h-6 w-6" /> VENDA FINALIZADA COM SUCESSO!
-              </DialogTitle>
-              <DialogDescription className="text-slate-900 font-bold text-base bg-slate-50 p-4 rounded-lg border border-slate-200 mt-4 leading-relaxed">
-                Repasse as seguintes orientações ao cliente:
-                <br /><br />
-                "Senhor, assim que o seu novo chip chegar, é necessário entrar em contato com o número <span className="text-emerald-700">0800 723 6626</span> para realizar a ativação. Este número agora também será sua nova central de atendimento, mais exclusiva e rápida para o seu perfil, que agora é <span className="text-emerald-700 font-black">Claro Multi</span>.
-                <br /><br />
-                Após ativar o chip, recomendamos que teste a internet do celular para garantir que esteja tudo ok. Esse teste pode ser feito em sites como o YouTube, por exemplo; de 1 a 2 minutos de navegação já são suficientes para garantir o pleno funcionamento dos dados móveis com qualidade."
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button className="w-full bg-emerald-600 hover:bg-emerald-700 h-12 text-lg font-bold" onClick={() => setShowActivationInfo(false)}>
-                Entendido, Finalizar Atendimento
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </main>
-    </div>
+      {/* Coluna Direita: Sidebar */}
+      <div className="col-span-12 xl:col-span-4 xl:sticky xl:top-24 self-start space-y-6">
+
+        {/* Mobile Cart (Hidden on Desktop) */}
+        <div className="lg:hidden">
+          <NovaOfertaCard
+            products={products}
+            debitoEmConta={debitoEmConta}
+            setDebitoEmConta={setDebitoEmConta}
+            descontoDCC={descontoDCC}
+            totalMensal={totalMensal}
+            totalComDesconto={totalComDesconto}
+            removeProduct={removeProduct}
+            handleRecuseOffer={handleRecuseOffer}
+            handleAcceptOffer={handleAcceptOffer}
+            isSaving={isSaving}
+            formatCurrency={formatCurrency}
+            getIconForType={getIconForType}
+          />
+        </div>
+
+        {/* CARD: Argumento de Venda (Full Benefits) - Nova Paleta */}
+        {products.length > 0 && (
+          <Card className={cn(
+            "border border-slate-200 bg-white shadow-xl rounded-3xl flex flex-col h-full overflow-hidden hover:shadow-md transition-all duration-300 animate-in fade-in slide-in-from-right-1",
+            economiaMensal >= 0 ? "border-l-4 border-l-emerald-500" : "border-l-4 border-l-amber-500"
+          )}>
+            <CardHeader className="p-5 pb-3 border-b border-slate-50 bg-slate-50/50">
+              <div className="flex items-center gap-3">
+                <div className={cn("p-2.5 rounded-2xl bg-slate-50 border border-slate-200", economiaMensal >= 0 ? "text-emerald-600" : "text-amber-600")}>
+                  {economiaMensal >= 0 ? (
+                    <TrendingDown className="h-5 w-5" />
+                  ) : (
+                    <TrendingUp className="h-5 w-5" />
+                  )}
+                </div>
+                <div>
+                  <CardTitle className="text-base font-black text-slate-800 tracking-tight leading-tight">
+                    Argumento Final
+                  </CardTitle>
+                  <CardDescription className="text-xs text-slate-400 font-semibold mt-0.5">Resumo financeiro e benefícios.</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5 space-y-5">
+              {/* Monthly Highlight */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-end justify-between px-1">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    {economiaMensal >= 0 ? "Economia Mensal" : "Acréscimo Mensal"}
+                  </span>
+                  <span className={cn(
+                    "text-3xl font-black leading-none font-mono tracking-tight",
+                    economiaMensal >= 0 ? "text-emerald-600" : "text-amber-600"
+                  )}>
+                    {formatCurrency(Math.abs(economiaMensal))}
+                  </span>
+                </div>
+                <div className="h-1.5 w-full bg-slate-100 rounded-full mt-2 overflow-hidden">
+                  <div className={cn("h-full rounded-full transition-all duration-500", economiaMensal >= 0 ? "bg-emerald-500 w-full" : "bg-amber-500 w-full")} />
+                </div>
+              </div>
+
+              {/* Annual Savings Hero */}
+              {economiaMensal !== 0 && (
+                <div className={cn(
+                  "relative overflow-hidden rounded-2xl p-6 text-white shadow-lg mb-4 transform transition-all duration-300 hover:scale-[1.02] flex flex-col items-center text-center",
+                  economiaMensal > 0
+                    ? "bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-emerald-200/50"
+                    : "bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-200/50"
+                )}>
+                  <div className="absolute top-0 right-0 p-3 opacity-10">
+                    <Wallet className="w-24 h-24 rotate-12" />
+                  </div>
+                  <div className="relative z-10 flex flex-col items-center text-center gap-1">
+                    <span className="text-white/90 font-black text-[10px] uppercase tracking-wider select-none">
+                      {economiaMensal > 0 ? "Economia Anual" : "Acréscimo Anual"}
+                    </span>
+                    <span className="text-4xl font-black tracking-tighter drop-shadow-sm font-mono leading-none">
+                      {formatCurrency(Math.abs(economiaMensal * 12))}
+                    </span>
+                    <span className="text-white/80 text-[10px] font-bold mt-1.5 bg-white/10 px-2.5 py-1 rounded-xl">
+                      {economiaMensal > 0 ? "Garantida em 12 meses" : "Calculado em 12 meses"}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <Separator className="my-1 border-slate-50" />
+
+              {/* Benefits List (Detailed) */}
+              <div className="space-y-6">
+                {Object.entries(beneficiosAgrupados).map(([tipo, beneficios]) => {
+                  const beneficiosUnicos = [...new Set(beneficios)];
+                  if (beneficiosUnicos.length === 0) return null;
+                  return (
+                    <div key={tipo} className="relative">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="bg-slate-50 border border-slate-200/60 text-slate-400 text-[10px] font-black px-2.5 py-1 rounded-xl uppercase tracking-wider select-none leading-none">
+                          {tipo}
+                        </span>
+                        <div className="h-px bg-slate-50 flex-1" />
+                      </div>
+
+                      <ul className="space-y-2.5 pl-1">
+                        {beneficiosUnicos.map((b, i) => (
+                          <li key={i} className="flex items-start gap-2.5 group">
+                            <div className="mt-0.5 h-4.5 w-4.5 rounded-full bg-red-50 flex items-center justify-center shrink-0 group-hover:bg-red-100 transition-all duration-300">
+                              <Check className="h-3 w-3 text-red-500" />
+                            </div>
+                            <span className="text-xs text-slate-600 leading-relaxed font-bold group-hover:text-red-600 transition-colors">
+                              {b}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Modal de Contrato */}
+      <Dialog open={showContractModal} onOpenChange={setShowContractModal}>
+        <DialogContent className="sm:max-w-md rounded-3xl border-slate-200 shadow-2xl p-6" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <DialogHeader className="gap-1 text-center sm:text-left">
+            <DialogTitle className="text-lg font-black tracking-tight text-slate-800">Finalizar Venda</DialogTitle>
+            <DialogDescription className="text-xs text-slate-500 font-semibold leading-relaxed">
+              Insira o número de contrato gerado para o cliente para concluir o registro.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center space-x-2 py-4">
+            <div className="grid flex-1 gap-2">
+              <Label htmlFor="contrato" className="sr-only">
+                Número do Contrato
+              </Label>
+              <Input
+                id="contrato"
+                placeholder="000/123456789"
+                value={contractNumber}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleContractChange(e)}
+                maxLength={13}
+                className={cn("text-center text-lg tracking-widest bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-12 font-black font-mono", contractError && "border-red-500 focus-visible:ring-red-500")}
+              />
+              {contractError && <p className="text-xs text-red-500 text-center font-bold">{contractError}</p>}
+            </div>
+          </div>
+          <DialogFooter className="sm:justify-between flex-row gap-3 pt-2">
+            <Button variant="outline" onClick={() => setShowContractModal(false)} className="rounded-full border-slate-200 text-slate-600 hover:bg-slate-50 h-11 text-xs font-black tracking-wide w-full sm:w-auto">
+              Cancelar
+            </Button>
+            <Button type="submit" onClick={confirmAcceptOffer} disabled={isSaving} className="rounded-full bg-gradient-to-r from-red-600 via-red-500 to-red-400 hover:brightness-110 text-white h-11 text-xs font-black tracking-wide w-full sm:w-auto shadow-md transform active:scale-95 transition-all border-0 select-none cursor-pointer">
+              {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Confirmar Venda
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Instruções de Ativação */}
+      <Dialog open={showActivationInfo} onOpenChange={setShowActivationInfo}>
+        <DialogContent className="sm:max-w-lg border-2 border-emerald-500 rounded-3xl shadow-2xl p-6" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-emerald-600 text-xl font-black tracking-tight select-none">
+              <Check className="h-6 w-6 text-emerald-600" /> VENDA FINALIZADA COM SUCESSO!
+            </DialogTitle>
+            <DialogDescription className="text-slate-700 font-semibold text-sm bg-slate-50 p-4 rounded-2xl border border-slate-200 mt-4 leading-relaxed">
+              Repasse as seguintes orientações ao cliente:
+              <br /><br />
+              "Senhor, assim que o seu novo chip chegar, é necessário entrar em contato com o número <span className="text-emerald-700 font-black">0800 723 6626</span> para realizar a ativação. Este número agora também será sua nova central de atendimento, mais exclusiva e rápida para o seu perfil, que agora é <span className="text-emerald-700 font-black">Claro Multi</span>.
+              <br /><br />
+              Após ativar o chip, recomendamos que teste a internet do celular para garantir que esteja tudo ok. Esse teste pode ser feito em sites como o YouTube, por exemplo; de 1 a 2 minutos de navegação já são suficientes para garantir o pleno funcionamento dos dados móveis com qualidade."
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="pt-2">
+            <Button className="w-full bg-emerald-600 hover:bg-emerald-700 h-12 text-sm font-black tracking-wide uppercase rounded-2xl shadow-md transition-all active:scale-95" onClick={() => setShowActivationInfo(false)}>
+              Entendido, Finalizar Atendimento
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </PageShell>
   );
 }
 
@@ -1046,7 +1001,7 @@ function AlaCarteRow({ item, onChange, onRemove }: {
   const [searchValue, setSearchValue] = useState("");
 
   return (
-    <div className="flex gap-2 items-center animate-in fade-in slide-in-from-top-1">
+    <div className="flex gap-2 items-center animate-in fade-in slide-in-from-top-1 duration-300">
       <div className="flex-1 min-w-0">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -1055,15 +1010,15 @@ function AlaCarteRow({ item, onChange, onRemove }: {
               role="combobox"
               aria-expanded={open}
               className={cn(
-                "w-full justify-between h-9 text-xs font-normal",
+                "w-full justify-between h-10 text-xs font-semibold bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl",
                 !item.name && "text-muted-foreground"
               )}
             >
-              {item.name || "Selecionar ou digitar..."}
+              <span className="truncate">{item.name || "Selecionar ou digitar..."}</span>
               <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[300px] p-0" align="start">
+          <PopoverContent className="w-[300px] p-0 border-slate-200 rounded-2xl overflow-hidden shadow-xl" align="start">
             <Command
               filter={(value, search) => {
                 const normalizedValue = normalizeText(value);
@@ -1073,7 +1028,7 @@ function AlaCarteRow({ item, onChange, onRemove }: {
             >
               <CommandInput
                 placeholder="Buscar serviço..."
-                className="h-9 text-xs"
+                className="h-10 text-xs font-semibold"
                 value={searchValue}
                 onValueChange={setSearchValue}
                 onKeyDown={(e) => {
@@ -1089,7 +1044,7 @@ function AlaCarteRow({ item, onChange, onRemove }: {
                     <p className="text-muted-foreground">Não encontrado.</p>
                     <Button
                       variant="ghost"
-                      className="w-full justify-start text-xs h-8 px-2 mt-1 font-bold text-primary truncate"
+                      className="w-full justify-start text-xs h-8 px-2 mt-1 font-black text-red-500 hover:text-red-600 truncate"
                       onClick={() => {
                         onChange(item.id, 'name', searchValue);
                         setOpen(false);
@@ -1108,22 +1063,20 @@ function AlaCarteRow({ item, onChange, onRemove }: {
                         value={prod.nome}
                         onSelect={(currentValue) => {
                           onChange(item.id, 'name', prod.nome);
-                          // User requested NOT TO set the value automatically
-                          // if (prod.precoMensal) { onChange(item.id, 'value', prod.precoMensal); }
                           setOpen(false);
                           setSearchValue("");
                         }}
-                        className="text-xs"
+                        className="text-xs font-bold text-slate-700 cursor-pointer"
                       >
                         <div className="flex justify-between w-full items-center gap-2">
                           <span className="truncate">{prod.nome}</span>
-                          <span className="text-muted-foreground font-mono shrink-0">
+                          <span className="text-muted-foreground font-mono font-bold shrink-0">
                             {prod.precoMensal ? `R$ ${prod.precoMensal.toFixed(2)}` : 'R$ --'}
                           </span>
                         </div>
                         <CheckIcon
                           className={cn(
-                            "ml-auto h-3 w-3 shrink-0",
+                            "ml-auto h-3 w-3 shrink-0 text-red-500",
                             item.name === prod.nome ? "opacity-100" : "opacity-0"
                           )}
                         />
@@ -1137,11 +1090,11 @@ function AlaCarteRow({ item, onChange, onRemove }: {
       </div>
 
       <div className="relative w-24 shrink-0">
-        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">R$</span>
+        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">R$</span>
         <Input
           type="number"
           placeholder="0,00"
-          className="h-9 pl-6 text-right text-xs font-medium"
+          className="h-10 pl-7 text-right text-xs font-black font-mono bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl text-slate-800"
           value={item.value === 0 ? '' : item.value}
           onChange={(e) => onChange(item.id, 'value', Number(e.target.value))}
         />
@@ -1150,10 +1103,10 @@ function AlaCarteRow({ item, onChange, onRemove }: {
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50"
+        className="h-9 w-9 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all shrink-0"
         onClick={() => onRemove(item.id)}
       >
-        <X className="h-3.5 w-3.5" />
+        <X className="h-4 w-4" />
       </Button>
     </div>
   );

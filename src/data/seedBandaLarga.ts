@@ -1,6 +1,6 @@
 // data/seedBandaLarga.ts (V11.0 - Sem promoções de 3/6 meses)
 
-const beneficiosBaseBL = ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)", "ChatGPT Plus (se Multi)"];
+const beneficiosBaseBL = ["Globoplay Padrão (sem anúncios, 3 acessos)", "Proteção Digital McAfee (3 dispositivos)", "Skeelo Audiobooks (1 licença)"];
 const beneficios500MBL = [...beneficiosBaseBL, "Minha Banca Residencial"];
 const beneficios1GBL = [...beneficios500MBL, "Busuu (2 licenças)", "1 Ponto Ultra Gratuito"];
 

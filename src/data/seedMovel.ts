@@ -9,7 +9,7 @@ export const produtosMovel = [
             "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
             "Dependentes Inclusos (Grátis): 3. (Limite máximo de 2 dependentes pagos)",
             "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
@@ -22,7 +22,7 @@ export const produtosMovel = [
             "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
             "Dependentes Inclusos (Grátis): 2. (Limite máximo de 2 dependentes pagos)",
             "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
@@ -35,7 +35,7 @@ export const produtosMovel = [
             "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
             "Dependentes Inclusos (Grátis): 1. (Limite máximo de 2 dependentes pagos)",
             "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
@@ -49,7 +49,7 @@ export const produtosMovel = [
             "Streaming de Jogos: Geforce NOW incluso",
             "Dependentes Inclusos (Grátis): 0. (Limite máximo de 2 dependentes pagos)",
             "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
@@ -62,7 +62,7 @@ export const produtosMovel = [
             "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
             "Dependentes Inclusos (Grátis): 0. (Limite máximo de 2 dependentes pagos)",
             "SVAs Inclusos: Skeelo Padrão, Truecaller, Claro Banca Premium",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
@@ -74,7 +74,7 @@ export const produtosMovel = [
             "Franquia Total: 60 GB (25 GB Uso Livre + 25 GB Redes + 10 GB Bônus 12 Meses)",
             "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
             "Dependentes Inclusos (Grátis): 0. (LIMITE MÁXIMO: 1 dependente pago)",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
@@ -89,7 +89,7 @@ export const produtosMovel = [
             "Passaporte: NÃO INCLUSO.",
             "Streaming de Jogos: Geforce NOW incluso",
             "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Bloqueada após o consumo integral da franquia, até contratação de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
@@ -101,7 +101,7 @@ export const produtosMovel = [
             "Franquia Total: 35 GB (25 GB Uso Livre + 5 GB Redes + 5 GB Bônus 12 Meses)",
             "Passaporte: NÃO INCLUSO.",
             "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Bloqueada após o consumo integral da franquia, até contratação de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
@@ -113,7 +113,7 @@ export const produtosMovel = [
             "Franquia Total: 30 GB (20 GB Uso Livre + 5 GB Redes + 5 GB Bônus 12 Meses)",
             "Passaporte: NÃO INCLUSO.",
             "SVAs Inclusos: Skeelo Light, Claro Banca Padrão",
-            "Benefício Extra: 4 meses de ChatGPT Plus (na modalidade Multi)",
+            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
             "Uso da Internet: Bloqueada após o consumo integral da franquia, até contratação de pacote adicional",
             "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
         ],
