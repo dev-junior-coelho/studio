@@ -40,7 +40,7 @@ export default function MontadorPage() {
       <div className="lg:col-span-8 xl:col-span-9">
         <BuilderView hideHeader className="rounded-xl border bg-card shadow-sm p-4 sm:p-6" />
       </div>
-      <div className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-[calc(100vh-7rem)]">
+      <div className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-fit">
         <NovaOfertaCard
           products={products}
           debitoEmConta={debitoEmConta}

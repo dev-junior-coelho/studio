@@ -501,7 +501,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Desktop Top Row: Gastos + Carrinho */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
           {/* 1. Gastos Atuais */}
           <Card className="border border-slate-200 bg-white shadow-sm rounded-3xl flex flex-col h-full overflow-hidden hover:shadow-md transition-all duration-300">
             <CardHeader className="p-5 pb-3 bg-slate-50/50 border-b border-slate-50">
@@ -762,7 +762,7 @@ export default function DashboardPage() {
           </Card>
 
           {/* 2. Desktop Cart */}
-          <div className="hidden lg:flex flex-col h-full overflow-hidden">
+          <div className="hidden lg:flex flex-col h-fit">
             <NovaOfertaCard
               products={products}
               debitoEmConta={debitoEmConta}

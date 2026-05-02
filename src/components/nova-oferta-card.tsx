@@ -41,7 +41,7 @@ export function NovaOfertaCard({
 }: NovaOfertaCardProps) {
     const showActions = !!handleRecuseOffer && !!handleAcceptOffer;
     return (
-        <Card className="border border-slate-200 bg-white shadow-xl hover:shadow-2xl rounded-3xl flex flex-col shrink-0 h-full overflow-hidden animate-in fade-in duration-500 transition-all">
+        <Card className="border border-slate-200 bg-white shadow-xl hover:shadow-2xl rounded-3xl flex flex-col shrink-0 h-fit min-h-[420px] max-h-[85vh] overflow-hidden animate-in fade-in duration-500 transition-all">
             <CardHeader className="p-5 pb-4 bg-red-500 text-white flex flex-col gap-3 rounded-t-3xl">
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 min-w-0">
