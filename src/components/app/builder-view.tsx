@@ -17,7 +17,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { cn, normalizeText } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { InfoPontosAdicionais } from '@/components/info-pontos-adicionais';
-import { MAPEAMENTO_TV_TECNOLOGIA, HIERARQUIA_TECNOLOGIA, REGRAS_HIERARQUIA_PA } from '@/lib/pontos-adicionais';
+import { LIMITE_PONTOS_ADICIONAIS, MAPEAMENTO_TV_TECNOLOGIA, HIERARQUIA_TECNOLOGIA, REGRAS_HIERARQUIA_PA } from '@/lib/pontos-adicionais';
 
 const productTypes: ProductType[] = ["Movel", "Dependente Móvel", "Banda Larga", "TV Cabeada", "TV Box", "Claro TV APP", "Fixo", "Serviços Avançados", "Ponto Adicional", "Opcional"];
 const typeDisplayNames: Record<ProductType, string> = {
@@ -57,9 +57,24 @@ function ProductCard({ product }: { product: Produto }) {
     }
     const placeholder = PlaceHolderImages.find(p => p.id === imageMap[product.tipo]);
 
-    const isAdded = products.some(p => p.id === product.id || p.id.startsWith(`${product.id}-`));
+    const canAddMultiple = product.tipo === 'Ponto Adicional' || product.tipo === 'Dependente Móvel';
+    const pontosAdicionaisCount = products.filter(p => p.tipo === 'Ponto Adicional').length;
+    const reachedAdditionalPointsLimit = product.tipo === 'Ponto Adicional' && pontosAdicionaisCount >= LIMITE_PONTOS_ADICIONAIS;
+    const isAdded = !canAddMultiple && products.some(p => p.id === product.id || p.id.startsWith(`${product.id}-`));
 
     const handleAddClick = () => {
+        if (canAddMultiple) {
+            if (product.tipo === 'Dependente Móvel') {
+                for (let i = 0; i < dependentesQty; i++) {
+                    addProduct(product);
+                }
+                return;
+            }
+
+            addProduct(product);
+            return;
+        }
+
         const addedItem = products.find(p => p.id === product.id || p.id.startsWith(`${product.id}-`));
         if (addedItem) {
             removeProduct(addedItem.id);
@@ -205,12 +220,12 @@ function ProductCard({ product }: { product: Produto }) {
 
                 <div className="mt-auto pt-2">
                     {isAdded ? (
-                        <Button className="w-full rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 h-11 text-xs font-black uppercase tracking-wider transition-all select-none border border-slate-200/60" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial}>
+                        <Button className="w-full rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 h-11 text-xs font-black uppercase tracking-wider transition-all select-none border border-slate-200/60" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial || reachedAdditionalPointsLimit}>
                             <Check className="mr-2 h-4 w-4 text-emerald-600" />
                             ✓ Adicionado
                         </Button>
                     ) : (
-                        <Button className="w-full rounded-full bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] hover:brightness-110 text-white h-11 text-xs font-black uppercase tracking-wider shadow-md transform active:scale-95 transition-all select-none border-0 cursor-pointer flex items-center justify-center" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial}>
+                        <Button className="w-full rounded-full bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] hover:brightness-110 text-white h-11 text-xs font-black uppercase tracking-wider shadow-md transform active:scale-95 transition-all select-none border-0 cursor-pointer flex items-center justify-center" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial || reachedAdditionalPointsLimit}>
                             <PlusCircle className="mr-2 h-4 w-4" />
                             {product.tipo === 'Dependente Móvel' ? `Adicionar ${dependentesQty}` : 'Adicionar à Oferta'}
                         </Button>
@@ -280,9 +295,16 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
     const filteredAndSortedProducts = useMemo(() => {
         if (!productsData) return [];
 
+        const blockedProducts = new Set([
+            normalizeText('Dependente Avulso Dados'),
+            normalizeText('DEPENDENTE AVULSO DADOS')
+        ]);
+
+        const visibleProducts = productsData.filter(product => !blockedProducts.has(normalizeText(product.nome)));
+
         let filtered = selectedType === 'Todos'
-            ? productsData
-            : productsData.filter(p => p.tipo === selectedType);
+            ? visibleProducts
+            : visibleProducts.filter(p => p.tipo === selectedType);
 
         if (selectedType === 'Ponto Adicional' && selectedTV) {
             const tvNome = selectedTV.nome as keyof typeof MAPEAMENTO_TV_TECNOLOGIA;
