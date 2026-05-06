@@ -41,8 +41,8 @@ export function NovaOfertaCard({
 }: NovaOfertaCardProps) {
     const showActions = !!handleRecuseOffer && !!handleAcceptOffer;
     return (
-        <Card className="border border-slate-200 bg-white shadow-xl hover:shadow-2xl rounded-3xl flex flex-col shrink-0 h-fit min-h-[420px] max-h-[85vh] overflow-hidden animate-in fade-in duration-500 transition-all">
-            <CardHeader className="p-5 pb-4 bg-red-500 text-white flex flex-col gap-3 rounded-t-3xl">
+        <Card className="border border-slate-200 bg-white shadow-xl hover:shadow-2xl rounded-3xl flex flex-col shrink-0 max-h-[calc(100dvh-2rem)] lg:max-h-[calc(100vh-7rem)] min-h-[420px] overflow-hidden animate-in fade-in duration-500 transition-all">
+            <CardHeader className="shrink-0 p-5 pb-4 bg-gradient-to-r from-[#e60012] via-[#ff0028] to-[#ff3b3b] text-white flex flex-col gap-3 rounded-t-3xl">
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 min-w-0">
                         <div className="h-8 w-8 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
@@ -50,22 +50,22 @@ export function NovaOfertaCard({
                         </div>
                         <CardTitle className="text-lg font-black tracking-tight truncate">Nova Oferta</CardTitle>
                     </div>
-                    <span className="text-xs font-bold rounded-full bg-white/20 border border-white/20 px-3 py-1">
+                    <span className="text-xs font-black rounded-full bg-white/20 border border-white/25 px-3 py-1">
                         {products.length} item(ns)
                     </span>
                 </div>
             </CardHeader>
 
-            <CardContent className="flex-1 flex flex-col p-5">
+            <CardContent className="flex flex-col flex-1 min-h-0 overflow-hidden p-5">
                 <div className="flex items-center justify-between bg-gray-50 px-4 py-3 rounded-2xl border border-gray-100/80 mb-4 transition-all duration-300">
-                    <Label htmlFor="debitoConta" className="text-xs font-bold text-gray-800 cursor-pointer select-none leading-tight">
+                    <Label htmlFor="debitoConta" className="text-xs font-black text-black cursor-pointer select-none leading-tight">
                         DCC + Fatura Digital
                     </Label>
                     <Switch
                         id="debitoConta"
                         checked={debitoEmConta}
                         onCheckedChange={setDebitoEmConta}
-                        className="data-[state=checked]:bg-red-500"
+                        className="data-[state=checked]:bg-[#e60012]"
                     />
                 </div>
                 {products.length === 0 ? (
@@ -76,23 +76,23 @@ export function NovaOfertaCard({
                     </div>
                 ) : (
                     <>
-                        <ScrollArea className="flex-1 -mx-1 px-1">
+                        <ScrollArea className="-mx-1 flex-1 min-h-[160px] px-1 pr-3">
                             <ul className="space-y-3 pb-2">
                                 {products.map(product => (
-                                    <li key={product.id} className="group bg-white border border-slate-200 p-3 rounded-2xl hover:shadow-md hover:border-red-100/50 transition-all duration-300 transform hover:-translate-y-0.5">
+                                    <li key={product.id} className="group bg-white border border-slate-200 p-3 rounded-2xl hover:shadow-md hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5">
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="min-w-0 flex items-start gap-2.5">
-                                                <div className="mt-0.5 h-10 w-10 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center border border-red-50/50 shrink-0 group-hover:bg-red-100 group-hover:text-red-600 transition-colors duration-300">
+                                                <div className="mt-0.5 h-10 w-10 rounded-2xl bg-red-50 text-[#e60012] flex items-center justify-center border border-red-100 shrink-0 group-hover:bg-red-100 group-hover:text-[#c90010] transition-colors duration-300">
                                                     {getIconForType(product.tipo)}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <div className="text-xs font-bold text-gray-900 group-hover:text-red-600 transition-colors duration-300 truncate" title={product.nome}>
+                                                    <div className="text-xs font-black text-black group-hover:text-[#e60012] transition-colors duration-300 truncate" title={product.nome}>
                                                         {product.nome}
                                                     </div>
-                                                    <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground">
-                                                        <span className="truncate font-medium">{product.tipo}</span>
+                                                    <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[10px] text-neutral-600">
+                                                        <span className="truncate font-bold">{product.tipo}</span>
                                                         {product.fidelidade && product.fidelidade !== "Sem fidelidade" ? (
-                                                            <span className="rounded-md border border-red-200/50 bg-red-50 px-1.5 py-0.5 text-red-700 font-semibold">
+                                                            <span className="rounded-md border border-red-200 bg-red-50 px-1.5 py-0.5 text-[#b8000e] font-black">
                                                                 {product.fidelidade}
                                                             </span>
                                                         ) : null}
@@ -101,13 +101,13 @@ export function NovaOfertaCard({
                                             </div>
 
                                             <div className="shrink-0 flex flex-col items-end gap-1 min-w-[96px]">
-                                                <div className="text-sm font-black text-red-500 leading-none font-mono tabular-nums whitespace-nowrap">
+                                                <div className="text-sm font-black text-[#e60012] leading-none font-mono tabular-nums whitespace-nowrap">
                                                     {formatCurrency(product.precoMensal)}
                                                 </div>
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="h-7 w-7 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300"
+                                                    className="h-7 w-7 text-neutral-500 hover:text-[#e60012] hover:bg-red-50 rounded-full transition-all duration-300"
                                                     onClick={() => removeProduct(product.id)}
                                                     title="Remover item"
                                                 >
@@ -135,7 +135,7 @@ export function NovaOfertaCard({
                 )}
             </CardContent>
 
-            <CardFooter className="bg-gray-50/50 border-t border-slate-200 p-5 flex flex-col gap-4 mt-auto rounded-b-3xl">
+            <CardFooter className="shrink-0 bg-gray-50/50 border-t border-slate-200 p-5 flex flex-col gap-4 mt-auto rounded-b-3xl">
                 {/* Totals Section */}
                 <div className="w-full space-y-1">
                     {debitoEmConta && descontoDCC > 0 && (
@@ -145,9 +145,9 @@ export function NovaOfertaCard({
                         </div>
                     )}
                     <div className="flex justify-between items-end w-full">
-                        <span className="font-bold text-gray-800 text-sm">Total mensal</span>
+                        <span className="font-black text-black text-sm">Total mensal</span>
                         <div className="text-right leading-none">
-                            <span className="text-3xl font-black text-red-500 tracking-tight font-mono">{formatCurrency(totalComDesconto)}</span>
+                            <span className="text-3xl font-black text-[#e60012] tracking-tight font-mono">{formatCurrency(totalComDesconto)}</span>
                         </div>
                     </div>
                 </div>
@@ -167,7 +167,7 @@ export function NovaOfertaCard({
                         </Button>
                         <Button
                             size="lg"
-                            className="bg-gradient-to-r from-red-600 via-red-500 to-red-400 hover:brightness-110 text-white rounded-full h-11 text-xs font-black shadow-md transform active:scale-95 transition-all select-none border-0 cursor-pointer flex items-center justify-center"
+                            className="bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] hover:brightness-110 text-white rounded-full h-11 text-xs font-black shadow-md transform active:scale-95 transition-all select-none border-0 cursor-pointer flex items-center justify-center"
                             onClick={handleAcceptOffer}
                             disabled={isSaving}
                         >
