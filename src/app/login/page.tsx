@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select";
 
 export default function LoginPage() {
-  const { loginWithZ, login, loading } = useAuth(); // login is legacy/test
+  const { loginWithZ, loading } = useAuth();
   const [zNumber, setZNumber] = useState("");
   const [pin, setPin] = useState("");
   const [nome, setNome] = useState("");

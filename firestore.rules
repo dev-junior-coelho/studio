@@ -72,8 +72,11 @@ service cloud.firestore {
     match /usuarios/{usuarioId} {
       allow get: if isSignedIn() && (isOwner(usuarioId) || isSupervisor());
       allow list: if isSignedIn() && isSupervisor();
-      allow create: if isSignedIn() && isOwner(usuarioId);
-      allow update: if isSignedIn() && (isOwner(usuarioId) || isSupervisor());
+      allow create: if isSignedIn() && isOwner(usuarioId) && isValidUserCreate(usuarioId);
+      allow update: if isSignedIn() && (
+        (isOwner(usuarioId) && isSafeOwnerProfileUpdate()) ||
+        (isSupervisor() && isSafeSupervisorProfileUpdate())
+      );
       allow delete: if false;
     }
 
@@ -83,8 +86,9 @@ service cloud.firestore {
      */
     match /usuarios/{userId}/ofertas_salvas/{ofertaSalvaId} {
       allow read: if isSignedIn() && (isOwner(userId) || isSupervisor());
-      allow create: if isSignedIn() && (isOwner(userId) || isSupervisor());
-      allow update, delete: if isSignedIn() && (isOwner(userId) || isSupervisor());
+      allow create: if isSignedIn() && isOwner(userId) && isValidOfferCreate(userId);
+      allow update: if isSignedIn() && (isOwner(userId) || isSupervisor()) && isValidOfferUpdate(userId);
+      allow delete: if isSignedIn() && (isOwner(userId) || isSupervisor());
     }
 
     /**
@@ -108,5 +112,111 @@ service cloud.firestore {
     return isSignedIn() && 
            exists(/databases/$(database)/documents/usuarios/$(request.auth.uid)) &&
            get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == 'supervisor';
+  }
+
+  function userCreateKeys() {
+    return [
+      'uid',
+      'email',
+      'role',
+      'nome',
+      'zLogin',
+      'supervisor',
+      'lastSeen',
+      'isTest'
+    ];
+  }
+
+  function protectedUserFields() {
+    return [
+      'uid',
+      'email',
+      'role',
+      'zLogin',
+      'isTest',
+      'promotedBy',
+      'promotedAt',
+      'demotedBy',
+      'demotedAt'
+    ];
+  }
+
+  function supervisorManagedFields() {
+    return [
+      'role',
+      'supervisor',
+      'promotedBy',
+      'promotedAt',
+      'demotedBy',
+      'demotedAt'
+    ];
+  }
+
+  function isValidUserCreate(userId) {
+    return request.resource.data.keys().hasOnly(userCreateKeys()) &&
+           request.resource.data.keys().hasAll(['uid', 'email', 'role', 'zLogin']) &&
+           request.resource.data.uid == userId &&
+           request.resource.data.role == 'agente' &&
+           request.resource.data.zLogin is string &&
+           request.resource.data.zLogin.matches('^[0-9]{6}$') &&
+           request.resource.data.email == request.auth.token.email &&
+           request.resource.data.email.matches('^z[0-9]{6}@interno[.]studioclaro[.]app$') &&
+           (!('nome' in request.resource.data) || request.resource.data.nome is string) &&
+           (!('supervisor' in request.resource.data) || request.resource.data.supervisor is string) &&
+           (!('lastSeen' in request.resource.data) || request.resource.data.lastSeen is string || request.resource.data.lastSeen == null) &&
+           (!('isTest' in request.resource.data) || request.resource.data.isTest is bool);
+  }
+
+  function isSafeOwnerProfileUpdate() {
+    return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen', 'supervisor', 'nome']) &&
+           !request.resource.data.diff(resource.data).affectedKeys().hasAny(protectedUserFields()) &&
+           (!('lastSeen' in request.resource.data) || request.resource.data.lastSeen is string || request.resource.data.lastSeen == null) &&
+           (!('supervisor' in request.resource.data) || request.resource.data.supervisor is string) &&
+           (!('nome' in request.resource.data) || request.resource.data.nome is string);
+  }
+
+  function isSafeSupervisorProfileUpdate() {
+    return request.resource.data.diff(resource.data).affectedKeys().hasOnly(supervisorManagedFields()) &&
+           (!('role' in request.resource.data) || request.resource.data.role in ['agente', 'supervisor']) &&
+           (!('supervisor' in request.resource.data) || request.resource.data.supervisor is string) &&
+           (!('promotedBy' in request.resource.data) || request.resource.data.promotedBy is string) &&
+           (!('promotedAt' in request.resource.data) || request.resource.data.promotedAt is string) &&
+           (!('demotedBy' in request.resource.data) || request.resource.data.demotedBy is string) &&
+           (!('demotedAt' in request.resource.data) || request.resource.data.demotedAt is string);
+  }
+
+  function offerCreateKeys() {
+    return [
+      'usuarioId',
+      'email',
+      'nome',
+      'supervisor',
+      'zLogin',
+      'produtoIds',
+      'produtos',
+      'status',
+      'contrato',
+      'timestamp',
+      'totalOferta',
+      'economia',
+      'debitoEmConta',
+      'descontoDCC'
+    ];
+  }
+
+  function isValidOfferCreate(userId) {
+    return request.resource.data.keys().hasOnly(offerCreateKeys()) &&
+           request.resource.data.keys().hasAll(['usuarioId', 'status', 'timestamp']) &&
+           request.resource.data.usuarioId == userId &&
+           request.resource.data.status in ['Aceitou', 'Recusou'] &&
+           (!('totalOferta' in request.resource.data) || request.resource.data.totalOferta is number) &&
+           (!('economia' in request.resource.data) || request.resource.data.economia is number) &&
+           (!('descontoDCC' in request.resource.data) || request.resource.data.descontoDCC is number) &&
+           (!('debitoEmConta' in request.resource.data) || request.resource.data.debitoEmConta is bool);
+  }
+
+  function isValidOfferUpdate(userId) {
+    return request.resource.data.usuarioId == resource.data.usuarioId &&
+           resource.data.usuarioId == userId;
   }
 }

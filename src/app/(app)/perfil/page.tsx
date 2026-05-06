@@ -163,7 +163,7 @@ function ChangePasswordSection() {
                 return;
             }
 
-            const idToken = await auth.currentUser?.getIdToken();
+            const idToken = await auth.currentUser?.getIdToken(true);
             const response = await fetch('/api/change-password', {
                 method: 'POST',
                 headers: {

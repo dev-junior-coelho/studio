@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminAuth, adminDb } from "@/lib/firebase-admin";
 
+const PIN_PATTERN = /^\d{4}$/;
+
 export async function POST(req: NextRequest) {
     try {
         // 1. Authorization Check
@@ -19,13 +21,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Invalid Token" }, { status: 401 });
         }
 
-        // Optional: Verify if the requester is actually a Supervisor in Firestore
-        // For now, we trust the verified token allows access, assuming the UI protects this route
-        // and we verify the requester's role:
         const requesterDoc = await adminDb.collection("usuarios").doc(decodedToken.uid).get();
         const requesterData = requesterDoc.data();
 
-        if (requesterData?.role !== 'supervisor') {
+        if (!requesterDoc.exists || requesterData?.role !== 'supervisor') {
             return NextResponse.json({ error: "Forbidden: Only Supervisors can reset passwords." }, { status: 403 });
         }
 
@@ -33,12 +32,17 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { targetUid, newPin } = body;
 
-        if (!targetUid || !newPin) {
+        if (typeof targetUid !== "string" || typeof newPin !== "string") {
             return NextResponse.json({ error: "Missing targetUid or newPin" }, { status: 400 });
         }
 
-        if (newPin.length !== 4 || isNaN(Number(newPin))) {
+        if (!PIN_PATTERN.test(newPin)) {
             return NextResponse.json({ error: "PIN must be 4 digits" }, { status: 400 });
+        }
+
+        const targetDoc = await adminDb.collection("usuarios").doc(targetUid).get();
+        if (!targetDoc.exists) {
+            return NextResponse.json({ error: "Target user not found" }, { status: 404 });
         }
 
         // 3. Reset Password
@@ -56,8 +60,7 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("Reset Password Error:", error);
         return NextResponse.json({
-            error: "Internal Server Error",
-            details: error.message
+            error: "Internal Server Error"
         }, { status: 500 });
     }
 }

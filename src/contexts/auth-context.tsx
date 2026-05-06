@@ -5,13 +5,13 @@ import { getDoc, doc, setDoc } from 'firebase/firestore';
 import type { Usuario as AppUsuario } from '@/lib/types';
 import { useRouter, usePathname } from 'next/navigation';
 import { useUser as useFirebaseUser, useFirebase } from '@/firebase';
-import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { isMaintenanceMode } from '@/lib/maintenance';
 
 interface AuthContextType {
   user: AppUsuario | null;
   loading: boolean;
-  login: (role: 'agente' | 'supervisor') => void; // Mantendo para compatibilidade se precisar
+  login: (role: 'agente' | 'supervisor') => Promise<void>; // Mantido para compatibilidade
   loginWithZ: (zLogin: string, pin: string, mode: 'login' | 'register', role?: 'agente' | 'supervisor', nome?: string, supervisor?: string) => Promise<void>;
   logout: () => void;
 }
@@ -127,22 +127,17 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     
     setLoading(true);
 
-    const role = roleArg; // Explicitly use the argument
     const email = `z${zLogin}${AUTH_DOMAIN}`;
-    // A senha/PIN deve ter 6 caracteres no Firebase Auth no mínimo?
-    // Firebase exige senha de 6 caracteres.
-    // O usuário pediu "senha numérica de 4 dígitos".
-    // SOLUÇÃO: Vamos adicionar um "sal fixo" ou prefixo interno para completar 6 chars se for < 6.
-    // Ou simplesmente duplicar o pin? Não, inseguro.
-    // Vamos usar um prefixo interno fixo: "SCApp-" + pin => "SCApp-1234" (10 chars).
     const firebasePassword = `SCApp-${pin}`;
-
-    console.log(`Tentativa de ${mode} como ${role}:`, { email, passwordLength: firebasePassword.length });
 
     try {
       let userCredential;
 
       if (mode === 'register') {
+        if (roleArg !== 'agente') {
+          throw new Error("Cadastro de supervisor deve ser feito por um administrador.");
+        }
+
         userCredential = await createUserWithEmailAndPassword(auth, email, firebasePassword);
         const user = userCredential.user;
 
@@ -150,7 +145,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
         const newUser: AppUsuario = {
           uid: user.uid,
           email: email,
-          role: role,
+          role: 'agente',
           nome: nome || '', // Nome completo do agente
           zLogin: zLogin, // Número Z sem o prefixo
           supervisor: supervisor, // Supervisor (GILVAN, HELIO, MARIANA PAIXÃO)
@@ -162,17 +157,22 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
         setAppUser(newUser);
       } else {
         userCredential = await signInWithEmailAndPassword(auth, email, firebasePassword);
-        // lastSeen will be updated by the syncUser useEffect
+        const userDocRef = doc(firestore, "usuarios", userCredential.user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (!userDoc.exists()) {
+          await auth.signOut();
+          setAppUser(null);
+          throw new Error("Perfil não encontrado. Contate um supervisor.");
+        }
+
+        const userData = userDoc.data() as AppUsuario;
+        setAppUser(userData);
+        router.push(userData.role === 'supervisor' ? '/admin' : '/');
+        return;
       }
 
-      // REDIRECIONAMENTO CORRETO:
-      // Se o syncUser ainda não terminou, usamos o role argument ou esperamos
-      // Mas para garantir o fluxo imediato:
-      if (role === 'supervisor') {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
+      router.push('/');
     } catch (error) {
       console.error("Z-Login failed:", error);
       throw error; // Re-throw para a UI mostrar o erro
@@ -181,28 +181,9 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
     }
   };
 
-  // Mantido para compatibilidade ou uso de Supervisor (poderia ser adaptado)
   const login = async (role: 'agente' | 'supervisor') => {
-    // Deprecated implementation for now, or fallback
-    if (!auth || !firestore) return;
-    setLoading(true);
-    try {
-      const userCredential = await signInAnonymously(auth);
-      const user = userCredential.user;
-      const newUser: AppUsuario = {
-        uid: user.uid,
-        email: `${role}@anon.com`,
-        role: role,
-        lastSeen: new Date().toISOString()
-      };
-      await setDoc(doc(firestore, "usuarios", user.uid), newUser);
-      setAppUser(newUser);
-      router.push(role === 'supervisor' ? '/admin' : '/');
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
+    console.warn(`Legacy ${role} login is disabled. Use Z-Login instead.`);
+    throw new Error("Login legado desativado. Use o Login Z.");
   };
 
   const logout = async () => {

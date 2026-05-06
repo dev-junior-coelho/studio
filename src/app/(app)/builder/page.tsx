@@ -16,12 +16,19 @@ export default function MontadorPage() {
   const getIconForType = (type: string) => {
     switch (type.toLowerCase()) {
       case "tv":
+      case "tv cabeada":
+      case "tv box":
+      case "claro tv app":
+      case "ponto adicional":
         return <Tv className="h-4 w-4" />;
       case "internet":
+      case "banda larga":
         return <Wifi className="h-4 w-4" />;
       case "fixo":
         return <Phone className="h-4 w-4" />;
       case "movel":
+      case "móvel":
+      case "dependente móvel":
         return <Smartphone className="h-4 w-4" />;
       case "wifimesh":
       case "mesh":

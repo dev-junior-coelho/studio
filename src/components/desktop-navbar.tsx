@@ -41,10 +41,10 @@ export function DesktopNavbar() {
                 <div className="flex items-center gap-8 flex-1">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-                        <div className="bg-red-500 p-2 rounded-2xl shadow-sm group-hover:bg-red-600 transition-all duration-300">
+                        <div className="bg-gradient-to-br from-[#d00010] via-[#f00018] to-[#ff4545] p-2 rounded-2xl shadow-sm group-hover:brightness-110 transition-all duration-300">
                             <Zap className="h-4 w-4 text-white" />
                         </div>
-                        <span className="text-base font-black text-slate-800 tracking-tight leading-tight select-none">
+                        <span className="text-base font-black text-black tracking-tight leading-tight select-none">
                             Studio
                         </span>
                     </Link>
@@ -60,8 +60,8 @@ export function DesktopNavbar() {
                                     className={cn(
                                         "flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-wider transition-all duration-300 select-none",
                                         isActive
-                                            ? "bg-red-50 text-red-500 font-black"
-                                            : "text-slate-400 hover:bg-slate-50 hover:text-slate-800"
+                                            ? "bg-red-50 text-[#e60012] font-black"
+                                            : "text-neutral-500 hover:bg-slate-50 hover:text-black"
                                     )}
                                 >
                                     <item.icon className="h-3.5 w-3.5" />
@@ -77,15 +77,15 @@ export function DesktopNavbar() {
                     {/* ATUAL Pill */}
                     <div className="bg-white px-4 py-2 rounded-full border border-slate-200/80 shadow-sm flex items-center gap-2 select-none h-10 transition-all">
                         <span className="text-[10px] font-black tracking-wider text-slate-400 uppercase select-none">Atual</span>
-                        <span className="font-extrabold text-slate-700 tabular-nums text-sm">
+                        <span className="font-black text-black tabular-nums text-sm">
                             {totalGastoAtual > 0 ? formatCurrency(totalGastoAtual) : 'R$ 0,00'}
                         </span>
                     </div>
 
                     {/* NOVA Pill - Light Salmon/Pink */}
                     <div className="bg-red-50 border border-red-100 px-4 py-2 rounded-full shadow-sm flex items-center gap-2 h-10 transition-all select-none">
-                        <span className="text-[10px] font-black tracking-wider text-red-400 uppercase select-none">Nova</span>
-                        <span className="font-extrabold text-red-500 tabular-nums text-sm">
+                        <span className="text-[10px] font-black tracking-wider text-[#e60012] uppercase select-none">Nova</span>
+                        <span className="font-black text-[#e60012] tabular-nums text-sm">
                             {novaOfertaTotal > 0 ? formatCurrency(novaOfertaTotal) : 'R$ 0,00'}
                         </span>
                     </div>
@@ -112,7 +112,7 @@ export function DesktopNavbar() {
                         variant="ghost"
                         size="sm"
                         onClick={() => logout()}
-                        className="text-slate-400 hover:text-slate-800 hover:bg-slate-50 gap-2 rounded-2xl text-xs font-black uppercase tracking-wider h-10 px-4 transition-all duration-300"
+                        className="text-neutral-500 hover:text-black hover:bg-slate-50 gap-2 rounded-2xl text-xs font-black uppercase tracking-wider h-10 px-4 transition-all duration-300"
                     >
                         <span>Sair</span>
                         <LogOut className="h-4 w-4" />

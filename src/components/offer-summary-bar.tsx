@@ -27,17 +27,17 @@ export function OfferSummaryBar() {
             <div className="max-w-none mx-auto px-4 py-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="bg-red-500 p-1.5 rounded-xl shadow-sm">
+                        <div className="bg-gradient-to-br from-[#d00010] via-[#f00018] to-[#ff4545] p-1.5 rounded-xl shadow-sm">
                             <Zap className="h-4 w-4 text-white" />
                         </div>
-                        <span className="text-base font-black tracking-tight leading-tight text-slate-800">Studio</span>
+                        <span className="text-base font-black tracking-tight leading-tight text-black">Studio</span>
                     </div>
 
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={logout}
-                        className="text-slate-400 hover:text-slate-800 hover:bg-slate-50 h-9 w-9 rounded-xl p-0 transition-all duration-300"
+                        className="text-neutral-500 hover:text-black hover:bg-slate-50 h-9 w-9 rounded-xl p-0 transition-all duration-300"
                         title="Sair"
                     >
                         <LogOut className="h-4 w-4" />
@@ -48,15 +48,15 @@ export function OfferSummaryBar() {
                     {/* ATUAL Pill */}
                     <div className="bg-white px-3 py-1.5 rounded-full border border-slate-200/80 shadow-sm flex items-center justify-center gap-1.5 select-none h-9 flex-1 transition-all">
                         <span className="text-[9px] font-black tracking-wider text-slate-400 uppercase select-none">Atual</span>
-                        <span className="font-extrabold text-slate-700 tabular-nums text-xs">
+                        <span className="font-black text-black tabular-nums text-xs">
                             {totalGastoAtual > 0 ? formatCurrency(totalGastoAtual) : 'R$ 0,00'}
                         </span>
                     </div>
 
                     {/* NOVA Pill - Light Salmon/Pink */}
                     <div className="bg-red-50 border border-red-100 px-3 py-1.5 rounded-full shadow-sm flex items-center justify-center gap-1.5 h-9 flex-1 transition-all select-none">
-                        <span className="text-[9px] font-black tracking-wider text-red-400 uppercase select-none">Nova</span>
-                        <span className="font-extrabold text-red-500 tabular-nums text-xs">
+                        <span className="text-[9px] font-black tracking-wider text-[#e60012] uppercase select-none">Nova</span>
+                        <span className="font-black text-[#e60012] tabular-nums text-xs">
                             {novaOfertaTotal > 0 ? formatCurrency(novaOfertaTotal) : 'R$ 0,00'}
                         </span>
                     </div>

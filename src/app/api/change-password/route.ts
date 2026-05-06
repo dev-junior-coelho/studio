@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminAuth } from "@/lib/firebase-admin";
+import { adminAuth, adminDb } from "@/lib/firebase-admin";
+
+const PIN_PATTERN = /^\d{4}$/;
+const RECENT_LOGIN_SECONDS = 10 * 60;
 
 export async function POST(req: NextRequest) {
     try {
@@ -17,14 +20,24 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Invalid Token" }, { status: 401 });
         }
 
+        const nowSeconds = Math.floor(Date.now() / 1000);
+        if (!decodedToken.auth_time || nowSeconds - decodedToken.auth_time > RECENT_LOGIN_SECONDS) {
+            return NextResponse.json({ error: "Recent login required" }, { status: 401 });
+        }
+
+        const requesterDoc = await adminDb.collection("usuarios").doc(decodedToken.uid).get();
+        if (!requesterDoc.exists) {
+            return NextResponse.json({ error: "User profile not found" }, { status: 403 });
+        }
+
         const body = await req.json();
         const { newPin } = body;
 
-        if (!newPin) {
+        if (typeof newPin !== "string") {
             return NextResponse.json({ error: "Missing newPin" }, { status: 400 });
         }
 
-        if (newPin.length !== 4 || isNaN(Number(newPin))) {
+        if (!PIN_PATTERN.test(newPin)) {
             return NextResponse.json({ error: "PIN must be 4 digits" }, { status: 400 });
         }
 
@@ -39,8 +52,7 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("Change Password Error:", error);
         return NextResponse.json({
-            error: "Internal Server Error",
-            details: error.message
+            error: "Internal Server Error"
         }, { status: 500 });
     }
 }
