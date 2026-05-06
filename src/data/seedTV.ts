@@ -1,474 +1,139 @@
-// data/seedTV.ts (V11.0 - Preços e Regras Mantidas)
+// data/seedTV.ts (Claro TV+ - vigente a partir de 23/04/2026)
 // TIPOS CORRETOS: "TV Cabeada" para Cabo, "TV Box" para Streaming, "Claro TV APP" para App
 
-const beneficiosTVComboCompleto = [
+const beneficiosSuperbundle = [
     "Netflix Padrão com Anúncios (2 acessos, Full HD)",
-    "Globoplay Premium (canais ao vivo, 5 acessos)",
+    "Globoplay Premium com canais ao vivo (5 acessos)",
     "HBO Max Básico com Anúncios (2 acessos, Full HD)",
     "Apple TV+ (5 acessos, 4K HDR, sem anúncios)",
     "Disney+ Padrão com Anúncios (2 acessos, Full HD)",
-    "Amazon Prime Video Padrão com Anúncios (3 acessos, Full HD)",
-    "Amazon Music, Prime Gaming, Prime Reading e Frete Grátis",
-    "Controle com Comando de Voz",
-    "Gravador Virtual com 400 horas"
+    "Amazon Prime Video com anúncios (3 acessos)",
+    "Amazon Music, Prime Gaming, Prime Reading e frete grátis",
+    "Replay TV e gravação na nuvem"
 ];
 
-const beneficiosTVComboUpgrade = [
-    "Netflix Padrão com Anúncios",
-    "Apple TV+",
-    "HBO Max Básico com Anúncios",
-    "Globoplay Canais Incluso",
-    "Controle com Comando de Voz",
-    "Gravador Virtual com 400 horas"
+const beneficiosSoundbox = [
+    ...beneficiosSuperbundle,
+    "Equipamento Soundbox com áudio Bang & Olufsen e Dolby Atmos",
+    "Comando de voz"
+];
+
+const beneficiosBox = [
+    ...beneficiosSuperbundle,
+    "Box 4K",
+    "Controle com comando de voz"
+];
+
+// Helper para extrair procedimento S/ APA e adicionar CADASTRO NETSALES
+function addCadastroNetsalesToBenefits(beneficios: string[], observacoes: string) {
+    if (!observacoes || typeof observacoes !== 'string') {
+        return [...beneficios, `CADASTRO NETSALES: S/ APA (procedimento não encontrado)`];
+    }
+    const procedimentoMatch = observacoes.match(/procedimento:\s*([^\.]+)/i);
+    let procedimento = 'S/ APA (procedimento não encontrado)';
+    if (procedimentoMatch) {
+        const procedimentos = procedimentoMatch[1].split('/').map(s => s.trim()).filter(Boolean);
+        const sApa = procedimentos.find(p => /s\/?\s*apa/i.test(p));
+        procedimento = sApa || procedimentos[0] || procedimento;
+    }
+    return [...beneficios, `CADASTRO NETSALES: ${procedimento}`];
+}
+
+const tv = (
+    regiaoId: string,
+    tipo: "TV Cabeada" | "TV Box" | "Claro TV APP",
+    nome: string,
+    precoMensal: number,
+    beneficios: string[],
+    observacoes: string,
+    precoAnual: number | null = null
+) => ({
+    regiaoId,
+    tipo,
+    nome,
+    precoMensal,
+    precoAnual,
+    beneficios: addCadastroNetsalesToBenefits(beneficios, observacoes),
+    observacoes
+});
+
+const tvPadrao = [
+    tv("padrao", "TV Cabeada", "Claro TV+ Soundbox (Cabo) Multi", 174.90, beneficiosSoundbox, "Padrão p.8. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra. Procedimento: CTV+ TOP HD 4K SOUND MULTI FID / 4K SOUND TOP NETFLIX ANUNCIO."),
+    tv("padrao", "TV Cabeada", "Claro TV+ Soundbox (Cabo) Single", 164.90, beneficiosSoundbox, "Padrão p.8. Modalidade Single. Para pagamentos DCC + Fatura Digital, aplicar desconto de R$ 5,00."),
+    tv("padrao", "TV Cabeada", "Claro TV+ Box (Cabo) Multi 5G e Fibra", 154.90, beneficiosBox, "Padrão p.8. Modalidade No Multi com 5G e Fibra. Procedimento: CTV+ TOP HD 4K MULTI FID."),
+    tv("padrao", "TV Cabeada", "Claro TV+ Box (Cabo) Multi 5G ou Fibra", 154.90, beneficiosBox, "Padrão p.8. Modalidade No Multi com 5G ou Fibra. Procedimento: CTV+ TOP HD 4K MULTI FID."),
+    tv("padrao", "TV Cabeada", "Claro TV+ Box (Cabo) Single", 164.90, beneficiosBox, "Padrão p.8. Modalidade Single. Procedimento: CTV+ TOP HD 4K FID."),
+    tv("padrao", "TV Box", "Claro TV+ Soundbox (Streaming) Multi", 174.90, beneficiosSoundbox, "Padrão p.8. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra. Procedimento: CLARO STREAMING HD TOP SOUND MULTI FID."),
+    tv("padrao", "TV Box", "Claro TV+ Box (Streaming) Multi 5G e Fibra", 99.90, beneficiosBox, "Padrão p.8. Modalidade No Multi com 5G e Fibra. Valor válido em boleto e DCC. Procedimento: STREAMING HD TOP 6S 3P FID."),
+    tv("padrao", "TV Box", "Claro TV+ Box (Streaming) Multi 5G ou Fibra", 124.90, beneficiosBox, "Padrão p.8. Modalidade No Multi com 5G ou Fibra. Procedimento: CLARO STREAMING HD TOP FID."),
+    tv("padrao", "TV Box", "Claro TV+ Box (Streaming) Multi 5G Área Não Cabeada", 109.90, beneficiosBox, "Padrão p.8. Área não cabeada. Modalidade No Multi com 5G. Procedimento: CLARO STREAMING HD TOP MULTI FID."),
+    tv("padrao", "TV Box", "Claro TV+ Box (Streaming) Single", 134.90, beneficiosBox, "Padrão p.8. Modalidade Single ou Área não cabeada com Fone Fixo. Procedimento: CLARO STREAMING HD TOP FID.")
+];
+
+const tvMercadoDesenvolvimento = [
+    tv("mercado-desenvolvimento-1", "TV Cabeada", "Claro TV+ Soundbox (Cabo) MD", 174.90, beneficiosSoundbox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-2", "TV Cabeada", "Claro TV+ Soundbox (Cabo) MD", 174.90, beneficiosSoundbox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-3", "TV Cabeada", "Claro TV+ Soundbox (Cabo) MD", 174.90, beneficiosSoundbox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-1", "TV Cabeada", "Claro TV+ Box (Cabo) MD", 154.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-2", "TV Cabeada", "Claro TV+ Box (Cabo) MD", 154.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-3", "TV Cabeada", "Claro TV+ Box (Cabo) MD", 154.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-1", "TV Cabeada", "Claro TV+ Box (Cabo) MD Single", 164.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade Single."),
+    tv("mercado-desenvolvimento-2", "TV Cabeada", "Claro TV+ Box (Cabo) MD Single", 164.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade Single."),
+    tv("mercado-desenvolvimento-3", "TV Cabeada", "Claro TV+ Box (Cabo) MD Single", 164.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade Single."),
+    tv("mercado-desenvolvimento-1", "TV Box", "Claro TV+ Soundbox (Streaming) MD", 174.90, beneficiosSoundbox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-2", "TV Box", "Claro TV+ Soundbox (Streaming) MD", 174.90, beneficiosSoundbox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-3", "TV Box", "Claro TV+ Soundbox (Streaming) MD", 174.90, beneficiosSoundbox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra ou No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-1", "TV Box", "Claro TV+ Box (Streaming) MD Multi 5G e Fibra", 99.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra. Procedimento: STREAMING HD TOP 6S 3P FID."),
+    tv("mercado-desenvolvimento-2", "TV Box", "Claro TV+ Box (Streaming) MD Multi 5G e Fibra", 99.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra. Procedimento: STREAMING HD TOP 6S 3P FID."),
+    tv("mercado-desenvolvimento-3", "TV Box", "Claro TV+ Box (Streaming) MD Multi 5G e Fibra", 99.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G e Fibra. Procedimento: STREAMING HD TOP 6S 3P FID."),
+    tv("mercado-desenvolvimento-1", "TV Box", "Claro TV+ Box (Streaming) MD Multi 5G ou Fibra", 114.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-2", "TV Box", "Claro TV+ Box (Streaming) MD Multi 5G ou Fibra", 114.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-3", "TV Box", "Claro TV+ Box (Streaming) MD Multi 5G ou Fibra", 114.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade No Multi com 5G ou Fibra."),
+    tv("mercado-desenvolvimento-1", "TV Box", "Claro TV+ Box (Streaming) MD Single", 134.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade Single."),
+    tv("mercado-desenvolvimento-2", "TV Box", "Claro TV+ Box (Streaming) MD Single", 134.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade Single."),
+    tv("mercado-desenvolvimento-3", "TV Box", "Claro TV+ Box (Streaming) MD Single", 134.90, beneficiosBox, "Mercado em Desenvolvimento p.20. Modalidade Single.")
+];
+
+const tvMedTemplate = tvMercadoDesenvolvimento.filter(produto => produto.regiaoId === "mercado-desenvolvimento-2");
+
+const regioesTvMedPdf = [
+    "especial-promo-6m",
+    "especial-promo-3m",
+    "especial-plus-promo-6m",
+    "especial-plus-promo-3-6m",
+    "especial-plus-promo-3m",
+    "especial-plus-promo-3m-b",
+    "med-01",
+    "med-02",
+    "med-redes-neutras-02",
+    "med-03"
+];
+
+const tvMedPdf = regioesTvMedPdf.flatMap(regiaoId =>
+    tvMedTemplate.map(produto => ({
+        ...produto,
+        regiaoId,
+        observacoes: produto.observacoes.replace("Mercado em Desenvolvimento p.20", `${regiaoId} - TV MED p.67`)
+    }))
+);
+
+const tvFibraPura = [
+    tv("fibra-pura", "TV Box", "Claro TV+ Soundbox (Streaming) Fibra Pura Multi", 154.90, beneficiosSoundbox, "Fibra Pura p.66. Modalidade No Multi com 5G e Fibra. Procedimento: CLARO STREAMING HD TOP SOUND MULTI FID."),
+    tv("fibra-pura", "TV Box", "Claro TV+ Box (Streaming) Fibra Pura Multi", 124.90, beneficiosBox, "Fibra Pura p.66. Modalidade No Multi com 5G e Fibra. Procedimento: CLARO STREAMING HD TOP MULTI FID."),
+    tv("fibra-pura", "TV Box", "Claro TV+ Box (Streaming) Fibra Pura Single", 134.90, beneficiosBox, "Fibra Pura p.66. Modalidade Single com Fone. Procedimento: CLARO STREAMING HD TOP FID.")
 ];
 
 export const produtosTV = [
-    // ==========================================
-    // TV CABEADA (p.65) - Região 'padrao' e 'especial'
-    // ==========================================
-    ...['padrao', 'especial'].flatMap(regiao => [
-        {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "Claro TV+ Soundbox (Cabo)", precoMensal: 154.90, precoAnual: null,
-            beneficios: [
-                "Assinatura inclusa: Netflix Padrão com Anúncios",
-                "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-                "Assinatura inclusa: HBO Max Básico com Anúncios",
-                "Assinatura inclusa: Apple TV+",
-                "Assinatura inclusa: Disney+ Padrão com Anúncios",
-                "Assinatura inclusa: Amazon Prime",
-                "Benefício Extra: 4 meses de conteúdo digital incluso",
-                "Equipamento Soundbox: Áudio Bang & Olufsen com Dolby Atmos",
-                "Comando de voz com Alexa integrada",
-                "Mais de 100 canais ao vivo",
-                "Replay TV e Gravador na Nuvem"
-            ],
-            observacoes: "Pacote Soundbox Cabo. Preço COM BL E MÓVEL (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
-        },
-        {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "Claro TV+ Soundbox (Cabo) Single", precoMensal: 164.90, precoAnual: null,
-            beneficios: [
-                "Assinatura inclusa: Netflix Padrão com Anúncios",
-                "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-                "Assinatura inclusa: HBO Max Básico com Anúncios",
-                "Assinatura inclusa: Apple TV+",
-                "Assinatura inclusa: Disney+ Padrão com Anúncios",
-                "Assinatura inclusa: Amazon Prime",
-                "Equipamento Soundbox: Áudio Bang & Olufsen com Dolby Atmos",
-                "Comando de voz com Alexa integrada",
-                "Mais de 100 canais ao vivo",
-                "Replay TV e Gravador na Nuvem"
-            ],
-            observacoes: "Pacote Soundbox Cabo. Preço COM BL OU MÓVEL ou SINGLE COM FONE (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
-        },
-        {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "Claro TV+ Box (Cabo)", precoMensal: 124.90, precoAnual: null,
-            beneficios: [
-                "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-                "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-                "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-                "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-                "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-                "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-                "Bônus Exclusivo: 4 meses de conteúdo digital incluso",
-                "Imagem de Cinema: Tecnologia 4K HDR Ultra Definição",
-                "Estabilidade Total: Conexão via Cabo (Não depende do Wi-Fi)",
-                "Comando de Voz: Google Assistant no controle remoto",
-                "Replay TV: Volte a programação em até 7 dias quando quiser"
-            ],
-            observacoes: "Pacote Box Cabo. Preço COM BL E MÓVEL (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
-        },
-        {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "Claro TV+ Box (Cabo) Single", precoMensal: 134.90, precoAnual: null,
-            beneficios: [
-                "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-                "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-                "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-                "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-                "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-                "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-                "Imagem de Cinema: Tecnologia 4K HDR Ultra Definição",
-                "Estabilidade Total: Conexão via Cabo (Não depende do Wi-Fi)",
-                "Comando de Voz: Google Assistant no controle remoto",
-                "Replay TV: Volte a programação em até 7 dias quando quiser"
-            ],
-            observacoes: "Pacote Box Cabo. Preço SINGLE COM FONE (p.65). Desconto de R$ 5,00 no DCC+Fatura Digital."
-        }
-    ]),
-
-    // ==========================================
-    // TV BOX / STREAMING (p.66) - Região 'fibra-pura'
-    // ==========================================
-    {
-        regiaoId: "fibra-pura", tipo: "TV Box", nome: "Claro TV+ Soundbox (Streaming)", precoMensal: 154.90, precoAnual: null,
-        beneficios: [
-            "Assinatura inclusa: Netflix Padrão com Anúncios",
-            "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-            "Assinatura inclusa: HBO Max Básico com Anúncios",
-            "Assinatura inclusa: Apple TV+",
-            "Assinatura inclusa: Disney+ Padrão com Anúncios",
-            "Assinatura inclusa: Amazon Prime",
-            "Benefício Extra: 4 meses de conteúdo digital incluso",
-            "Equipamento Soundbox: Áudio Bang & Olufsen com Dolby Atmos",
-            "Comando de voz com Alexa integrada",
-            "Mais de 100 canais ao vivo",
-            "Replay TV e Gravador na Nuvem"
-        ],
-        observacoes: "Pacote Soundbox Streaming. Preço COM BL E MÓVEL (p.66). Desconto de R$ 5,00 no DCC+Fatura Digital."
-    },
-    {
-        regiaoId: "fibra-pura", tipo: "TV Box", nome: "Claro TV+ Box (Streaming)", precoMensal: 124.90, precoAnual: null,
-        beneficios: [
-            "Assinatura inclusa: Netflix Padrão com Anúncios",
-            "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-            "Assinatura inclusa: HBO Max Básico com Anúncios",
-            "Assinatura inclusa: Apple TV+",
-            "Assinatura inclusa: Disney+ Padrão com Anúncios",
-            "Assinatura inclusa: Amazon Prime",
-            "Benefício Extra: 4 meses de conteúdo digital incluso",
-            "Box TV via Streaming (Auto instalação)",
-            "Controle com comando de voz",
-            "Mais de 100 canais ao vivo",
-            "Replay TV e Gravador na Nuvem"
-        ],
-        observacoes: "Pacote Box Streaming. Preço COM BL E MÓVEL (p.66). Desconto de R$ 5,00 no DCC+Fatura Digital."
-    },
-    {
-        regiaoId: "fibra-pura", tipo: "TV Box", nome: "Claro TV+ Box (Streaming) Single", precoMensal: 134.90, precoAnual: null,
-        beneficios: [
-            "Assinatura inclusa: Netflix Padrão com Anúncios",
-            "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-            "Assinatura inclusa: HBO Max Básico com Anúncios",
-            "Assinatura inclusa: Apple TV+",
-            "Assinatura inclusa: Disney+ Padrão com Anúncios",
-            "Assinatura inclusa: Amazon Prime",
-            "Box TV via Streaming (Auto instalação)",
-            "Controle com comando de voz",
-            "Mais de 100 canais ao vivo",
-            "Replay TV e Gravador na Nuvem"
-        ],
-        observacoes: "Pacote Box Streaming. Preço SINGLE COM FONE (p.66). Desconto de R$ 5,00 no DCC+Fatura Digital."
-    },
-
-    // ==========================================
-    // TV MED (p.67) - Todas as outras regiões (Cabeada e Streaming)
-    // ==========================================
-    ...['med-01', 'med-02', 'med-03', 'especial-promo-6m', 'especial-promo-3m', 'especial-plus', 'especial-plus-promo-6m', 'especial-plus-promo-3-6m', 'especial-plus-promo-3m', 'especial-plus-promo-3m-b', 'med-redes-neutras-02'].flatMap(regiao => [
-        // TV Cabeada
-        {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "Claro TV+ Soundbox (Cabo)", precoMensal: 154.90, precoAnual: null,
-            beneficios: [
-                "Assinatura inclusa: Netflix Padrão com Anúncios",
-                "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-                "Assinatura inclusa: HBO Max Básico com Anúncios",
-                "Assinatura inclusa: Apple TV+",
-                "Assinatura inclusa: Disney+ Padrão com Anúncios",
-                "Assinatura inclusa: Amazon Prime",
-                "Benefício Extra: 4 meses de conteúdo digital incluso",
-                "Equipamento Soundbox: Áudio Bang & Olufsen com Dolby Atmos",
-                "Comando de voz com Alexa integrada",
-                "Mais de 100 canais ao vivo",
-                "Replay TV e Gravador na Nuvem"
-            ],
-            observacoes: "Pacote Soundbox Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
-        },
-        {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "Claro TV+ Soundbox (Cabo) Single", precoMensal: 164.90, precoAnual: null,
-            beneficios: [
-                "Assinatura inclusa: Netflix Padrão com Anúncios",
-                "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-                "Assinatura inclusa: HBO Max Básico com Anúncios",
-                "Assinatura inclusa: Apple TV+",
-                "Assinatura inclusa: Disney+ Padrão com Anúncios",
-                "Assinatura inclusa: Amazon Prime",
-                "Equipamento Soundbox: Áudio Bang & Olufsen com Dolby Atmos",
-                "Comando de voz com Alexa integrada",
-                "Mais de 100 canais ao vivo",
-                "Replay TV e Gravador na Nuvem"
-            ],
-            observacoes: "Pacote Soundbox Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
-        },
-        {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "Claro TV+ Box (Cabo)", precoMensal: 124.90, precoAnual: null,
-            beneficios: [
-                "Assinatura inclusa: Netflix Padrão com Anúncios",
-                "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-                "Assinatura inclusa: HBO Max Básico com Anúncios",
-                "Assinatura inclusa: Apple TV+",
-                "Assinatura inclusa: Disney+ Padrão com Anúncios",
-                "Assinatura inclusa: Amazon Prime",
-                "Benefício Extra: 4 meses de conteúdo digital incluso",
-                "Qualidade 4K HDR",
-                "Controle com comando de voz",
-                "Mais de 100 canais ao vivo",
-                "Replay TV e Gravador na Nuvem"
-            ],
-            observacoes: "Pacote Box Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
-        },
-        {
-            regiaoId: regiao, tipo: "TV Cabeada", nome: "Claro TV+ Box (Cabo) Single", precoMensal: 134.90, precoAnual: null,
-            beneficios: [
-                "Assinatura inclusa: Netflix Padrão com Anúncios",
-                "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-                "Assinatura inclusa: HBO Max Básico com Anúncios",
-                "Assinatura inclusa: Apple TV+",
-                "Assinatura inclusa: Disney+ Padrão com Anúncios",
-                "Assinatura inclusa: Amazon Prime",
-                "Qualidade 4K HDR",
-                "Controle com comando de voz",
-                "Mais de 100 canais ao vivo",
-                "Replay TV e Gravador na Nuvem"
-            ],
-            observacoes: "Pacote Box Cabo. Preço MED (p.67). Desconto R$ 5,00 DCC."
-        },
-        // TV Box / Streaming
-        {
-            regiaoId: regiao, tipo: "TV Box", nome: "Claro TV+ Soundbox (Streaming)", precoMensal: 154.90, precoAnual: null,
-            beneficios: [
-                "Assinatura inclusa: Netflix Padrão com Anúncios",
-                "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-                "Assinatura inclusa: HBO Max Básico com Anúncios",
-                "Assinatura inclusa: Apple TV+",
-                "Assinatura inclusa: Disney+ Padrão com Anúncios",
-                "Assinatura inclusa: Amazon Prime",
-                "Benefício Extra: 4 meses de conteúdo digital incluso",
-                "Equipamento Soundbox: Áudio Bang & Olufsen com Dolby Atmos",
-                "Comando de voz com Alexa integrada",
-                "Mais de 100 canais ao vivo",
-                "Replay TV e Gravador na Nuvem"
-            ],
-            observacoes: "Pacote Soundbox Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
-        },
-        {
-            regiaoId: regiao, tipo: "TV Box", nome: "Claro TV+ Box (Streaming)", precoMensal: 124.90, precoAnual: null,
-            beneficios: [
-                "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-                "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-                "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-                "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-                "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-                "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-                "Bônus Exclusivo: 4 meses de conteúdo digital incluso",
-                "Liberdade Total: Leve seu Box para qualquer lugar ou viagem",
-                "Praticidade: Instalação Plug & Play (Só ligar e usar)",
-                "Smart TV: Transforme sua TV antiga em uma Android TV moderna",
-                "Comando de Voz: Google Assistant no controle remoto"
-            ],
-            observacoes: "Pacote Box Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
-        },
-        {
-            regiaoId: regiao, tipo: "TV Box", nome: "Claro TV+ Box (Streaming) Single", precoMensal: 134.90, precoAnual: null,
-            beneficios: [
-                "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-                "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-                "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-                "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-                "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-                "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-                "Liberdade Total: Leve seu Box para qualquer lugar ou viagem",
-                "Praticidade: Instalação Plug & Play (Só ligar e usar)",
-                "Smart TV: Transforme sua TV antiga em uma Android TV moderna",
-                "Comando de Voz: Google Assistant no controle remoto"
-            ],
-            observacoes: "Pacote Box Streaming. Preço MED (p.67). Desconto R$ 5,00 DCC."
-        }
-    ]),
-
-    // ==========================================
-    // TV BOX - Área Não Cabeada (p.68)
-    // ==========================================
-    {
-        regiaoId: "nacional", tipo: "TV Box", nome: "Claro TV+ Box (Streaming)", precoMensal: 124.90, precoAnual: null,
-        beneficios: [
-            "Assinatura inclusa: Netflix Padrão com Anúncios",
-            "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-            "Assinatura inclusa: HBO Max Básico com Anúncios",
-            "Assinatura inclusa: Apple TV+",
-            "Assinatura inclusa: Disney+ Padrão com Anúncios",
-            "Assinatura inclusa: Amazon Prime",
-            "Benefício Extra: 4 meses de conteúdo digital incluso",
-            "Box TV via Streaming (Auto instalação)",
-            "Controle com comando de voz",
-            "Mais de 100 canais ao vivo",
-            "Replay TV e Gravador na Nuvem"
-        ],
-        observacoes: "Preço para ÁREA NÃO CABEADA COM MÓVEL (p.68). Desconto R$ 5,00 DCC."
-    },
-    {
-        regiaoId: "nacional", tipo: "TV Box", nome: "Claro TV+ Box (Streaming) Single", precoMensal: 134.90, precoAnual: null,
-        beneficios: [
-            "Assinatura inclusa: Netflix Padrão com Anúncios",
-            "Assinatura inclusa: Globoplay Premium (Canais ao Vivo)",
-            "Assinatura inclusa: HBO Max Básico com Anúncios",
-            "Assinatura inclusa: Apple TV+",
-            "Assinatura inclusa: Disney+ Padrão com Anúncios",
-            "Assinatura inclusa: Amazon Prime",
-            "Box TV via Streaming (Auto instalação)",
-            "Controle com comando de voz",
-            "Mais de 100 canais ao vivo",
-            "Replay TV e Gravador na Nuvem"
-        ],
-        observacoes: "Preço para ÁREA NÃO CABEADA SINGLE COM FONE (p.68). Desconto R$ 5,00 DCC."
-    },
-
-    // ==========================================
-    // CLARO TV APP (p.70)
-    // ==========================================
-    {
-        regiaoId: "nacional", tipo: "Claro TV APP", nome: "CLARO TV+ APP ANUAL", precoMensal: 99.90, precoAnual: 1198.80,
-        beneficios: [
-            "Mais de 120 canais ao vivo",
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Acesso por App (sem equipamento)",
-            "Contratação 100% Digital (Cartão de Crédito)"
-        ],
-        observacoes: "Pagamento anual (12x R$ 99,90). Não possui benefícios Multi."
-    },
-    {
-        regiaoId: "nacional", tipo: "Claro TV APP", nome: "CLARO TV+ APP MENSAL", precoMensal: 109.90, precoAnual: null,
-        beneficios: [
-            "Mais de 120 canais ao vivo",
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Acesso por App (sem equipamento)",
-            "Contratação 100% Digital (Cartão de Crédito)"
-        ],
-        observacoes: "Preço promocional R$ 65,40 por 2 meses. Não possui benefícios Multi."
-    },
-    {
-        regiaoId: "nacional", tipo: "Claro TV APP", nome: "CLARO TV+ STREAMINGS ANUAL", precoMensal: 69.90, precoAnual: 838.80,
-        beneficios: [
-            "NÃO inclui canais ao vivo",
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Acesso por App (sem equipamento)",
-            "Contratação 100% Digital (Cartão de Crédito)"
-        ],
-        observacoes: "Pagamento anual (12x R$ 69,90). Não possui benefícios Multi."
-    },
-    {
-        regiaoId: "nacional", tipo: "Claro TV APP", nome: "CLARO TV+ STREAMINGS MENSAL", precoMensal: 79.90, precoAnual: null,
-        beneficios: [
-            "NÃO inclui canais ao vivo",
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Acesso por App (sem equipamento)",
-            "Contratação 100% Digital (Cartão de Crédito)"
-        ],
-        observacoes: "Não possui benefícios Multi."
-    },
-
-    // ==========================================
-    // TV CABEADA - Upgrade/Rentabilização Antigos (REMOVIDOS PARA FOCAR NO 6S)
-    // ==========================================
-    // (Planos removidos: Clientes devem migrar para 6S ou Inicial HD)
-
-    // ==========================================
-    // TV CABEADA - Upgrade/Rentabilização - Opções de Entrada
-    // ==========================================
-    {
-        regiaoId: "nacional", tipo: "TV Cabeada", nome: "INICIAL HD RET Claro TV+ HD 6S", precoMensal: 79.90, precoAnual: null,
-        beneficios: [
-            "Pacote Claro TV+ HD 6S",
-            "6 Streamings inclusos",
-            "Globoplay Canais Incluso",
-            "Mais de 100 canais HD"
-        ],
-        observacoes: "Preço de UPGRADE (p.71). Desconto R$ 5,00 DCC. Fidelidade 12m."
-    },
-
-    // ==========================================
-    // RENTABILIZAÇÃO - UPGRADE DE TV (6S) - 6 STREAMINGS
-    // (Reclassificados para TV Cabeada e TV Box)
-    // ==========================================
-    {
-        regiaoId: "nacional", tipo: "TV Cabeada", nome: "Claro TV+ Soundbox 6S (Cabo)", precoMensal: 149.90, precoAnual: null,
-        beneficios: [
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Equipamento Soundbox: Áudio com Dolby Atmos",
-            "Estabilidade Master: Sinal via Cabo 100% livre de delay",
-            "Comando de voz com Alexa",
-            "Canais ao vivo inclusos"
-        ],
-        observacoes: "Proc: CTV+ TOP HD 4K SOUND 6S RENT FID. Desc R$ 5,00 DCC."
-    },
-    {
-        regiaoId: "nacional", tipo: "TV Box", nome: "Claro TV+ Soundbox 6S (Streaming)", precoMensal: 149.90, precoAnual: null,
-        beneficios: [
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Equipamento Soundbox: Áudio com Dolby Atmos",
-            "Comando de voz com Alexa",
-            "Canais ao vivo inclusos"
-        ],
-        observacoes: "Proc: CLARO STREAMING HD TOP SOUND 6S RENT FID. Desc R$ 5,00 DCC."
-    },
-    {
-        regiaoId: "nacional", tipo: "TV Cabeada", nome: "Claro TV+ Box Cabo 6S", precoMensal: 129.90, precoAnual: null,
-        beneficios: [
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Box 4K Cabo: Qualidade de Cinema com Instalação Especializada",
-            "Estabilidade Master: Sinal via Cabo 100% livre de delay",
-            "Comando de Voz Completo: Alexa e Google Assistant no controle"
-        ],
-        observacoes: "Proc: CTV+ TOP HD 4K 6S RENT FID. Desc R$ 5,00 DCC."
-    },
-    {
-        regiaoId: "nacional", tipo: "TV Box", nome: "Claro TV+ Box Streaming 6S", precoMensal: 124.90, precoAnual: null,
-        beneficios: [
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Liberdade 6S: Box Streaming Portátil para levar onde quiser",
-            "Instalação Instantânea: Plug & Play via Wi-Fi",
-            "Comando de Voz Completo: Alexa e Google Assistant no controle"
-        ],
-        observacoes: "Proc: CLARO STREAMING HD TOP 6S RENT FID. Desc R$ 5,00 DCC."
-    },
-    {
-        regiaoId: "nacional", tipo: "TV Cabeada", nome: "Claro TV+ HD 6S", precoMensal: 114.90, precoAnual: null,
-        beneficios: [
-            "Netflix: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Globoplay: Premium com Canais ao Vivo (5 telas simultâneas)",
-            "Max (HBO): Plano Básico com Anúncios (2 telas Full HD)",
-            "Apple TV+: Experiência Premium 4K HDR sem anúncios (5 telas)",
-            "Disney+: Plano Padrão com Anúncios (2 telas Full HD)",
-            "Amazon Prime: Vídeo, Música e Frete Grátis na Amazon",
-            "Equipamento HD Convencional",
-            "Estabilidade Total: Conexão via Cabo sem delay",
-            "Canais ao vivo inclusos"
-        ],
-        observacoes: "Proc: CTV+ TOP HD 6S RENT FID. Desc R$ 5,00 DCC."
-    },
+    ...tvPadrao,
+    // Grupos Especial/Especial+ usam a grade massiva de TV padrão (p.8).
+    ...tvPadrao.map(produto => ({ ...produto, regiaoId: "especial", observacoes: produto.observacoes.replace("Padrão p.8", "Especial p.12 com grade de TV padrão p.8") })),
+    ...tvPadrao.map(produto => ({ ...produto, regiaoId: "especial-plus", observacoes: produto.observacoes.replace("Padrão p.8", "Especial+ p.14 com grade de TV padrão p.8") })),
+    ...tvMercadoDesenvolvimento,
+    ...tvMedPdf,
+    ...tvFibraPura,
+    tv("exclusivo-canal", "TV Cabeada", "Claro TV+ Soundbox (Cabo) Single Canal", 194.90, beneficiosSoundbox, "Exclusivo por canal p.27. Modalidade Single. Canais elegíveis: agente autorizado, lojas próprias, PAP condomínio e PAP premium."),
+    tv("exclusivo-canal", "Claro TV APP", "Claro TV+ APP Mensal", 99.90, ["Claro TV+ APP", "Até 5 dispositivos cadastrados", "2 acessos simultâneos"], "Exclusivo por canal p.28. Produto APP sem ponto adicional.", null),
+    tv("exclusivo-canal", "Claro TV APP", "Claro TV+ Streamings Mensal", 79.90, ["Pacote Claro TV+ Streamings", "Contratação via canais digitais/cartão conforme política"], "Exclusivo por canal p.28. Produto Streaming & APP.", null)
 ];
 
 export default produtosTV;

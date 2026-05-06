@@ -1,8 +1,8 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Info, AlertTriangle, Filter } from 'lucide-react';
-import { COMPATIBILIDADE_PA, getProcedimentoPa, getLimitePa, getConfigPorNomeTV } from '@/lib/pontos-adicionais';
+import { AlertTriangle, Filter } from 'lucide-react';
+import { COMPATIBILIDADE_PA, getProcedimentoPa, getConfigPorNomeTV } from '@/lib/pontos-adicionais';
 
 interface InfoPontosAdicionaisProps {
   nomePP?: string;
@@ -71,16 +71,6 @@ export function InfoPontosAdicionais({
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Limite de Pontos */}
-        <div className="rounded-lg bg-white p-3 space-y-2">
-          <p className="text-sm font-semibold text-gray-700">Limite Máximo:</p>
-          <p className="text-lg font-bold text-blue-600">
-            {config.limite === 999
-              ? "Sem limite específico"
-              : `${config.limite} Ponto${config.limite !== 1 ? "s" : ""} Adicional${config.limite !== 1 ? "is" : ""}`}
-          </p>
-        </div>
-
         {/* Equipamentos Compatíveis */}
         <div className="rounded-lg bg-white p-3 space-y-2">
           <p className="text-sm font-semibold text-gray-700">
@@ -124,17 +114,6 @@ export function InfoPontosAdicionais({
               PA Box Cabo ou Soundbox, mas não o contrário.
             </AlertDescription>
           </Alert>
-        )}
-
-        {/* Badge informativo */}
-        {nomeTV && (
-          <div className="rounded-lg bg-blue-100 p-3 flex items-start gap-2">
-            <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-blue-700">
-              ✅ Filtro ativado automaticamente para este produto de TV. Apenas os Pontos Adicionais 
-              compatíveis são exibidos.
-            </p>
-          </div>
         )}
       </CardContent>
     </Card>

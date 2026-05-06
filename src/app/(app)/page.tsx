@@ -61,6 +61,7 @@ import Link from 'next/link';
 import { produtosOpcionais } from '@/data/seedOpcionais';
 import { generateAutoOffer } from '@/lib/auto-offer-generator';
 import { regioes } from '@/data/seedRegioes';
+import { LIMITE_PONTOS_ADICIONAIS } from '@/lib/pontos-adicionais';
 import { PageShell } from '@/components/layout/page-shell';
 
 import {
@@ -98,6 +99,16 @@ export default function DashboardPage() {
   const [cityOpen, setCityOpen] = useState(false);
   const [calculadoraValor, setCalculadoraValor] = useState('');
   const [calculadoraTipo, setCalculadoraTipo] = useState<'TV' | 'Internet' | 'Fixo' | 'Mesh' | 'AlaCarte' | null>(null);
+  const allCities = useMemo(() => {
+    const cities = new Map<string, string>();
+    regioes.forEach(regiao => {
+      regiao.cidades.forEach(cidade => {
+        const key = normalizeText(cidade);
+        if (!cities.has(key)) cities.set(key, cidade);
+      });
+    });
+    return Array.from(cities.values()).sort((a, b) => a.localeCompare(b));
+  }, []);
 
   const [showContractModal, setShowContractModal] = useState(false);
   const [showActivationInfo, setShowActivationInfo] = useState(false);
@@ -472,7 +483,7 @@ export default function DashboardPage() {
                     <CommandList>
                       <CommandEmpty className="text-xs p-3">Nenhuma cidade encontrada.</CommandEmpty>
                       <CommandGroup>
-                        {regioes.flatMap(regiao => regiao.cidades).sort().map((cidade) => (
+                        {allCities.map((cidade) => (
                           <CommandItem
                             key={cidade}
                             value={cidade}
@@ -582,7 +593,11 @@ export default function DashboardPage() {
                     <Input
                       type="number"
                       value={gastos.tvPontosAdicionais || ''}
-                      onChange={(e) => setGastos({ ...gastos, tvPontosAdicionais: Number(e.target.value) || 0 })}
+                      max={LIMITE_PONTOS_ADICIONAIS}
+                      onChange={(e) => {
+                        const quantity = Math.max(0, Math.min(LIMITE_PONTOS_ADICIONAIS, Number(e.target.value) || 0));
+                        setGastos({ ...gastos, tvPontosAdicionais: quantity });
+                      }}
                       placeholder="Pontos"
                       className="text-xs bg-slate-50 border-slate-200 hover:bg-slate-100/50 focus:border-red-500 focus:ring-red-500/10 rounded-2xl h-10 text-center font-semibold"
                     />

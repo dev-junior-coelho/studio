@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, ReactNode, useCallback, use
 import type { Produto, Gastos } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { calcularTotalComDescontos, calcularDescontoDependentes } from '@/lib/discount-utils';
+import { LIMITE_PONTOS_ADICIONAIS } from '@/lib/pontos-adicionais';
 
 
 
@@ -143,6 +144,21 @@ export function OfferProvider({ children }: { children: ReactNode }) {
         return prevProducts;
       }
 
+      if (product.tipo === 'Ponto Adicional') {
+        const pontosAdicionais = prevProducts.filter(p => p.tipo === 'Ponto Adicional').length;
+
+        if (pontosAdicionais >= LIMITE_PONTOS_ADICIONAIS) {
+          setTimeout(() => {
+            toast({
+              title: "Ponto adicional não incluído",
+              description: "Não foi possível adicionar mais pontos adicionais nesta oferta.",
+              variant: 'destructive',
+            });
+          }, 0);
+          return prevProducts;
+        }
+      }
+
       // Se é TV, rastrear como selecionada
       if (isTV) {
         setSelectedTV(product);
@@ -167,10 +183,23 @@ export function OfferProvider({ children }: { children: ReactNode }) {
   const addProductWithExtras = useCallback((mainProduct: Produto, extraProduct: Produto, quantity: number) => {
     setProducts(prevProducts => {
       const newProducts = [...prevProducts];
+      const pontosAtuais = prevProducts.filter(p => p.tipo === 'Ponto Adicional').length;
+      const quantidadePermitida = Math.max(0, Math.min(quantity, LIMITE_PONTOS_ADICIONAIS - pontosAtuais));
+
+      if (quantidadePermitida === 0) {
+        setTimeout(() => {
+          toast({
+            title: "Ponto adicional não incluído",
+            description: "Não foi possível adicionar mais pontos adicionais nesta oferta.",
+            variant: 'destructive',
+          });
+        }, 0);
+        return prevProducts;
+      }
 
       let extrasAdded = 0;
       // Add extra products with unique IDs
-      for (let i = 0; i < quantity; i++) {
+      for (let i = 0; i < quantidadePermitida; i++) {
         const uniqueId = `${extraProduct.id}-${Date.now()}-${i}`;
         newProducts.push({ ...extraProduct, id: uniqueId });
         extrasAdded++;
@@ -288,5 +317,4 @@ export function useOffer() {
   }
   return context;
 }
-
 

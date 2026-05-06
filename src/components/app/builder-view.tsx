@@ -14,7 +14,7 @@ import { collection, query, where, CollectionReference } from 'firebase/firestor
 import { useFirebase, useMemoFirebase } from '@/firebase/provider';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { cn } from '@/lib/utils';
+import { cn, normalizeText } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { InfoPontosAdicionais } from '@/components/info-pontos-adicionais';
 import { MAPEAMENTO_TV_TECNOLOGIA, HIERARQUIA_TECNOLOGIA, REGRAS_HIERARQUIA_PA } from '@/lib/pontos-adicionais';
@@ -74,11 +74,14 @@ function ProductCard({ product }: { product: Produto }) {
         }
     };
 
+    // Desabilitar botão para o produto específico
+    const isDisabledSpecial = product.nome.trim().toLowerCase() === "claro pós 50gb + 10gb bônus (multi md)".toLowerCase();
+
     return (
-        <Card className="flex flex-col h-full border border-slate-200/80 hover:border-red-200 hover:shadow-xl bg-white rounded-3xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1">
-            <div className="bg-red-50/50 p-4 pb-2 relative flex flex-col justify-between min-h-[140px]">
+        <Card className="flex flex-col h-full border border-slate-200/80 hover:border-red-300 hover:shadow-xl bg-white rounded-3xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1">
+            <div className="bg-gradient-to-br from-red-50 via-white to-red-50/70 p-4 pb-2 relative flex flex-col justify-between min-h-[140px]">
                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 bg-white border border-slate-100 rounded-xl px-2.5 py-1 select-none">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-black bg-white border border-slate-100 rounded-xl px-2.5 py-1 select-none">
                         {typeDisplayNames[product.tipo]}
                     </span>
                 </div>
@@ -96,13 +99,13 @@ function ProductCard({ product }: { product: Produto }) {
             </div>
 
             <div className="p-4 flex flex-col flex-grow bg-white">
-                <CardTitle className="text-base font-black text-slate-800 leading-snug min-h-[44px] mb-2 line-clamp-2 select-none">
+                <CardTitle className="text-base font-black text-black leading-snug min-h-[44px] mb-2 line-clamp-2 select-none">
                     {product.nome}
                 </CardTitle>
 
                 <div className="mb-4">
                     <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400 select-none">Preço mensal</p>
-                    <p className="text-2xl font-black text-red-500 font-mono tracking-tight">
+                    <p className="text-2xl font-black text-[#e60012] font-mono tracking-tight">
                         {isPriceValid ? (
                             <>
                                 {price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -125,7 +128,7 @@ function ProductCard({ product }: { product: Produto }) {
 
                 {product.tipo === 'Dependente Móvel' && (
                     <div className="space-y-2 mb-4 bg-slate-50/80 p-2.5 rounded-2xl border border-slate-100">
-                        <label className="text-xs font-bold text-slate-700 select-none">Quantidade de Dependentes</label>
+                        <label className="text-xs font-black text-black select-none">Quantidade de Dependentes</label>
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setDependentesQty(Math.max(1, dependentesQty - 1))}
@@ -156,18 +159,18 @@ function ProductCard({ product }: { product: Produto }) {
 
                 {sanitizedBenefits.length > 0 && (
                     <div className="mb-4 flex-grow">
-                        <p className="text-xs font-bold text-slate-800 select-none">Benefícios</p>
-                        <ul className="text-xs text-slate-600 space-y-1.5 mt-2 transition-all duration-300">
+                        <p className="text-xs font-black text-black select-none">Benefícios</p>
+                        <ul className="text-xs text-neutral-700 font-semibold space-y-1.5 mt-2 transition-all duration-300">
                             {(isExpanded ? sanitizedBenefits : sanitizedBenefits.slice(0, 3)).map((b, i) => {
                                 const parts = b.split(': ');
                                 if (parts.length > 1 && parts[0].length < 60) {
                                     return (
                                         <li key={i} className="flex gap-2 group/benefit">
                                             <span className="mt-1 h-3.5 w-3.5 rounded-full bg-red-50 border border-red-100 flex items-center justify-center shrink-0">
-                                                <Check className="h-2 w-2 text-red-500" />
+                                                <Check className="h-2 w-2 text-[#e60012]" />
                                             </span>
                                             <span className="min-w-0 text-[11px]">
-                                                <span className="font-black text-slate-700 group-hover/benefit:text-red-500 transition-colors">{parts[0]}:</span> {parts.slice(1).join(': ')}
+                                                <span className="font-black text-black group-hover/benefit:text-[#e60012] transition-colors">{parts[0]}:</span> {parts.slice(1).join(': ')}
                                             </span>
                                         </li>
                                     );
@@ -175,9 +178,9 @@ function ProductCard({ product }: { product: Produto }) {
                                 return (
                                     <li key={i} className="flex gap-2 group/benefit">
                                         <span className="mt-1 h-3.5 w-3.5 rounded-full bg-red-50 border border-red-100 flex items-center justify-center shrink-0">
-                                            <Check className="h-2 w-2 text-red-500" />
+                                            <Check className="h-2 w-2 text-[#e60012]" />
                                         </span>
-                                        <span className="min-w-0 text-[11px] group-hover/benefit:text-red-500 transition-colors">{b}</span>
+                                        <span className="min-w-0 text-[11px] group-hover/benefit:text-[#e60012] transition-colors">{b}</span>
                                     </li>
                                 );
                             })}
@@ -188,7 +191,7 @@ function ProductCard({ product }: { product: Produto }) {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setIsExpanded(!isExpanded)}
-                                className="w-full mt-2 h-auto py-1 text-[11px] font-black tracking-wide text-red-500 hover:text-red-600 hover:bg-transparent p-0 justify-start"
+                                className="w-full mt-2 h-auto py-1 text-[11px] font-black tracking-wide text-[#e60012] hover:text-[#c90010] hover:bg-transparent p-0 justify-start"
                             >
                                 {isExpanded ? (
                                     <span className="flex items-center gap-1 uppercase select-none">Ver menos <ChevronUp className="h-3 w-3" /></span>
@@ -202,12 +205,12 @@ function ProductCard({ product }: { product: Produto }) {
 
                 <div className="mt-auto pt-2">
                     {isAdded ? (
-                        <Button className="w-full rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 h-11 text-xs font-black uppercase tracking-wider transition-all select-none border border-slate-200/60" onClick={handleAddClick} disabled={!isPriceValid}>
+                        <Button className="w-full rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 h-11 text-xs font-black uppercase tracking-wider transition-all select-none border border-slate-200/60" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial}>
                             <Check className="mr-2 h-4 w-4 text-emerald-600" />
                             ✓ Adicionado
                         </Button>
                     ) : (
-                        <Button className="w-full rounded-full bg-gradient-to-r from-red-600 via-red-500 to-red-400 hover:brightness-110 text-white h-11 text-xs font-black uppercase tracking-wider shadow-md transform active:scale-95 transition-all select-none border-0 cursor-pointer flex items-center justify-center" onClick={handleAddClick} disabled={!isPriceValid}>
+                        <Button className="w-full rounded-full bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] hover:brightness-110 text-white h-11 text-xs font-black uppercase tracking-wider shadow-md transform active:scale-95 transition-all select-none border-0 cursor-pointer flex items-center justify-center" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial}>
                             <PlusCircle className="mr-2 h-4 w-4" />
                             {product.tipo === 'Dependente Móvel' ? `Adicionar ${dependentesQty}` : 'Adicionar à Oferta'}
                         </Button>
@@ -237,34 +240,40 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
     const allCities = useMemo(() => {
         if (!regioes) return [];
 
-        const allCitiesMap = new Map<string, { value: string; label: string; regiaoId: string }>();
+        const allCitiesMap = new Map<string, { value: string; label: string; regiaoIds: string[] }>();
 
         regioes.forEach(regiao => {
             (regiao.cidades || []).forEach(cidade => {
                 const lowerCaseCidade = cidade.toLowerCase();
-                if (!allCitiesMap.has(lowerCaseCidade)) {
-                    allCitiesMap.set(lowerCaseCidade, { value: lowerCaseCidade, label: cidade, regiaoId: regiao.id });
+                const existing = allCitiesMap.get(lowerCaseCidade);
+
+                if (!existing) {
+                    allCitiesMap.set(lowerCaseCidade, { value: lowerCaseCidade, label: cidade, regiaoIds: [regiao.id] });
+                    return;
+                }
+
+                if (!existing.regiaoIds.includes(regiao.id)) {
+                    existing.regiaoIds.push(regiao.id);
                 }
             });
         });
 
-        return Array.from(allCitiesMap.values())
-            .sort((a, b) => a.label.localeCompare(b.label));
+        return Array.from(allCitiesMap.values()).sort((a, b) => a.label.localeCompare(b.label));
 
     }, [regioes]);
 
-    const selectedRegiaoId = useMemo(() => {
-        if (!selectedCity || !allCities) return null;
-        return allCities.find(c => c.label === selectedCity)?.regiaoId ?? null;
+    const selectedRegiaoIds = useMemo(() => {
+        if (!selectedCity || !allCities) return [];
+        return allCities.find(c => c.label === selectedCity)?.regiaoIds ?? [];
     }, [selectedCity, allCities]);
 
     const productsQuery = useMemoFirebase(() => {
-        if (!firestore || !selectedRegiaoId) return null;
+        if (!firestore || selectedRegiaoIds.length === 0) return null;
         return query(
             collection(firestore, 'produtos') as CollectionReference<Produto>,
-            where('regiaoId', 'in', [selectedRegiaoId, 'nacional'])
+            where('regiaoId', 'in', [...selectedRegiaoIds, 'nacional'].slice(0, 30))
         );
-    }, [firestore, selectedRegiaoId]);
+    }, [firestore, selectedRegiaoIds]);
 
     const { data: productsData, isLoading: isLoadingProducts } = useCollection<Produto>(productsQuery);
 
@@ -415,7 +424,7 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
         <div className={cn("space-y-4", className)}>
             {!hideHeader && (
                 <div className="mb-6 pt-4 animate-in fade-in duration-500">
-                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">Montador de Portfólio</h1>
+                    <h1 className="text-3xl font-black text-black tracking-tight">Montador de Portfólio</h1>
                     <p className="text-xs text-muted-foreground font-semibold">
                         Crie sua oferta personalizada e acompanhe todos os benefícios
                     </p>
@@ -445,7 +454,11 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[--radix-popover-trigger-width] p-0 border-slate-200 rounded-2xl overflow-hidden shadow-xl">
-                                    <Command>
+                                    <Command filter={(value, search) => {
+                                        const normalizedValue = normalizeText(value);
+                                        const normalizedSearch = normalizeText(search);
+                                        return normalizedValue.includes(normalizedSearch) ? 1 : 0;
+                                    }}>
                                         <CommandInput placeholder="Buscar cidade..." className="h-10 text-xs font-semibold" />
                                         <CommandEmpty className="text-xs p-3">Nenhuma cidade encontrada.</CommandEmpty>
                                         <CommandGroup>
@@ -513,7 +526,7 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                         <div className="flex items-center justify-between gap-3">
                             <div className="text-[10px] uppercase font-black tracking-wider text-slate-400 select-none">Categorias</div>
                             {selectedType !== "Todos" ? (
-                                <Button variant="ghost" size="sm" className="h-7 px-2.5 text-[10px] font-black uppercase tracking-wider text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl" onClick={() => handleTypeChange("Todos")}>
+                                <Button variant="ghost" size="sm" className="h-7 px-2.5 text-[10px] font-black uppercase tracking-wider text-[#e60012] hover:text-[#c90010] hover:bg-red-50 rounded-xl" onClick={() => handleTypeChange("Todos")}>
                                     Limpar filtro
                                 </Button>
                             ) : null}
@@ -524,7 +537,7 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                                 variant={selectedType === "Todos" ? "default" : "secondary"}
                                 onClick={() => handleTypeChange("Todos")}
                                 size="sm"
-                                className={cn("shrink-0 rounded-2xl h-8 px-3.5 text-xs font-black uppercase tracking-wide transition-all", selectedType === "Todos" ? "bg-red-500 text-white shadow-md shadow-red-200/50 hover:bg-red-600" : "bg-white border border-slate-200 hover:border-slate-300 text-slate-600")}
+                                className={cn("shrink-0 rounded-2xl h-8 px-3.5 text-xs font-black uppercase tracking-wide transition-all", selectedType === "Todos" ? "bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] text-white shadow-md shadow-red-200/50 hover:brightness-110" : "bg-white border border-slate-200 hover:border-slate-300 text-neutral-700")}
                             >
                                 Todos
                             </Button>
@@ -534,7 +547,7 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                                     variant={selectedType === type ? "default" : "secondary"}
                                     onClick={() => handleTypeChange(type)}
                                     size="sm"
-                                    className={cn("shrink-0 rounded-2xl h-8 px-3.5 text-xs font-black uppercase tracking-wide transition-all", selectedType === type ? "bg-red-500 text-white shadow-md shadow-red-200/50 hover:bg-red-600" : "bg-white border border-slate-200 hover:border-slate-300 text-slate-600")}
+                                    className={cn("shrink-0 rounded-2xl h-8 px-3.5 text-xs font-black uppercase tracking-wide transition-all", selectedType === type ? "bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] text-white shadow-md shadow-red-200/50 hover:brightness-110" : "bg-white border border-slate-200 hover:border-slate-300 text-neutral-700")}
                                 >
                                     {typeDisplayNames[type]}
                                 </Button>
@@ -567,15 +580,15 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                         <div className="space-y-6 animate-in fade-in duration-500">
                             {typesWithProducts.map((type) => (
                                 <div key={type} className="animate-in fade-in duration-300">
-                                    <div className="rounded-3xl border border-red-100/60 bg-red-50/40 p-5 shadow-sm">
+                                    <div className="rounded-3xl border border-red-100/70 bg-gradient-to-r from-red-50 via-white to-white p-5 shadow-sm">
                                         <div className="flex items-center justify-between gap-3 mb-4">
                                             <div className="flex items-center gap-3 min-w-0">
                                                 <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center shrink-0">
                                                     {typeIcon(type)}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <div className="text-base font-black text-slate-800 tracking-tight truncate leading-tight">{typeDisplayNames[type]}</div>
-                                                    <div className="text-xs text-slate-400 font-semibold">{groupedByType[type].length} produto(s)</div>
+                                                    <div className="text-base font-black text-black tracking-tight truncate leading-tight">{typeDisplayNames[type]}</div>
+                                                    <div className="text-xs text-neutral-600 font-bold">{groupedByType[type].length} produto(s)</div>
                                                 </div>
                                             </div>
                                         </div>

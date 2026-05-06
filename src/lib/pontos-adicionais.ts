@@ -1,5 +1,7 @@
 // Configurações e regras para Pontos Adicionais (PA)
 
+export const LIMITE_PONTOS_ADICIONAIS = 10;
+
 // 🎯 HIERARQUIA DE TECNOLOGIA
 export const HIERARQUIA_TECNOLOGIA = {
   hd: 1,
@@ -81,7 +83,7 @@ export const COMPATIBILIDADE_PA: Record<string, any> = {
       { id: "pa-hd-ret-9", nome: "Ponto Adicional HD (Retenção)", tipo: "hd", preco: 9.90 },
     ],
     procedimento: "Adicionar PA de mesma tecnologia.",
-    limite: 4,
+    limite: LIMITE_PONTOS_ADICIONAIS,
   },
 
   // === BOX CABO ===
@@ -95,7 +97,7 @@ export const COMPATIBILIDADE_PA: Record<string, any> = {
       { id: "pa-hd-24", nome: "Ponto Adicional HD (Convencional)", tipo: "hd", preco: 24.90 },
     ],
     procedimento: "Pode mesclar 4K, Soundbox e HD (Cabo).",
-    limite: 4,
+    limite: LIMITE_PONTOS_ADICIONAIS,
   },
 
   // === BOX STREAMING ===
@@ -108,7 +110,7 @@ export const COMPATIBILIDADE_PA: Record<string, any> = {
       { id: "pa-sb-stream-49", nome: "Ponto Adicional Soundbox (Streaming)", tipo: "soundboxStreaming", preco: 49.90 },
     ],
     procedimento: "Apenas equipamentos Streaming.",
-    limite: 2,
+    limite: LIMITE_PONTOS_ADICIONAIS,
   },
 
   // === SOUNDBOX CABO ===
@@ -122,7 +124,7 @@ export const COMPATIBILIDADE_PA: Record<string, any> = {
       { id: "pa-hd-24", nome: "Ponto Adicional HD (Convencional)", tipo: "hd", preco: 24.90 },
     ],
     procedimento: "Pode mesclar 4K, Soundbox e HD (Cabo).",
-    limite: 4,
+    limite: LIMITE_PONTOS_ADICIONAIS,
   },
 
   // === SOUNDBOX STREAMING ===
@@ -135,7 +137,7 @@ export const COMPATIBILIDADE_PA: Record<string, any> = {
       { id: "pa-box-stream-29", nome: "Ponto Adicional Box (Streaming)", tipo: "boxStreaming", preco: 29.90 },
     ],
     procedimento: "Apenas equipamentos Streaming.",
-    limite: 2,
+    limite: LIMITE_PONTOS_ADICIONAIS,
   },
 };
 
@@ -178,12 +180,9 @@ export function respeiteHierarquiaPA(pp: string, pa: string): boolean {
 }
 
 export function podeAdicionarMaisPa(tvName: string, qtd: number): boolean {
-  const config = getConfigPorNomeTV(tvName);
-  if (!config) return true;
-  return qtd < config.limite;
+  return qtd < LIMITE_PONTOS_ADICIONAIS;
 }
 
 export function getAlertaHierarquia(): string {
   return "⚠️ Regra: Box Streaming só com Streaming. Cabo só com PA de Cabo. Respeite a tecnologia.";
 }
-

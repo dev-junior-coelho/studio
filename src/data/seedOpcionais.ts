@@ -1,4 +1,4 @@
-// data/seedOpcionais.ts (V11.0 - Preços e Regras Mantidas)
+// data/seedOpcionais.ts (Tabela Claro - vigente a partir de 23/04/2026)
 // TIPOS CORRETOS: "Fixo", "Ponto Adicional", "Opcional"
 
 export const produtosOpcionais = [
@@ -35,31 +35,31 @@ export const produtosOpcionais = [
     },
 
     // ==========================================
-    // PONTOS ADICIONAIS (Cabo e Streaming)
+    // PONTOS ADICIONAIS (p.47)
     // ==========================================
     {
         regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional Soundbox (Cabo)",
-        precoMensal: 49.90, precoAnual: null,
-        beneficios: ["Equipamento Soundbox com Dolby Atmos", "Sinal via Cabo", "Máximo de 4 pontos adicionais"],
-        observacoes: "Valor mensal."
+        precoMensal: 99.90, precoAnual: null,
+        beneficios: ["Equipamento Soundbox com Dolby Atmos", "Sinal via Cabo", "Máximo de 2 pontos adicionais"],
+        observacoes: "Valor mensal do aluguel do ponto adicional. Deve usar o mesmo procedimento do ponto principal."
     },
     {
         regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional Soundbox (Streaming)",
-        precoMensal: 49.90, precoAnual: null,
+        precoMensal: 99.90, precoAnual: null,
         beneficios: ["Equipamento Soundbox com Dolby Atmos", "Via Streaming (Wi-Fi)", "Máximo de 2 pontos adicionais"],
-        observacoes: "Valor mensal."
+        observacoes: "Valor mensal do aluguel do ponto adicional. Deve usar o mesmo procedimento do ponto principal."
     },
     {
         regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional 4K (Cabo)",
-        precoMensal: 29.90, precoAnual: null,
+        precoMensal: 69.90, precoAnual: null,
         beneficios: ["Equipamento Box 4K", "Sinal via Cabo", "Máximo de 4 pontos adicionais"],
-        observacoes: "Valor mensal."
+        observacoes: "Valor mensal do aluguel do ponto adicional. PP Box Cabo pode ter PA Box Cabo ou Soundbox Cabo."
     },
     {
         regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional Box (Streaming)",
-        precoMensal: 29.90, precoAnual: null,
+        precoMensal: 69.90, precoAnual: null,
         beneficios: ["Equipamento Box Streaming 4K", "Via Streaming (Wi-Fi)", "Máximo de 2 pontos adicionais"],
-        observacoes: "Valor mensal."
+        observacoes: "Valor mensal do aluguel do ponto adicional. PP Box pode ter PA Box ou Soundbox Streaming."
     },
     {
         regiaoId: "nacional", tipo: "Ponto Adicional", nome: "Ponto Adicional HD (Convencional)",
@@ -75,15 +75,16 @@ export const produtosOpcionais = [
     },
 
     // ==========================================
-    // CONECTIVIDADE E GAMING (p.46)
+    // CONECTIVIDADE E GAMING (p.45)
     // ==========================================
-    { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Taxa única de R$ 150,00 (em até 3x)." },
+    { regiaoId: "nacional", tipo: "Opcional", nome: "Ponto Ultra", precoMensal: null, precoAnual: null, beneficios: ["Solução de conectividade Wi-Fi", "Melhora alcance do sinal"], observacoes: "Todas as velocidades. Valor único de R$ 150,00 em até 3x. Família: Extensão. Produto: Ponto Ultra." },
     { regiaoId: "nacional", tipo: "Opcional", nome: "Claro Geek", precoMensal: 9.90, precoAnual: 118.80, beneficios: ["Suporte técnico especializado para dispositivos"], observacoes: "Fidelidade 12 meses. Multa R$ 59,40 proporcional." },
     { regiaoId: "nacional", tipo: "Opcional", nome: "Geforce NOW (Avulso)", precoMensal: 63.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos na nuvem"], observacoes: "" },
     { regiaoId: "nacional", tipo: "Opcional", nome: "Abya Go", precoMensal: 25.90, precoAnual: null, beneficios: ["Plataforma de streaming de jogos"], observacoes: "" },
     { regiaoId: "nacional", tipo: "Opcional", nome: "No Ping", precoMensal: 10.00, precoAnual: null, beneficios: ["Redutor de latência (ping) para jogos online"], observacoes: "" },
-    { regiaoId: "nacional", tipo: "Opcional", nome: "Claro SmartHome (1 Câmera)", precoMensal: 29.90, precoAnual: 358.80, beneficios: ["Monitoramento com 1 Câmera HD Wi-Fi (interna)", "Equipamento em comodato"], observacoes: "Fidelidade 12 meses. Multa R$ 500,00 proporcional." },
-    { regiaoId: "nacional", tipo: "Opcional", nome: "Extensor Wi-Fi Mesh (Comodato)", precoMensal: 30.00, precoAnual: 360.00, beneficios: ["Kit com 2 extensores para melhorar o sinal Wi-Fi"], observacoes: "Fidelidade 12 meses. Multa R$ 300,00 por extensor." },
+    { regiaoId: "nacional", tipo: "Opcional", nome: "Claro SmartHome (1 Câmera)", precoMensal: 9.90, precoAnual: 118.80, beneficios: ["Monitoramento com 1 Câmera HD Wi-Fi interna", "Equipamento em comodato", "Auto instalação"], observacoes: "Fidelidade 12 meses. Multa contratual R$ 500,00 proporcional. Câmera adicional: R$ 9,90/mês cada." },
+    { regiaoId: "nacional", tipo: "Opcional", nome: "Extensor Wi-Fi Mesh 6 (Comodato)", precoMensal: 15.00, precoAnual: 180.00, beneficios: ["Extensor Wi-Fi Mesh para fibra residencial", "Limite de até 4 extensores ativos por contrato"], observacoes: "Primeira contratação: mínimo de 2 extensores, total R$ 30,00/mês. Fidelidade 12 meses com multa de R$ 300,00 por extensor." },
+    { regiaoId: "nacional", tipo: "Opcional", nome: "Extensor Wi-Fi Mesh 7 (Comodato)", precoMensal: 50.00, precoAnual: 600.00, beneficios: ["Extensor Wi-Fi Mesh 7 para planos 5 Giga e 10 Giga", "Limite de até 4 extensores ativos por contrato"], observacoes: "Disponível para clientes com fibra residencial e gigavelocidades. Fidelidade 12 meses com multa de R$ 300,00 por extensor." },
 
     // ==========================================
     // A LA CARTE - STREAMING (p.47-48, 73-78)

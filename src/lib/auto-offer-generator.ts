@@ -4,6 +4,7 @@ import { produtosTV } from '@/data/seedTV';
 import { produtosOpcionais } from '@/data/seedOpcionais';
 import { regioes } from '@/data/seedRegioes';
 import type { Produto, Gastos } from '@/lib/types';
+import { LIMITE_PONTOS_ADICIONAIS } from '@/lib/pontos-adicionais';
 
 export interface AutoOfferResult {
     success: boolean;
@@ -13,22 +14,24 @@ export interface AutoOfferResult {
 }
 
 /**
- * Mapear cidade → regiaoId
+ * Mapear cidade → regiaoIds. Algumas cidades aparecem em mais de uma regra
+ * do PDF, por exemplo BL + TV Fibra Pura.
  */
-function getRegiaoIdByCity(city: string): string | null {
+function getRegiaoIdsByCity(city: string): string[] {
+    const regiaoIds: string[] = [];
     for (const regiao of regioes) {
         if (regiao.cidades.includes(city)) {
-            return regiao.id;
+            regiaoIds.push(regiao.id);
         }
     }
-    return null; // Cidade não encontrada
+    return regiaoIds;
 }
 
 /**
  * Buscar produtos por região e tipo
  * Retorna produtos brutos do seed (sem id/fidelidade ainda)
  */
-function getProductsByRegionAndType(regiaoId: string, tipo: string): any[] {
+function getProductsByRegionAndType(regiaoIds: string[], tipo: string): any[] {
     let allProducts: any[] = [];
 
     // Mapear tipo para o dataset correto
@@ -46,7 +49,7 @@ function getProductsByRegionAndType(regiaoId: string, tipo: string): any[] {
     }
 
     // Filtrar por região
-    const regionProducts = allProducts.filter(p => p.regiaoId === regiaoId);
+    const regionProducts = allProducts.filter(p => regiaoIds.includes(p.regiaoId));
     const nationalProducts = allProducts.filter(p => p.regiaoId === 'nacional');
 
     // SEMPRE incluir produtos nacionais junto com regionais
@@ -113,8 +116,8 @@ export function generateAutoOffer(
     }
 
     // Mapear cidade → regiaoId
-    const regiaoId = getRegiaoIdByCity(selectedCity);
-    if (!regiaoId) {
+    const regiaoIds = getRegiaoIdsByCity(selectedCity);
+    if (regiaoIds.length === 0) {
         result.errors.push(`Cidade "${selectedCity}" não encontrada nas regiões cadastradas.`);
         return result;
     }
@@ -137,7 +140,7 @@ export function generateAutoOffer(
     for (const category of categories) {
         if (category.maxPrice <= 0) continue; // Ignorar categorias sem gasto
 
-        const availableProducts = getProductsByRegionAndType(regiaoId, category.tipo);
+        const availableProducts = getProductsByRegionAndType(regiaoIds, category.tipo);
 
         let selectedProduct;
 
@@ -188,7 +191,7 @@ export function generateAutoOffer(
             result.products.push(productWithUniqueId);
         } else {
             result.warnings.push(
-                `Nenhum produto de ${category.label} encontrado com valor ≤ R$ ${category.maxPrice.toFixed(2)} na região "${regiaoId}".`
+                `Nenhum produto de ${category.label} encontrado com valor ≤ R$ ${category.maxPrice.toFixed(2)} nas regiões "${regiaoIds.join(', ')}".`
             );
         }
     }
@@ -239,6 +242,7 @@ export function generateAutoOffer(
 
     // Processar "Pontos Adicionais de TV"
     if (gastos.tvPontosAdicionais && gastos.tvPontosAdicionais > 0) {
+        const quantidadePontos = Math.min(gastos.tvPontosAdicionais, LIMITE_PONTOS_ADICIONAIS);
         const pontosAdicionaisProducts = (produtosOpcionais as any[]).filter(p =>
             p.tipo === 'Ponto Adicional' && p.regiaoId === 'nacional'
         );
@@ -249,7 +253,7 @@ export function generateAutoOffer(
             const cheapestPonto = pontosAdicionaisProducts[0];
 
             // Adicionar a quantidade especificada
-            for (let i = 0; i < gastos.tvPontosAdicionais; i++) {
+            for (let i = 0; i < quantidadePontos; i++) {
                 result.products.push({
                     ...cheapestPonto,
                     id: `${cheapestPonto.nome}-ponto-${Date.now()}-${i}-${Math.random()}`
@@ -257,7 +261,7 @@ export function generateAutoOffer(
             }
 
             result.warnings.push(
-                `Pontos Adicionais: ${gastos.tvPontosAdicionais}x "${cheapestPonto.nome}" adicionados (R$ ${cheapestPonto.precoMensal.toFixed(2)}/un).`
+                `Pontos Adicionais: ${quantidadePontos}x "${cheapestPonto.nome}" adicionados (R$ ${cheapestPonto.precoMensal.toFixed(2)}/un).`
             );
         } else {
             result.warnings.push('Nenhum produto de Ponto Adicional encontrado no catálogo.');

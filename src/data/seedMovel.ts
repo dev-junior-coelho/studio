@@ -1,130 +1,152 @@
-// data/seedMovel.ts (V11.0 - Preços e Regras Mantidas)
+// data/seedMovel.ts (Tabela Claro 5G - vigente a partir de 23/04/2026)
+
+const beneficiosPosBase = [
+    "WhatsApp ilimitado",
+    "Ligações e SMS ilimitados para qualquer operadora do Brasil usando 021",
+    "Internet suspensa ao término da franquia, com opção de contratação de pacote adicional",
+    "Fidelidade de 12 meses sem aparelho; multa fixa de R$ 240,00"
+];
+
+const beneficiosControleBase = [
+    "WhatsApp ilimitado",
+    "Apps selecionados inclusos conforme franquia do plano",
+    "Ligações e SMS ilimitados para qualquer operadora do Brasil usando 021",
+    "Ao fim da franquia, todos os bônus são bloqueados até a renovação",
+    "Fidelidade de 12 meses sem aparelho; multa fixa de R$ 120,00"
+];
+
+
+const movel = (
+    nome: string,
+    precoMensal: number,
+    beneficios: string[],
+    observacoes: string,
+    dependentesGratis = 0
+) => {
+    // Detectar dependentes pagos nas observações
+    let dependentesPagos = 0;
+    const obsLower = observacoes.toLowerCase();
+    // Exemplo: "Permite 1 linha adicional paga." ou "Permite 2 linhas adicionais pagas."
+    const match = obsLower.match(/permite\s*(\d+)\s*linha[s]? adicional[\w\s]*paga[s]?/);
+    if (match) {
+        dependentesPagos = parseInt(match[1], 10);
+    }
+
+    // Montar info de dependentes
+
+    // Novo formato solicitado: DEPENDENTE INCLUSO: 01, DEPENDENTE PAGO: 02
+    const dependenteInclusoTxt = `DEPENDENTE INCLUSO: ${String(dependentesGratis).padStart(2, '0')}`;
+    const dependentePagoTxt = `DEPENDENTE PAGO: ${String(dependentesPagos).padStart(2, '0')}`;
+    beneficios = [
+        ...beneficios,
+        dependenteInclusoTxt,
+        dependentePagoTxt
+    ];
+
+    // Extrair procedimento S/ APA caso exista
+    const procedimentoMatch = observacoes.match(/procedimento:\s*([^\.]+)/i);
+    let procedimento = 'S/ APA (procedimento não encontrado)';
+    if (procedimentoMatch) {
+        const procedimentos = procedimentoMatch[1].split('/').map(s => s.trim());
+        // Preferir variante que contenha 'S/ APA' ou 'S/ APA' similar
+        const found = procedimentos.find(p => /s\/?\s*apa/i.test(p) || /s\/apa/i.test(p));
+        if (found) procedimento = found.replace(/\s+/g, ' ');
+        else procedimento = procedimentos[0];
+    }
+
+    beneficios = [...beneficios, `CADASTRO NETSALES: ${procedimento}`];
+
+    return {
+        regiaoId: "nacional",
+        tipo: "Movel",
+        nome,
+        dependentesGratis,
+        precoMensal,
+        precoAnual: null,
+        beneficios,
+        observacoes
+    };
+};
 
 export const produtosMovel = [
-    // --- 1. PRODUTOS MÓVEIS (PÓS - MULTI) - ATUALIZADO (REMOVIDO BÔNUS MULTI FRIDAY) ---
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 300GB (Multi)", dependentesGratis: 3, precoMensal: 319.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 620 GB (300 GB Uso Livre + 300 GB Redes + 20 GB Bônus 12 Meses)",
-            "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
-            "Dependentes Inclusos (Grátis): 3. (Limite máximo de 2 dependentes pagos)",
-            "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: POS 300GB C/AP PAD / POS 300GB S/AP PAD"
-    },
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 150GB (Multi)", dependentesGratis: 2, precoMensal: 219.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 320 GB (150 GB Uso Livre + 150 GB Redes + 20 GB Bônus 12 Meses)",
-            "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
-            "Dependentes Inclusos (Grátis): 2. (Limite máximo de 2 dependentes pagos)",
-            "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium, StbFit, Starbeme Zen App",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: POS 150GB C/AP PAD / POS 150GB S/AP PAD"
-    },
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 100GB (Multi)", dependentesGratis: 1, precoMensal: 169.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 220 GB (100 GB Uso Livre + 100 GB Redes + 20 GB Bônus 12 Meses)",
-            "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
-            "Dependentes Inclusos (Grátis): 1. (Limite máximo de 2 dependentes pagos)",
-            "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: POS 100GB C/AP PAD / POS 100GB S/AP PAD"
-    },
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 60GB Gaming (Multi)", dependentesGratis: 0, precoMensal: 149.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 140 GB (60 GB Uso Livre + 60 GB Redes + 20 GB Bônus 12 Meses)",
-            "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
-            "Streaming de Jogos: Geforce NOW incluso",
-            "Dependentes Inclusos (Grátis): 0. (Limite máximo de 2 dependentes pagos)",
-            "SVAs Inclusos: Skeelo Premium, Truecaller, Claro Banca Premium",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: POS 60GB GAMING C/AP PAD / POS 60GB GAMING S/AP PAD"
-    },
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 50GB (Multi)", dependentesGratis: 0, precoMensal: 119.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 120 GB (50 GB Uso Livre + 50 GB Redes + 20 GB Bônus 12 Meses)",
-            "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
-            "Dependentes Inclusos (Grátis): 0. (Limite máximo de 2 dependentes pagos)",
-            "SVAs Inclusos: Skeelo Padrão, Truecaller, Claro Banca Premium",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: POS 50GB C/AP PAD / POS 50GB S/AP PAD"
-    },
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Pós 25GB (Multi)", dependentesGratis: 0, precoMensal: 59.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 60 GB (25 GB Uso Livre + 25 GB Redes + 10 GB Bônus 12 Meses)",
-            "Passaporte: MUNDO (Uso do plano em 80 países, incluso sem custo na modalidade Multi)",
-            "Dependentes Inclusos (Grátis): 0. (LIMITE MÁXIMO: 1 dependente pago)",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Suspensa ao término da franquia, com opção de compra de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 10,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: POS 25GB C/AP PAD / POS 25GB S/AP PAD"
-    },
+    // Pós pago com WhatsApp ilimitado - Padrão (p.5)
+    movel(
+        "Claro Pós 500GB (Multi)",
+        800.00,
+        [...beneficiosPosBase, "Franquia: 500 GB", "Passaporte Mundo", "iCloud+ 2TB ou Google One 2TB", "5 linhas adicionais inclusas"],
+        "Modalidade No Multi. Procedimento: POS MULTI 500GB S/ APA / POS MULTI 500GB C/ APA. Valores em boleto e DCC.",
+        5
+    ),
+    movel(
+        "Claro Pós 200GB (Multi)",
+        240.00,
+        [...beneficiosPosBase, "Franquia: 200 GB", "Passaporte Mundo", "iCloud+ 2TB ou Google One 2TB", "2 linhas adicionais inclusas"],
+        "Modalidade No Multi. Procedimento: POS MULTI 200GB S/ APA / POS MULTI 200GB C/ APA.",
+        2
+    ),
+    movel(
+        "Claro Pós 150GB (Multi)",
+        180.00,
+        [...beneficiosPosBase, "Franquia: 150 GB", "Passaporte Américas e Europa", "iCloud+ 2TB ou Google One 2TB", "1 linha adicional inclusa"],
+        "Modalidade No Multi. Procedimento: POS MULTI 150GB S/ APA / POS MULTI 150GB C/ APA.",
+        1
+    ),
+    movel(
+        "Claro Pós 100GB (Multi)",
+        125.00,
+        [...beneficiosPosBase, "Franquia: 100 GB", "Passaporte Américas", "iCloud+ 50GB ou Google One 100GB"],
+        "Modalidade No Multi. Procedimento: POS MULTI 100GB S/ APA / POS MULTI 100GB C/ APA. Permite 1 linha adicional paga."
+    ),
+    movel(
+        "Claro Pós 50GB + GeForce NOW (Multi)",
+        120.00,
+        [...beneficiosPosBase, "Franquia: 50 GB", "Assinatura GeForce NOW", "Passaporte Américas", "iCloud+ 200GB ou Google One 200GB"],
+        "Modalidade No Multi. Procedimento: POS 50GB GEFORCE NOW MULTI S/ APA / C/ APA. Permite 1 linha adicional paga."
+    ),
+    movel(
+        "Claro Pós 50GB (Multi)",
+        80.00,
+        [...beneficiosPosBase, "Franquia: 50 GB", "Passaporte Américas", "iCloud+ 50GB ou Google One 100GB"],
+        "Modalidade No Multi. Procedimento: POS MULTI 50GB S/ APA / POS MULTI 50GB C/ APA. Permite 1 linha adicional paga."
+    ),
 
-    // --- 2. PRODUTOS MÓVEIS (CONTROLE - MULTI) - ATUALIZADO (REMOVIDO BÔNUS MULTI FRIDAY) ---
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Controle 25GB Gamer (Multi)", dependentesGratis: 0, precoMensal: 99.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 35 GB (25 GB Uso Livre + 5 GB Redes + 5 GB Bônus 12 Meses)",
-            "Passaporte: NÃO INCLUSO.",
-            "Streaming de Jogos: Geforce NOW incluso",
-            "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Bloqueada após o consumo integral da franquia, até contratação de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: CONTROLE GEFORCE MULTI 25GB+5GB C/APA / S/APA"
-    },
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Controle 25GB (Multi)", dependentesGratis: 0, precoMensal: 69.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 35 GB (25 GB Uso Livre + 5 GB Redes + 5 GB Bônus 12 Meses)",
-            "Passaporte: NÃO INCLUSO.",
-            "SVAs Inclusos: Skeelo Padrão, Claro Banca Padrão",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Bloqueada após o consumo integral da franquia, até contratação de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: CONTROLE MULTI 25GB+5GB REDES C/APA / S/APA"
-    },
-    {
-        regiaoId: "nacional", tipo: "Movel", nome: "Claro Controle 20GB (Multi)", dependentesGratis: 0, precoMensal: 44.90, precoAnual: null,
-        beneficios: [
-            "Franquia Total: 30 GB (20 GB Uso Livre + 5 GB Redes + 5 GB Bônus 12 Meses)",
-            "Passaporte: NÃO INCLUSO.",
-            "SVAs Inclusos: Skeelo Light, Claro Banca Padrão",
-            "Benefício Extra: 4 meses de conteúdo digital incluso (na modalidade Multi)",
-            "Uso da Internet: Bloqueada após o consumo integral da franquia, até contratação de pacote adicional",
-            "Ligações Ilimitadas: Fixo e Celular de qualquer operadora do Brasil (usando 21)"
-        ],
-        observacoes: "Desconto de R$ 5,00 no DCC+Fatura Digital. Fidelidade 12 meses. Procedimento: CONTROLE MULTI 20GB+5GB REDES C/APA / S/APA"
-    },
+    // Mercado em Desenvolvimento (p.19)
+    movel(
+        "Claro Pós 50GB + 10GB Bônus (Multi MD)",
+        60.00,
+        [...beneficiosPosBase, "Franquia total: 60 GB (50 GB + 10 GB bônus)", "Passaporte Américas", "iCloud+ 50GB ou Google One 100GB"],
+        "Mercado em Desenvolvimento. Modalidade No Multi. Procedimento: POS MULTI 50GB+10GB S/ APA MD / C/ APA MD."
+    ),
 
-    // --- 3. DEPENDENTE MÓVEL ---
+    // Controle com WhatsApp ilimitado - Padrão (p.6)
+    movel(
+        "Claro Controle 40GB GeForce (Multi)",
+        99.90,
+        [...beneficiosControleBase, "Franquia total: 40 GB", "25 GB uso livre + 5 GB apps selecionados + 10 GB bônus", "GeForce NOW incluso"],
+        "Modalidade No Multi. Procedimento: CONTROLE GEFORCE MULTI 25GB + 5GB / C/APA."
+    ),
+    movel(
+        "Claro Controle 35GB (Multi)",
+        69.90,
+        [...beneficiosControleBase, "Franquia total: 35 GB", "25 GB uso livre + 5 GB apps selecionados + 5 GB bônus"],
+        "Modalidade No Multi. Procedimento: CONTROLE MULTI 25GB + 5GB REDES / C/APA."
+    ),
+    movel(
+        "Claro Controle 30GB (Multi)",
+        49.90,
+        [...beneficiosControleBase, "Franquia total: 30 GB", "20 GB uso livre + 5 GB apps selecionados + 5 GB bônus"],
+        "Modalidade No Multi. Procedimento: CONTROLE MULTI 20GB + 5GB REDES / C/APA."
+    ),
+
     {
-        regiaoId: "nacional", tipo: "Dependente Móvel", nome: "Dependente Móvel", dependentesGratis: 0, precoMensal: 50.00, precoAnual: null,
-        beneficios: ["Herda a franquia do plano do titular", "Ligações ilimitadas"],
-        observacoes: "Adicional ao plano móvel principal. O valor é por dependente adicional (além dos grátis inclusos no plano)."
+        regiaoId: "nacional",
+        tipo: "Dependente Móvel",
+        nome: "Linha Adicional Voz + Dados",
+        dependentesGratis: 0,
+        precoMensal: 55.00,
+        precoAnual: null,
+        beneficios: ["Dados e voz", "Linha adicional para planos pós-pago elegíveis"],
+        observacoes: "Página 46. Para planos com linhas adicionais Multi sem custo, cadastrar o procedimento de linha adicional avulsa com desconto."
     }
 ];
 
