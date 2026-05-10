@@ -123,6 +123,14 @@ const tvFibraPura = [
     tv("fibra-pura", "TV Box", "Claro TV+ Box (Streaming) Fibra Pura Single", 134.90, beneficiosBox, "Fibra Pura p.66. Modalidade Single com Fone. Procedimento: CLARO STREAMING HD TOP FID.")
 ];
 
+const tvRetencaoCallCenterCabo = [
+    tv("nacional", "TV Cabeada", "Claro TV+ Soundbox (Retenção)", 144.90, beneficiosSoundbox, "Retenção Call Center | TV Cabo - Áreas Cabeadas - Grupo G1. Ponto Adicional: R$ 59,90. Procedimento: S/ APA. Fidelidade: desde 23/07 o Box é comercializado prioritariamente com fidelidade."),
+    tv("nacional", "TV Cabeada", "Claro TV+ Box (Cabo) (Retenção)", 124.90, beneficiosBox, "Retenção Call Center | TV Cabo - Áreas Cabeadas - Grupo G1. Ponto Adicional: R$ 20,00. Procedimento: S/ APA. Controle por voz incluso."),
+    tv("nacional", "TV Box", "Claro TV+ Box (Retenção)", 114.90, beneficiosBox, "Retenção Call Center | TV Cabo - Áreas Cabeadas - Grupo G1. Procedimento: S/ APA. Controle por voz incluso."),
+    tv("nacional", "TV Cabeada", "Claro TV+ Top HD (Retenção)", 109.90, beneficiosSuperbundle, "Retenção Call Center | TV Cabo - Áreas Cabeadas - Grupo G1. Procedimento: S/ APA."),
+    tv("nacional", "TV Cabeada", "Claro TV+ Inicial HD (Retenção)", 79.90, beneficiosSuperbundle, "Retenção Call Center | TV Cabo - Áreas Cabeadas - Grupo G1. Procedimento: S/ APA.")
+];
+
 export const produtosTV = [
     ...tvPadrao,
     // Grupos Especial/Especial+ usam a grade massiva de TV padrão (p.8).
@@ -131,6 +139,7 @@ export const produtosTV = [
     ...tvMercadoDesenvolvimento,
     ...tvMedPdf,
     ...tvFibraPura,
+    ...tvRetencaoCallCenterCabo,
     tv("exclusivo-canal", "TV Cabeada", "Claro TV+ Soundbox (Cabo) Single Canal", 194.90, beneficiosSoundbox, "Exclusivo por canal p.27. Modalidade Single. Canais elegíveis: agente autorizado, lojas próprias, PAP condomínio e PAP premium."),
     tv("exclusivo-canal", "Claro TV APP", "Claro TV+ APP Mensal", 99.90, ["Claro TV+ APP", "Até 5 dispositivos cadastrados", "2 acessos simultâneos"], "Exclusivo por canal p.28. Produto APP sem ponto adicional.", null),
     tv("exclusivo-canal", "Claro TV APP", "Claro TV+ Streamings Mensal", 79.90, ["Pacote Claro TV+ Streamings", "Contratação via canais digitais/cartão conforme política"], "Exclusivo por canal p.28. Produto Streaming & APP.", null)

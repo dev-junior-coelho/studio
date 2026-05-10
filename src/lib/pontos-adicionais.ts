@@ -1,8 +1,8 @@
 // Configurações e regras para Pontos Adicionais (PA)
 
-export const LIMITE_PONTOS_ADICIONAIS = 10;
+export const LIMITE_PONTOS_ADICIONAIS = 999;
 
-// 🎯 HIERARQUIA DE TECNOLOGIA
+// HIERARQUIA DE TECNOLOGIA
 export const HIERARQUIA_TECNOLOGIA = {
   hd: 1,
   boxCabo: 2,
@@ -180,9 +180,9 @@ export function respeiteHierarquiaPA(pp: string, pa: string): boolean {
 }
 
 export function podeAdicionarMaisPa(tvName: string, qtd: number): boolean {
-  return qtd < LIMITE_PONTOS_ADICIONAIS;
+  return true;
 }
 
 export function getAlertaHierarquia(): string {
-  return "⚠️ Regra: Box Streaming só com Streaming. Cabo só com PA de Cabo. Respeite a tecnologia.";
+  return "Regra: Box Streaming só com Streaming. Cabo só com PA de Cabo. Respeite a tecnologia.";
 }

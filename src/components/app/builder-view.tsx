@@ -17,7 +17,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { cn, normalizeText } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { InfoPontosAdicionais } from '@/components/info-pontos-adicionais';
-import { LIMITE_PONTOS_ADICIONAIS, MAPEAMENTO_TV_TECNOLOGIA, HIERARQUIA_TECNOLOGIA, REGRAS_HIERARQUIA_PA } from '@/lib/pontos-adicionais';
+import { MAPEAMENTO_TV_TECNOLOGIA, HIERARQUIA_TECNOLOGIA, REGRAS_HIERARQUIA_PA } from '@/lib/pontos-adicionais';
 
 const productTypes: ProductType[] = ["Movel", "Dependente Móvel", "Banda Larga", "TV Cabeada", "TV Box", "Claro TV APP", "Fixo", "Serviços Avançados", "Ponto Adicional", "Opcional"];
 const typeDisplayNames: Record<ProductType, string> = {
@@ -32,6 +32,69 @@ const typeDisplayNames: Record<ProductType, string> = {
     "Ponto Adicional": "Ponto Adicional",
     "Opcional": "A La Carte"
 };
+
+const beneficiosRetencaoTv = [
+    "Mais de 120 canais",
+    "Disney+",
+    "Amazon Prime Video",
+    "Netflix",
+    "HBO Max",
+    "Globoplay",
+    "Apple TV+",
+];
+
+const produtosTvRetencao: Produto[] = [
+    {
+        id: "ret-tv-soundbox-pp-14490",
+        regiaoId: "nacional",
+        tipo: "TV Cabeada",
+        nome: "CLARO TV+ SOUNDBOX (Retenção)",
+        precoMensal: 144.90,
+        beneficios: beneficiosRetencaoTv,
+        fidelidade: "",
+        observacoes: "Portfólio Retenção – Call Center | TV CABO - ÁREAS CABEADAS - GRUPO G1. Ponto Principal: R$ 144,90. Ponto Adicional: R$ 59,90."
+    },
+    {
+        id: "ret-tv-box-cabo-pp-12490",
+        regiaoId: "nacional",
+        tipo: "TV Cabeada",
+        nome: "CLARO TV+ BOX CABO (Retenção)",
+        precoMensal: 124.90,
+        beneficios: beneficiosRetencaoTv,
+        fidelidade: "",
+        observacoes: "Portfólio Retenção – Call Center | TV CABO - ÁREAS CABEADAS - GRUPO G1. Ponto Principal: R$ 124,90. Ponto Adicional: R$ 20,00."
+    },
+    {
+        id: "ret-tv-box-pp-11490",
+        regiaoId: "nacional",
+        tipo: "TV Box",
+        nome: "CLARO TV+ BOX (Retenção)",
+        precoMensal: 114.90,
+        beneficios: beneficiosRetencaoTv,
+        fidelidade: "",
+        observacoes: "Portfólio Retenção – Call Center | TV CABO - ÁREAS CABEADAS - GRUPO G1. Ponto Principal: R$ 114,90."
+    },
+    {
+        id: "ret-tv-top-hd-pp-10990",
+        regiaoId: "nacional",
+        tipo: "TV Cabeada",
+        nome: "CLARO TV+ TOP HD (Retenção)",
+        precoMensal: 109.90,
+        beneficios: beneficiosRetencaoTv,
+        fidelidade: "",
+        observacoes: "Portfólio Retenção – Call Center | TV CABO - ÁREAS CABEADAS - GRUPO G1. Ponto Principal: R$ 109,90."
+    },
+    {
+        id: "ret-tv-inicial-hd-pp-7990",
+        regiaoId: "nacional",
+        tipo: "TV Cabeada",
+        nome: "CLARO TV+ INICIAL HD (Retenção)",
+        precoMensal: 79.90,
+        beneficios: beneficiosRetencaoTv,
+        fidelidade: "",
+        observacoes: "Portfólio Retenção – Call Center | TV CABO - ÁREAS CABEADAS - GRUPO G1. Ponto Principal: R$ 79,90."
+    },
+];
 
 function ProductCard({ product }: { product: Produto }) {
     const { products, addProduct, removeProduct } = useOffer();
@@ -57,24 +120,9 @@ function ProductCard({ product }: { product: Produto }) {
     }
     const placeholder = PlaceHolderImages.find(p => p.id === imageMap[product.tipo]);
 
-    const canAddMultiple = product.tipo === 'Ponto Adicional' || product.tipo === 'Dependente Móvel';
-    const pontosAdicionaisCount = products.filter(p => p.tipo === 'Ponto Adicional').length;
-    const reachedAdditionalPointsLimit = product.tipo === 'Ponto Adicional' && pontosAdicionaisCount >= LIMITE_PONTOS_ADICIONAIS;
-    const isAdded = !canAddMultiple && products.some(p => p.id === product.id || p.id.startsWith(`${product.id}-`));
+    const isAdded = products.some(p => p.id === product.id || p.id.startsWith(`${product.id}-`));
 
     const handleAddClick = () => {
-        if (canAddMultiple) {
-            if (product.tipo === 'Dependente Móvel') {
-                for (let i = 0; i < dependentesQty; i++) {
-                    addProduct(product);
-                }
-                return;
-            }
-
-            addProduct(product);
-            return;
-        }
-
         const addedItem = products.find(p => p.id === product.id || p.id.startsWith(`${product.id}-`));
         if (addedItem) {
             removeProduct(addedItem.id);
@@ -220,12 +268,12 @@ function ProductCard({ product }: { product: Produto }) {
 
                 <div className="mt-auto pt-2">
                     {isAdded ? (
-                        <Button className="w-full rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 h-11 text-xs font-black uppercase tracking-wider transition-all select-none border border-slate-200/60" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial || reachedAdditionalPointsLimit}>
+                        <Button className="w-full rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 h-11 text-xs font-black uppercase tracking-wider transition-all select-none border border-slate-200/60" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial}>
                             <Check className="mr-2 h-4 w-4 text-emerald-600" />
                             ✓ Adicionado
                         </Button>
                     ) : (
-                        <Button className="w-full rounded-full bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] hover:brightness-110 text-white h-11 text-xs font-black uppercase tracking-wider shadow-md transform active:scale-95 transition-all select-none border-0 cursor-pointer flex items-center justify-center" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial || reachedAdditionalPointsLimit}>
+                        <Button className="w-full rounded-full bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] hover:brightness-110 text-white h-11 text-xs font-black uppercase tracking-wider shadow-md transform active:scale-95 transition-all select-none border-0 cursor-pointer flex items-center justify-center" onClick={handleAddClick} disabled={!isPriceValid || isDisabledSpecial}>
                             <PlusCircle className="mr-2 h-4 w-4" />
                             {product.tipo === 'Dependente Móvel' ? `Adicionar ${dependentesQty}` : 'Adicionar à Oferta'}
                         </Button>
@@ -242,7 +290,7 @@ interface BuilderViewProps {
 }
 
 export function BuilderView({ className, hideHeader = false }: BuilderViewProps) {
-    const [selectedType, setSelectedType] = useState<ProductType | 'Todos'>('Todos');
+    const [selectedType, setSelectedType] = useState<ProductType | 'Todos' | 'TV Retenção' | 'Banda Larga Retenção'>('Todos');
     const [isComboboxOpen, setComboboxOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const { selectedCity, setSelectedCity, clearOffer, selectedTV } = useOffer();
@@ -255,7 +303,25 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
     const allCities = useMemo(() => {
         if (!regioes) return [];
 
-        const allCitiesMap = new Map<string, { value: string; label: string; regiaoIds: string[] }>();
+        const allCitiesMap = new Map<string, { value: string; label: string; regiaoId: string }>();
+
+        // Prioridade simples para decidir qual região deve 'vencer' quando
+        // a mesma cidade aparece em múltiplas regiões. Região com menor
+        // índice tem maior prioridade.
+        const priority = (regiaoId: string) => {
+            const order = [
+                'padrao',
+                'exclusivo-canal',
+                'especial',
+                'especial-plus',
+                'exclusivo-node',
+                'mercado-desenvolvimento-1',
+                'mercado-desenvolvimento-2',
+                'mercado-desenvolvimento-3'
+            ];
+            const idx = order.indexOf(regiaoId);
+            return idx === -1 ? order.length : idx;
+        };
 
         regioes.forEach(regiao => {
             (regiao.cidades || []).forEach(cidade => {
@@ -263,12 +329,16 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                 const existing = allCitiesMap.get(lowerCaseCidade);
 
                 if (!existing) {
-                    allCitiesMap.set(lowerCaseCidade, { value: lowerCaseCidade, label: cidade, regiaoIds: [regiao.id] });
+                    allCitiesMap.set(lowerCaseCidade, { value: lowerCaseCidade, label: cidade, regiaoId: regiao.id });
                     return;
                 }
 
-                if (!existing.regiaoIds.includes(regiao.id)) {
-                    existing.regiaoIds.push(regiao.id);
+                // Se já existe, substitua apenas se a nova região tiver
+                // prioridade maior (índice menor).
+                const existingPriority = priority(existing.regiaoId);
+                const newPriority = priority(regiao.id);
+                if (newPriority < existingPriority) {
+                    allCitiesMap.set(lowerCaseCidade, { value: lowerCaseCidade, label: cidade, regiaoId: regiao.id });
                 }
             });
         });
@@ -277,34 +347,43 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
 
     }, [regioes]);
 
-    const selectedRegiaoIds = useMemo(() => {
-        if (!selectedCity || !allCities) return [];
-        return allCities.find(c => c.label === selectedCity)?.regiaoIds ?? [];
+    const selectedRegiaoId = useMemo(() => {
+        if (!selectedCity || !allCities) return null;
+        return allCities.find(c => c.label === selectedCity)?.regiaoId ?? null;
     }, [selectedCity, allCities]);
 
     const productsQuery = useMemoFirebase(() => {
-        if (!firestore || selectedRegiaoIds.length === 0) return null;
+        if (!firestore || !selectedRegiaoId) return null;
         return query(
             collection(firestore, 'produtos') as CollectionReference<Produto>,
-            where('regiaoId', 'in', [...selectedRegiaoIds, 'nacional'].slice(0, 30))
+            where('regiaoId', 'in', [selectedRegiaoId, 'nacional'])
         );
-    }, [firestore, selectedRegiaoIds]);
+    }, [firestore, selectedRegiaoId]);
 
     const { data: productsData, isLoading: isLoadingProducts } = useCollection<Produto>(productsQuery);
 
     const filteredAndSortedProducts = useMemo(() => {
         if (!productsData) return [];
 
-        const blockedProducts = new Set([
-            normalizeText('Dependente Avulso Dados'),
-            normalizeText('DEPENDENTE AVULSO DADOS')
-        ]);
-
-        const visibleProducts = productsData.filter(product => !blockedProducts.has(normalizeText(product.nome)));
-
         let filtered = selectedType === 'Todos'
-            ? visibleProducts
-            : visibleProducts.filter(p => p.tipo === selectedType);
+            ? productsData
+            : selectedType === 'TV Retenção'
+                ? [...productsData, ...produtosTvRetencao].filter(p => {
+                    const isTv =
+                        p.tipo === 'TV Cabeada' ||
+                        p.tipo === 'TV Box' ||
+                        p.tipo === 'Claro TV APP';
+                    if (!isTv) return false;
+                    const haystack = normalizeText(`${p.nome} ${p.observacoes ?? ''}`);
+                    return haystack.includes('retencao');
+                })
+                : selectedType === 'Banda Larga Retenção'
+                    ? productsData.filter(p => {
+                        if (p.tipo !== 'Banda Larga') return false;
+                        const haystack = normalizeText(`${p.nome} ${p.observacoes ?? ''}`);
+                        return haystack.includes('retencao');
+                    })
+                    : productsData.filter(p => p.tipo === selectedType);
 
         if (selectedType === 'Ponto Adicional' && selectedTV) {
             const tvNome = selectedTV.nome as keyof typeof MAPEAMENTO_TV_TECNOLOGIA;
@@ -387,7 +466,7 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
         setSearchQuery('');
     }
 
-    const handleTypeChange = (type: ProductType | 'Todos') => {
+    const handleTypeChange = (type: ProductType | 'Todos' | 'TV Retenção' | 'Banda Larga Retenção') => {
         setSelectedType(type);
     };
 
@@ -419,6 +498,23 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
         }
         return [selectedType];
     }, [selectedType, availableTypes]);
+
+    const virtualCategories = useMemo(() => ([
+        'Banda Larga Retenção',
+        'TV Retenção',
+    ] as const), []);
+
+    const categoryDisplayName = (type: ProductType | 'TV Retenção' | 'Banda Larga Retenção') => {
+        if (type === 'TV Retenção') return 'TV Retenção';
+        if (type === 'Banda Larga Retenção') return 'Banda Larga Retenção';
+        return typeDisplayNames[type];
+    };
+
+    const categoryIcon = (type: ProductType | 'TV Retenção' | 'Banda Larga Retenção') => {
+        if (type === 'TV Retenção') return <Tv2 className="h-4 w-4 text-red-500" />;
+        if (type === 'Banda Larga Retenção') return <Wifi className="h-4 w-4 text-red-500" />;
+        return typeIcon(type);
+    };
 
     const typeIcon = (type: ProductType) => {
         switch (type) {
@@ -476,11 +572,13 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[--radix-popover-trigger-width] p-0 border-slate-200 rounded-2xl overflow-hidden shadow-xl">
-                                    <Command filter={(value, search) => {
-                                        const normalizedValue = normalizeText(value);
-                                        const normalizedSearch = normalizeText(search);
-                                        return normalizedValue.includes(normalizedSearch) ? 1 : 0;
-                                    }}>
+                                    <Command
+                                        filter={(value, search) => {
+                                            const normalizedValue = normalizeText(value);
+                                            const normalizedSearch = normalizeText(search);
+                                            return normalizedValue.includes(normalizedSearch) ? 1 : 0;
+                                        }}
+                                    >
                                         <CommandInput placeholder="Buscar cidade..." className="h-10 text-xs font-semibold" />
                                         <CommandEmpty className="text-xs p-3">Nenhuma cidade encontrada.</CommandEmpty>
                                         <CommandGroup>
@@ -574,6 +672,17 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
                                     {typeDisplayNames[type]}
                                 </Button>
                             ))}
+                            {virtualCategories.map((type) => (
+                                <Button
+                                    key={type}
+                                    variant={selectedType === type ? "default" : "secondary"}
+                                    onClick={() => handleTypeChange(type)}
+                                    size="sm"
+                                    className={cn("shrink-0 rounded-2xl h-8 px-3.5 text-xs font-black uppercase tracking-wide transition-all", selectedType === type ? "bg-gradient-to-r from-[#d00010] via-[#f00018] to-[#ff4545] text-white shadow-md shadow-red-200/50 hover:brightness-110" : "bg-white border border-slate-200 hover:border-slate-300 text-neutral-700")}
+                                >
+                                    {categoryDisplayName(type)}
+                                </Button>
+                            ))}
                         </div>
                     </div>
                 )}
@@ -600,40 +709,66 @@ export function BuilderView({ className, hideHeader = false }: BuilderViewProps)
 
                     {!isLoading && filteredAndSortedProducts.length > 0 && (
                         <div className="space-y-6 animate-in fade-in duration-500">
-                            {typesWithProducts.map((type) => (
-                                <div key={type} className="animate-in fade-in duration-300">
+                            {selectedType === 'Todos' ? (
+                                <>
+                                    {typesWithProducts.map((type) => (
+                                        <div key={type} className="animate-in fade-in duration-300">
+                                            <div className="rounded-3xl border border-red-100/70 bg-gradient-to-r from-red-50 via-white to-white p-5 shadow-sm">
+                                                <div className="flex items-center justify-between gap-3 mb-4">
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center shrink-0">
+                                                            {typeIcon(type)}
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <div className="text-base font-black text-black tracking-tight truncate leading-tight">{typeDisplayNames[type]}</div>
+                                                            <div className="text-xs text-neutral-600 font-bold">{groupedByType[type].length} produto(s)</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                                                    {groupedByType[type].map(product => (
+                                                        <ProductCard key={product.id} product={product} />
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {type === "TV Cabeada" && selectedTV && (
+                                                <Card className="mt-4 border border-red-100 bg-red-50/50 rounded-2xl">
+                                                    <CardContent className="p-4">
+                                                        <InfoPontosAdicionais
+                                                            nomeTV={selectedTV.nome}
+                                                            mostrarAlerta={true}
+                                                        />
+                                                    </CardContent>
+                                                </Card>
+                                            )}
+                                        </div>
+                                    ))}
+                                </>
+                            ) : (
+                                <div className="animate-in fade-in duration-300">
                                     <div className="rounded-3xl border border-red-100/70 bg-gradient-to-r from-red-50 via-white to-white p-5 shadow-sm">
                                         <div className="flex items-center justify-between gap-3 mb-4">
                                             <div className="flex items-center gap-3 min-w-0">
                                                 <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center shrink-0">
-                                                    {typeIcon(type)}
+                                                    {categoryIcon(selectedType)}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <div className="text-base font-black text-black tracking-tight truncate leading-tight">{typeDisplayNames[type]}</div>
-                                                    <div className="text-xs text-neutral-600 font-bold">{groupedByType[type].length} produto(s)</div>
+                                                    <div className="text-base font-black text-black tracking-tight truncate leading-tight">{categoryDisplayName(selectedType)}</div>
+                                                    <div className="text-xs text-neutral-600 font-bold">{filteredAndSortedProducts.length} produto(s)</div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                                            {groupedByType[type].map(product => (
+                                            {filteredAndSortedProducts.map(product => (
                                                 <ProductCard key={product.id} product={product} />
                                             ))}
                                         </div>
                                     </div>
-
-                                    {type === "TV Cabeada" && selectedTV && (
-                                        <Card className="mt-4 border border-red-100 bg-red-50/50 rounded-2xl">
-                                            <CardContent className="p-4">
-                                                <InfoPontosAdicionais
-                                                    nomeTV={selectedTV.nome}
-                                                    mostrarAlerta={true}
-                                                />
-                                            </CardContent>
-                                        </Card>
-                                    )}
                                 </div>
-                            ))}
+                            )}
                         </div>
                     )}
                 </>
